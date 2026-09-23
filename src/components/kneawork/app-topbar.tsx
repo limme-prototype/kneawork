@@ -2,7 +2,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
   Check,
-  ChevronDown,
   Command as CommandIcon,
   FileText,
   Home,
@@ -22,6 +21,7 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -255,25 +255,37 @@ export function AppTopbar({
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="flex items-center gap-1.5 sm:gap-2 rounded-md border border-border bg-card px-2 sm:px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="relative flex size-8 sm:size-8.5 items-center justify-center rounded-full border border-border bg-card hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0 cursor-pointer"
+                aria-label={`Account menu for ${me.name}`}
               >
-                <span className="size-2 rounded-full bg-success shrink-0" />
-                <span className="max-w-[75px] sm:max-w-28 truncate font-semibold">
-                  {me.name}
-                </span>
-                <ChevronDown className="size-3 text-muted-foreground hidden sm:block" />
+                <Avatar className="size-full">
+                  <AvatarFallback className="bg-muted text-foreground font-bold text-xs select-none">
+                    {me.initials}
+                  </AvatarFallback>
+                </Avatar>
+                <span
+                  className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-success ring-2 ring-card"
+                  title="Online"
+                />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64 p-1 shadow-lg">
               {/* Account Identity */}
-              <div className="px-2.5 py-2">
-                <p className="text-xs font-bold text-foreground truncate">{me.name}</p>
-                <p className="text-[11px] text-muted-foreground truncate">{me.title ?? me.role}</p>
-                <div className="mt-1 flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full bg-success" />
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                    {me.department} · KneaWork
-                  </span>
+              <div className="flex items-center gap-2.5 px-2.5 py-2.5">
+                <Avatar className="size-9 shrink-0">
+                  <AvatarFallback className="bg-primary text-primary-foreground font-bold text-xs">
+                    {me.initials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-foreground truncate">{me.name}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">{me.title ?? me.role}</p>
+                  <div className="mt-0.5 flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-success" />
+                    <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                      {me.department} · KneaWork
+                    </span>
+                  </div>
                 </div>
               </div>
 
