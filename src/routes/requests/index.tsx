@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Search, Filter } from "lucide-react";
+import { Plus, Filter } from "lucide-react";
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
 import { RequestCard } from "@/components/kneawork/request-card";
 import { RequestTable } from "@/components/kneawork/request-table";
+import { SearchInput } from "@/components/kneawork/search-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useKneaState } from "@/lib/kneawork/store";
 import type { RequestStatus } from "@/lib/kneawork/types";
 
@@ -52,13 +52,11 @@ function RequestsListPage() {
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-3 top-3 size-4 text-muted-foreground" />
-              <Input
+            <div className="flex-1 sm:w-64">
+              <SearchInput
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search ID, title..."
-                className="pl-9 bg-card"
               />
             </div>
             <Button

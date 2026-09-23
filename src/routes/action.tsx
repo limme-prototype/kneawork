@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Clock,
   Inbox,
-  Search,
   Sparkles,
   X,
 } from "lucide-react";
@@ -14,9 +13,9 @@ import { useState } from "react";
 import { AppShell } from "@/components/kneawork/app-shell";
 import { RequestCard } from "@/components/kneawork/request-card";
 import { RequestTable } from "@/components/kneawork/request-table";
+import { SearchInput } from "@/components/kneawork/search-input";
 import { StatusBadge, UrgencyBadge } from "@/components/kneawork/status-badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { personById } from "@/lib/kneawork/data";
 import { currentStep, needsActionFrom, useKneaState } from "@/lib/kneawork/store";
 
@@ -84,13 +83,11 @@ export function ActionInboxPage() {
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
-              <Input
+            <div className="flex-1 sm:w-64">
+              <SearchInput
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Filter actions..."
-                className="h-8 rounded-md pl-8 text-xs bg-card"
               />
             </div>
           </div>

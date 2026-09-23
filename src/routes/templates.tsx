@@ -12,7 +12,6 @@ import {
   Layers,
   Lock,
   Plus,
-  Search,
   ShieldCheck,
   Sparkles,
   Users,
@@ -32,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/kneawork/search-input";
 import {
   archiveTemplate,
   createBlankTemplate,
@@ -154,20 +153,18 @@ export function TemplatesPage() {
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
-              <Input
+            <div className="flex-1 sm:w-64">
+              <SearchInput
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search templates or policies..."
-                className="h-8 rounded-md pl-8 text-xs bg-card"
               />
             </div>
 
             <Button
               size="sm"
               onClick={handleStartNewTemplate}
-              className="h-8 gap-1.5 text-xs font-semibold shrink-0"
+              className="gap-1.5 text-xs sm:text-[13px] font-semibold shrink-0"
             >
               <Plus className="size-3.5" />
               New template
