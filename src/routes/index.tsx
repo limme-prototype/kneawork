@@ -45,7 +45,7 @@ export function HomePage() {
       title="Home"
       breadcrumbs={[{ label: "Workspace" }, { label: "Home" }]}
     >
-      <div className="space-y-6 max-w-5xl">
+      <div className="space-y-6">
         {/* Consistent Standard PageHeader */}
         <PageHeader
           eyebrow="Workspace"

@@ -57,7 +57,7 @@ export function ProfilePage() {
     <AppShell
       breadcrumbs={[{ label: "Settings" }, { label: "My Profile" }]}
     >
-      <div className="space-y-6 max-w-5xl">
+      <div className="space-y-6">
         <PageHeader
           eyebrow="Account"
           title="My Profile"

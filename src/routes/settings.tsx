@@ -49,7 +49,7 @@ export function WorkspaceSettingsPage() {
     <AppShell
       breadcrumbs={[{ label: "Settings" }, { label: "Workspace Settings" }]}
     >
-      <div className="space-y-6 max-w-5xl">
+      <div className="space-y-6">
         <PageHeader
           eyebrow="Settings"
           title="Workspace Settings"
