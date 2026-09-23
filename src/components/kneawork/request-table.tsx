@@ -26,16 +26,16 @@ export function RequestTable({
           <table className="w-full text-left text-xs text-foreground">
             <thead className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
               <tr>
-                <th scope="col" className="py-3 pl-4 pr-2">
+                <th scope="col" className="hidden xl:table-cell py-3 pl-4 pr-2">
                   ID
                 </th>
                 <th scope="col" className="py-3 px-3">
                   Request
                 </th>
-                <th scope="col" className="py-3 px-3">
+                <th scope="col" className="hidden lg:table-cell py-3 px-3">
                   Requester
                 </th>
-                <th scope="col" className="py-3 px-3">
+                <th scope="col" className="hidden lg:table-cell py-3 px-3">
                   Current step
                 </th>
                 <th scope="col" className="py-3 px-3">
@@ -70,22 +70,24 @@ export function RequestTable({
                     }`}
                   >
                     {/* ID */}
-                    <td className="py-3.5 pl-4 pr-2 font-mono text-[11px] font-semibold text-muted-foreground">
+                    <td className="hidden xl:table-cell py-3.5 pl-4 pr-2 font-mono text-[11px] font-semibold text-muted-foreground">
                       {req.code}
                     </td>
 
                     {/* Request Title & Value */}
-                    <td className="py-3.5 px-3">
-                      <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                    <td className="py-3.5 px-3 min-w-0">
+                      <div className="font-semibold text-foreground group-hover:text-primary transition-colors truncate max-w-[200px] sm:max-w-xs md:max-w-sm">
                         {req.title}
                       </div>
                       <div className="text-[11px] font-medium text-muted-foreground">
                         {req.valueLabel} · <span className="capitalize">{req.type}</span>
+                        {/* On tablet where Requester column is hidden, show requester inline */}
+                        <span className="lg:hidden text-muted-foreground/80"> · {requester.name}</span>
                       </div>
                     </td>
 
                     {/* Requester */}
-                    <td className="py-3.5 px-3">
+                    <td className="hidden lg:table-cell py-3.5 px-3">
                       <span className="font-medium text-foreground">{requester.name}</span>
                       <span className="block text-[11px] text-muted-foreground">
                         {req.department}
@@ -93,7 +95,7 @@ export function RequestTable({
                     </td>
 
                     {/* Current Step */}
-                    <td className="py-3.5 px-3">
+                    <td className="hidden lg:table-cell py-3.5 px-3">
                       {step ? (
                         <span className="font-medium text-foreground">{step.name}</span>
                       ) : (
@@ -169,30 +171,32 @@ export function RequestTable({
               className="rounded-lg border border-border bg-card p-3.5 shadow-2xs space-y-2.5"
             >
               <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-[10px] text-muted-foreground">{req.code}</span>
-                    <span className="font-bold text-xs text-foreground">{req.title}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-mono text-[10px] text-muted-foreground shrink-0">{req.code}</span>
+                    <span className="font-bold text-xs text-foreground truncate">{req.title}</span>
                   </div>
-                  <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
+                  <p className="text-[11px] font-semibold text-muted-foreground mt-0.5 truncate">
                     {req.valueLabel} · <span className="capitalize">{req.type}</span>
                   </p>
                 </div>
-                <StatusBadge
-                  status={req.status}
-                  currentStepName={step?.name}
-                  assigneeName={owner?.name}
-                  isAssignedToMe={Boolean(isMe)}
-                />
+                <div className="shrink-0">
+                  <StatusBadge
+                    status={req.status}
+                    currentStepName={step?.name}
+                    assigneeName={owner?.name}
+                    isAssignedToMe={Boolean(isMe)}
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground border-t border-border pt-2">
-                <div>
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground border-t border-border pt-2 min-w-0">
+                <div className="truncate mr-2">
                   <span>Step: </span>
                   <span className="font-medium text-foreground">{step?.name ?? "Completed"}</span>
                   {owner ? <span> · {isMe ? "You" : owner.name}</span> : null}
                 </div>
-                {step ? <UrgencyBadge urgency={req.urgency} dueLabel={step.dueLabel} /> : null}
+                {step ? <div className="shrink-0"><UrgencyBadge urgency={req.urgency} dueLabel={step.dueLabel} /></div> : null}
               </div>
 
               <div className="flex items-center justify-between border-t border-border pt-2">

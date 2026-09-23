@@ -24,20 +24,20 @@ export function TemplateBuilderHeader({
   return (
     <div className="border-b border-border bg-card px-4 py-4 sm:px-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 flex-wrap">
             <span>Manage</span>
             <span>/</span>
             <span>Templates</span>
             <span>/</span>
-            <span className="font-medium text-foreground">
+            <span className="font-medium text-foreground truncate max-w-[120px] sm:max-w-none">
               {template.label.trim() ? template.label : "New template"}
             </span>
-            <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.2 text-[10px] font-semibold text-attention ml-1 flex items-center gap-1">
+            <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.2 text-[10px] font-semibold text-attention ml-1 flex items-center gap-1 shrink-0">
               <Layers className="size-3" />v{template.version} · {template.versionStatus}
             </span>
           </div>
-          <h1 className="text-base sm:text-lg font-bold text-foreground">
+          <h1 className="text-base sm:text-lg font-bold text-foreground break-words">
             {template.label.trim() ? `Edit ${template.label}` : "Create new request template"}
           </h1>
           <p className="text-xs text-muted-foreground">
@@ -46,7 +46,7 @@ export function TemplateBuilderHeader({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"

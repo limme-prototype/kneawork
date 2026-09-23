@@ -68,13 +68,13 @@ export function WorkspaceSettingsPage() {
         ) : null}
 
         {/* Modular Navigation Categories (HiBob Pattern: Organization by Intent) */}
-        <div className="flex items-center gap-1 border-b border-border pb-px text-xs overflow-x-auto">
+        <div className="flex items-center gap-1 border-b border-border pb-px text-xs overflow-x-auto scrollbar-none whitespace-nowrap">
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("workflow")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "workflow"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -88,7 +88,7 @@ export function WorkspaceSettingsPage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("workspace")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "workspace"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -102,7 +102,7 @@ export function WorkspaceSettingsPage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("notifications")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "notifications"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -116,7 +116,7 @@ export function WorkspaceSettingsPage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("security")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "security"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"

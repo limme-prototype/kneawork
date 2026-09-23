@@ -192,8 +192,8 @@ export function TeamAndRolesPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="relative w-64">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
               <Input
                 value={search}
@@ -205,7 +205,7 @@ export function TeamAndRolesPage() {
             <Button
               size="sm"
               onClick={() => setIsInviteOpen(true)}
-              className="h-8 gap-1.5 text-xs font-semibold"
+              className="h-8 gap-1.5 text-xs font-semibold shrink-0"
             >
               <UserPlus className="size-3.5" />
               Invite member
@@ -213,8 +213,8 @@ export function TeamAndRolesPage() {
           </div>
         </div>
 
-        {/* Clean Production Table (No Demo Context Column) */}
-        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-2xs">
+        {/* Desktop Table View */}
+        <div className="hidden sm:block overflow-hidden rounded-lg border border-border bg-card shadow-2xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground">
               <thead className="border-b border-border bg-muted/40 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
@@ -327,6 +327,76 @@ export function TeamAndRolesPage() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Mobile Member Cards */}
+        <div className="sm:hidden space-y-2.5">
+          {filtered.map((p) => {
+            const workload = getWorkload(p.id);
+            const isCurrent = p.id === currentUserId;
+
+            return (
+              <div
+                key={p.id}
+                onClick={() => setSelectedMember(p)}
+                className="rounded-lg border border-border bg-card p-3.5 shadow-2xs space-y-2.5 cursor-pointer hover:bg-muted/30 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span className="flex size-8 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs shrink-0">
+                      {p.initials}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-semibold text-foreground text-xs">{p.name}</span>
+                        {isCurrent ? (
+                          <span className="rounded bg-muted px-1.5 py-0.2 text-[10px] font-semibold text-muted-foreground">
+                            You
+                          </span>
+                        ) : null}
+                      </div>
+                      <span className="block text-[11px] text-muted-foreground truncate">
+                        {p.role} · {p.department}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-[10px] font-semibold text-success shrink-0">
+                    Active
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] border-t border-border pt-2">
+                  <span className="text-muted-foreground">Workload</span>
+                  <span
+                    className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium ${
+                      workload.urgent
+                        ? "bg-warning-soft text-warning border border-warning-border"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {workload.label}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-border pt-2">
+                  <span className="text-[11px] text-muted-foreground truncate">
+                    {p.name.toLowerCase().replace(" ", ".")}@kneawork.com
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedMember(p);
+                    }}
+                    className="h-6.5 text-[11px] font-medium shrink-0 ml-2"
+                  >
+                    Details
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

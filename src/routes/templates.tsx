@@ -153,8 +153,8 @@ export function TemplatesPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative w-60 sm:w-64">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
               <Input
                 value={search}
@@ -167,7 +167,7 @@ export function TemplatesPage() {
             <Button
               size="sm"
               onClick={handleStartNewTemplate}
-              className="h-8 gap-1.5 text-xs font-semibold"
+              className="h-8 gap-1.5 text-xs font-semibold shrink-0"
             >
               <Plus className="size-3.5" />
               New template
@@ -176,7 +176,7 @@ export function TemplatesPage() {
         </div>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap items-center gap-1.5 border-b border-border/60 pb-3">
+        <div className="flex items-center gap-1.5 border-b border-border/60 pb-3 overflow-x-auto scrollbar-none">
           {[
             { id: "all", label: "All templates" },
             { id: "purchase", label: "Purchase" },
@@ -192,7 +192,7 @@ export function TemplatesPage() {
                 variant={isActive ? "default" : "outline"}
                 size="sm"
                 onClick={() => setCategoryFilter(cat.id)}
-                className={`h-7 text-xs ${
+                className={`h-7 text-xs shrink-0 ${
                   isActive ? "font-semibold" : "text-muted-foreground hover:text-foreground"
                 }`}
               >

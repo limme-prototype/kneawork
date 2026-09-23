@@ -143,16 +143,7 @@ export function HomePage() {
           </div>
 
           {myRequests.length > 0 ? (
-            <>
-              <div className="hidden sm:block">
-                <RequestTable requests={myRequests} currentUserId={currentUserId} />
-              </div>
-              <div className="sm:hidden space-y-2.5">
-                {myRequests.map((request) => (
-                  <RequestCard key={request.id} request={request} currentUserId={currentUserId} />
-                ))}
-              </div>
-            </>
+            <RequestTable requests={myRequests} currentUserId={currentUserId} />
           ) : (
             <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-xs text-muted-foreground">
               <p>You have not submitted any requests yet.</p>

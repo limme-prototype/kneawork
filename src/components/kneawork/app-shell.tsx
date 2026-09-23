@@ -13,11 +13,20 @@ import {
   LogOut,
   Shield,
   Briefcase,
+  Menu,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import { personById } from "@/lib/kneawork/data";
 import { needsActionFrom, useKneaState } from "@/lib/kneawork/store";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export function AppShell({
   title,
@@ -31,6 +40,7 @@ export function AppShell({
   children: ReactNode;
 }) {
   const { requests, currentUserId } = useKneaState();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const me = personById(currentUserId);
   const actionCount = needsActionFrom(requests, currentUserId).length;
 
@@ -39,8 +49,158 @@ export function AppShell({
   const isAdmin =
     currentUserId === "u_admin" || currentUserId === "u_director" || currentUserId === "u_finance";
 
+  const renderNavLinks = (onItemClick?: () => void) => (
+    <div className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
+      {/* Section 1: Workspace */}
+      <div>
+        <p className="px-3 text-[11px] font-semibold text-muted-foreground">Workspace</p>
+        <nav className="mt-1.5 space-y-1">
+          {/* Home */}
+          <Link
+            to="/"
+            onClick={onItemClick}
+            activeOptions={{ exact: true }}
+            activeProps={{ className: "bg-muted text-primary font-semibold" }}
+            inactiveProps={{
+              className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+            }}
+            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+          >
+            <Home className="size-4" />
+            <span>Home</span>
+          </Link>
+
+          {/* My Action (Approvers & Admins only) */}
+          {!isStaff ? (
+            <Link
+              to="/action"
+              onClick={onItemClick}
+              activeOptions={{ exact: false }}
+              activeProps={{ className: "bg-muted text-primary font-semibold" }}
+              inactiveProps={{
+                className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+              }}
+              className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            >
+              <div className="flex items-center gap-2.5">
+                <Inbox className="size-4" />
+                <span>My Action</span>
+              </div>
+              {actionCount > 0 ? (
+                <span className="flex size-4.5 items-center justify-center rounded-full bg-attention text-[10px] font-bold text-attention-foreground">
+                  {actionCount}
+                </span>
+              ) : null}
+            </Link>
+          ) : null}
+
+          {/* All Requests / Team Requests */}
+          <Link
+            to="/requests"
+            onClick={onItemClick}
+            activeOptions={{ exact: false }}
+            activeProps={{ className: "bg-muted text-primary font-semibold" }}
+            inactiveProps={{
+              className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+            }}
+            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+          >
+            <FileText className="size-4" />
+            <span>{isStaff ? "My Requests" : "All Requests"}</span>
+          </Link>
+        </nav>
+      </div>
+
+      {/* Section 2: Manage (Admins & Managers) */}
+      {!isStaff ? (
+        <div>
+          <p className="px-3 text-[11px] font-semibold text-muted-foreground">Manage</p>
+          <nav className="mt-1.5 space-y-1">
+            {/* Operations Overview */}
+            <Link
+              to="/admin"
+              onClick={onItemClick}
+              activeOptions={{ exact: true }}
+              activeProps={{ className: "bg-muted text-primary font-semibold" }}
+              inactiveProps={{
+                className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+              }}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            >
+              <LayoutDashboard className="size-4" />
+              <span>Operations overview</span>
+            </Link>
+
+            <Link
+              to="/templates"
+              onClick={onItemClick}
+              activeOptions={{ exact: false }}
+              activeProps={{ className: "bg-muted text-primary font-semibold" }}
+              inactiveProps={{
+                className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+              }}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            >
+              <Layers className="size-4" />
+              <span>Templates</span>
+            </Link>
+            <Link
+              to="/team"
+              onClick={onItemClick}
+              activeOptions={{ exact: false }}
+              activeProps={{ className: "bg-muted text-primary font-semibold" }}
+              inactiveProps={{
+                className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+              }}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            >
+              <Users className="size-4" />
+              <span>Team & roles</span>
+            </Link>
+          </nav>
+        </div>
+      ) : null}
+
+      {/* Section 3: Settings */}
+      <div>
+        <p className="px-3 text-[11px] font-semibold text-muted-foreground">Settings</p>
+        <nav className="mt-1.5 space-y-1">
+          {isAdmin ? (
+            <Link
+              to="/settings"
+              onClick={onItemClick}
+              activeOptions={{ exact: false }}
+              activeProps={{ className: "bg-muted text-primary font-semibold" }}
+              inactiveProps={{
+                className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+              }}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            >
+              <Settings className="size-4" />
+              <span>Workspace settings</span>
+            </Link>
+          ) : null}
+
+          <Link
+            to="/profile"
+            onClick={onItemClick}
+            activeOptions={{ exact: false }}
+            activeProps={{ className: "bg-muted text-primary font-semibold" }}
+            inactiveProps={{
+              className: "text-muted-foreground hover:bg-accent hover:text-foreground",
+            }}
+            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+          >
+            <Shield className="size-4" />
+            <span>My profile</span>
+          </Link>
+        </nav>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex min-h-screen w-full bg-background font-sans text-foreground antialiased">
+    <div className="flex min-h-screen w-full bg-background font-sans text-foreground antialiased overflow-x-hidden">
       {/* 1. Desktop Left Sidebar (HiBob & Sentinel Enterprise Architecture) */}
       <aside className="hidden lg:flex w-60 shrink-0 flex-col border-r border-border bg-card">
         {/* Brand */}
@@ -56,146 +216,7 @@ export function AppShell({
           </div>
         </div>
 
-        {/* Navigation list structured into Workspace, Manage, Settings */}
-        <div className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
-          {/* Section 1: Workspace */}
-          <div>
-            <p className="px-3 text-[11px] font-semibold text-muted-foreground">Workspace</p>
-            <nav className="mt-1.5 space-y-1">
-              {/* Home */}
-              <Link
-                to="/"
-                activeOptions={{ exact: true }}
-                activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                inactiveProps={{
-                  className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                }}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-              >
-                <Home className="size-4" />
-                <span>Home</span>
-              </Link>
-
-              {/* My Action (Approvers & Admins only) */}
-              {!isStaff ? (
-                <Link
-                  to="/action"
-                  activeOptions={{ exact: false }}
-                  activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                  inactiveProps={{
-                    className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                  }}
-                  className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Inbox className="size-4" />
-                    <span>My Action</span>
-                  </div>
-                  {actionCount > 0 ? (
-                    <span className="flex size-4.5 items-center justify-center rounded-full bg-attention text-[10px] font-bold text-attention-foreground">
-                      {actionCount}
-                    </span>
-                  ) : null}
-                </Link>
-              ) : null}
-
-              {/* All Requests / Team Requests */}
-              <Link
-                to="/requests"
-                activeOptions={{ exact: false }}
-                activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                inactiveProps={{
-                  className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                }}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-              >
-                <FileText className="size-4" />
-                <span>{isStaff ? "My Requests" : "All Requests"}</span>
-              </Link>
-            </nav>
-          </div>
-
-          {/* Section 2: Manage (Admins & Managers) */}
-          {!isStaff ? (
-            <div>
-              <p className="px-3 text-[11px] font-semibold text-muted-foreground">Manage</p>
-              <nav className="mt-1.5 space-y-1">
-                {/* Operations Overview */}
-                <Link
-                  to="/admin"
-                  activeOptions={{ exact: true }}
-                  activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                  inactiveProps={{
-                    className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                  }}
-                  className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-                >
-                  <LayoutDashboard className="size-4" />
-                  <span>Operations overview</span>
-                </Link>
-
-                <Link
-                  to="/templates"
-                  activeOptions={{ exact: false }}
-                  activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                  inactiveProps={{
-                    className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                  }}
-                  className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-                >
-                  <Layers className="size-4" />
-                  <span>Templates</span>
-                </Link>
-                <Link
-                  to="/team"
-                  activeOptions={{ exact: false }}
-                  activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                  inactiveProps={{
-                    className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                  }}
-                  className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-                >
-                  <Users className="size-4" />
-                  <span>Team & roles</span>
-                </Link>
-              </nav>
-            </div>
-          ) : null}
-
-          {/* Section 3: Settings */}
-          <div>
-            <p className="px-3 text-[11px] font-semibold text-muted-foreground">Settings</p>
-            <nav className="mt-1.5 space-y-1">
-              {isAdmin ? (
-                <Link
-                  to="/settings"
-                  activeOptions={{ exact: false }}
-                  activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                  inactiveProps={{
-                    className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                  }}
-                  className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-                >
-                  <Settings className="size-4" />
-                  <span>Workspace settings</span>
-                </Link>
-              ) : null}
-
-              <Link
-                to="/profile"
-                activeOptions={{ exact: false }}
-                activeProps={{ className: "bg-muted text-primary font-semibold" }}
-                inactiveProps={{
-                  className: "text-muted-foreground hover:bg-accent hover:text-foreground",
-                }}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
-              >
-                <Shield className="size-4" />
-                <span>My profile</span>
-              </Link>
-            </nav>
-          </div>
-        </div>
+        {renderNavLinks()}
 
         {/* Current user footer in sidebar */}
         <div className="border-t border-border p-3">
@@ -220,42 +241,88 @@ export function AppShell({
       </aside>
 
       {/* 2. Main Content Area */}
-      <div className="flex flex-1 flex-col min-w-0">
+      <div className="flex flex-1 flex-col min-w-0 w-full max-w-full overflow-x-hidden">
         {/* Top Header */}
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-card/95 px-4 sm:px-8 backdrop-blur">
-          {/* Breadcrumb or Title */}
-          <div className="min-w-0">
-            {breadcrumbs && breadcrumbs.length > 0 ? (
-              <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                {breadcrumbs.map((b, i) => (
-                  <span key={i} className="flex items-center gap-1.5">
-                    {b.to ? (
-                      <Link to={b.to} className="hover:text-foreground font-medium">
-                        {b.label}
-                      </Link>
-                    ) : (
-                      <span className="font-semibold text-foreground">{b.label}</span>
-                    )}
-                    {i < breadcrumbs.length - 1 ? <span>/</span> : null}
-                  </span>
-                ))}
-              </nav>
-            ) : (
-              <div>
-                <h1 className="text-sm font-bold text-foreground truncate">{title}</h1>
-                {subtitle ? (
-                  <p className="text-[11px] text-muted-foreground truncate">{subtitle}</p>
-                ) : null}
-              </div>
-            )}
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-card/95 px-3 sm:px-6 lg:px-8 backdrop-blur gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            {/* Mobile & Tablet Drawer Trigger */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="size-8 p-0 lg:hidden text-foreground hover:bg-muted shrink-0"
+                  aria-label="Open navigation menu"
+                >
+                  <Menu className="size-4.5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-72 p-0 flex flex-col bg-card">
+                <SheetHeader className="border-b border-border px-5 py-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold text-sm shadow-2xs">
+                      K
+                    </div>
+                    <SheetTitle className="text-sm font-bold tracking-tight">KneaWork</SheetTitle>
+                  </div>
+                </SheetHeader>
+                {renderNavLinks(() => setMobileMenuOpen(false))}
+                <div className="border-t border-border p-3">
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 rounded-md p-2 hover:bg-accent transition-colors"
+                  >
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-xs text-foreground">
+                      {me.initials}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-foreground">{me.name}</p>
+                      <p className="truncate text-[11px] text-muted-foreground">{me.role}</p>
+                    </div>
+                  </Link>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {/* Breadcrumb or Title */}
+            <div className="min-w-0 flex-1">
+              {breadcrumbs && breadcrumbs.length > 0 ? (
+                <nav className="flex items-center gap-1.5 text-xs text-muted-foreground overflow-hidden">
+                  {breadcrumbs.map((b, i) => (
+                    <span
+                      key={i}
+                      className="flex items-center gap-1.5 shrink-0 last:shrink last:truncate min-w-0"
+                    >
+                      {b.to ? (
+                        <Link to={b.to} className="hover:text-foreground font-medium truncate">
+                          {b.label}
+                        </Link>
+                      ) : (
+                        <span className="font-semibold text-foreground truncate">{b.label}</span>
+                      )}
+                      {i < breadcrumbs.length - 1 ? <span className="text-muted-foreground">/</span> : null}
+                    </span>
+                  ))}
+                </nav>
+              ) : (
+                <div className="min-w-0">
+                  <h1 className="text-sm font-bold text-foreground truncate">{title}</h1>
+                  {subtitle ? (
+                    <p className="text-[11px] text-muted-foreground truncate hidden sm:block">{subtitle}</p>
+                  ) : null}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Action area */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {!isStaff ? (
               <Link
                 to="/action"
                 className="relative flex size-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                aria-label="My actions inbox"
               >
                 <Bell className="size-4" />
                 {actionCount > 0 ? (
@@ -269,19 +336,19 @@ export function AppShell({
             {/* Persona pill */}
             <Link
               to="/profile"
-              className="flex items-center gap-2 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors"
+              className="flex items-center gap-1.5 sm:gap-2 rounded-md border border-border bg-card px-2 sm:px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent transition-colors"
             >
-              <span className="size-2 rounded-full bg-success" />
-              <span className="max-w-28 truncate">
-                {me.name} ({me.role.split(" ")[0]})
+              <span className="size-2 rounded-full bg-success shrink-0" />
+              <span className="max-w-[75px] sm:max-w-28 truncate">
+                {me.name}
               </span>
             </Link>
           </div>
         </header>
 
         {/* Main Content Body */}
-        <main className="flex-1 p-4 sm:p-8 pb-24 lg:pb-8">
-          <div className="mx-auto max-w-7xl">{children}</div>
+        <main className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8">
+          <div className="mx-auto w-full min-w-0 max-w-7xl">{children}</div>
         </main>
 
         {/* Mobile Bottom Navigation (Responsive adaptation) */}

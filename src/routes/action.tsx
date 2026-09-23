@@ -83,8 +83,8 @@ export function ActionInboxPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="relative w-64">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
               <Input
                 value={search}
@@ -97,12 +97,12 @@ export function ActionInboxPage() {
         </div>
 
         {/* Filter Tabs using Button component */}
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs overflow-x-auto pb-1 scrollbar-none">
           <Button
             size="sm"
             variant={filter === "all" ? "default" : "outline"}
             onClick={() => setFilter("all")}
-            className="h-7 text-xs font-semibold"
+            className="h-7 text-xs font-semibold shrink-0"
           >
             All open ({myActions.length})
           </Button>
@@ -110,7 +110,7 @@ export function ActionInboxPage() {
             size="sm"
             variant={filter === "due_today" ? "default" : "outline"}
             onClick={() => setFilter("due_today")}
-            className={`h-7 text-xs font-semibold ${
+            className={`h-7 text-xs font-semibold shrink-0 ${
               filter === "due_today" ? "bg-warning text-white hover:bg-warning/90" : ""
             }`}
           >
@@ -120,7 +120,7 @@ export function ActionInboxPage() {
             size="sm"
             variant={filter === "overdue" ? "default" : "outline"}
             onClick={() => setFilter("overdue")}
-            className={`h-7 text-xs font-semibold ${
+            className={`h-7 text-xs font-semibold shrink-0 ${
               filter === "overdue" ? "bg-danger text-white hover:bg-danger/90" : ""
             }`}
           >
@@ -142,13 +142,13 @@ export function ActionInboxPage() {
                     className="rounded-lg border border-attention-border bg-card p-5 shadow-2xs hover:border-attention transition-colors"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-3">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-muted-foreground">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono text-xs font-semibold text-muted-foreground shrink-0">
                             {req.code}
                           </span>
-                          <h2 className="text-base font-bold text-foreground">{req.title}</h2>
-                          <span className="rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground capitalize">
+                          <h2 className="text-base font-bold text-foreground truncate">{req.title}</h2>
+                          <span className="rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground capitalize shrink-0">
                             {req.type}
                           </span>
                         </div>

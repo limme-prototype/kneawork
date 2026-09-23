@@ -91,7 +91,7 @@ function RequestDetailPage() {
         { label: request.code },
       ]}
     >
-      <div className="space-y-6">
+      <div className={`space-y-6 ${isMe ? "pb-16 sm:pb-0" : ""}`}>
         {/* Action Feedback Banner */}
         {actionFeedback ? (
           <div className="rounded-lg border border-success-border bg-success-soft p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-success">
@@ -119,24 +119,26 @@ function RequestDetailPage() {
           </div>
         ) : null}
 
-        {/* 1. Header Bar: Title, Code, Metadata + Immediate Action Buttons (Sentinel Reference) */}
+        {/* 1. Header Bar: Title, Code, Metadata + Immediate Action Buttons */}
         <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-semibold text-muted-foreground">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-mono text-xs font-semibold text-muted-foreground shrink-0">
                 {request.code}
               </span>
-              <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-foreground capitalize">
+              <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-foreground capitalize shrink-0">
                 {request.type} request
               </span>
-              <StatusBadge
-                status={request.status}
-                currentStepName={step?.name}
-                assigneeName={owner?.name}
-                isAssignedToMe={Boolean(isMe)}
-              />
+              <div className="shrink-0">
+                <StatusBadge
+                  status={request.status}
+                  currentStepName={step?.name}
+                  assigneeName={owner?.name}
+                  isAssignedToMe={Boolean(isMe)}
+                />
+              </div>
             </div>
-            <h1 className="mt-1.5 text-xl font-bold text-foreground tracking-tight sm:text-2xl">
+            <h1 className="mt-1.5 text-xl font-bold text-foreground tracking-tight sm:text-2xl break-words">
               {request.title}
             </h1>
             <p className="mt-0.5 text-xs text-muted-foreground">
@@ -145,9 +147,9 @@ function RequestDetailPage() {
             </p>
           </div>
 
-          {/* Contextual Action Group */}
+          {/* Contextual Action Group (Header actions visible sm and up; mobile uses sticky bottom bar) */}
           {isMe ? (
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2 shrink-0">
               <Button
                 variant="outline"
                 size="sm"
@@ -176,7 +178,7 @@ function RequestDetailPage() {
               </Button>
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground shrink-0">
               {request.status === "approved" ? (
                 <span className="inline-flex items-center gap-1 font-semibold text-success">
                   <CheckCircle2 className="size-4 text-success" /> Fully approved & closed
@@ -195,9 +197,9 @@ function RequestDetailPage() {
         </div>
 
         {/* 2. Sentinel Split Layout: Main Content (Left 8 cols) + Aside Status/Metadata (Right 4 cols) */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 min-w-0">
           {/* LEFT COLUMN: Summary, Attachments, Timeline, Comments */}
-          <div className="space-y-6 lg:col-span-8">
+          <div className="space-y-6 lg:col-span-8 min-w-0">
             {/* Request Summary Box */}
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
               <h2 className="text-sm font-semibold text-foreground">Request summary</h2>
@@ -235,11 +237,11 @@ function RequestDetailPage() {
               {request.attachments.length > 0 ? (
                 <div className="mt-3 divide-y divide-border">
                   {request.attachments.map((att) => (
-                    <div key={att.id} className="flex items-center justify-between py-2.5 text-xs">
-                      <div className="flex items-center gap-2.5">
-                        <Paperclip className="size-4 text-muted-foreground" />
-                        <div>
-                          <p className="font-semibold text-foreground">{att.filename}</p>
+                    <div key={att.id} className="flex items-center justify-between py-2.5 text-xs gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <Paperclip className="size-4 text-muted-foreground shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-foreground truncate">{att.filename}</p>
                           <p className="text-[11px] text-muted-foreground">{att.size}</p>
                         </div>
                       </div>
@@ -247,7 +249,7 @@ function RequestDetailPage() {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-7 text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10"
+                        className="h-7 text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10 shrink-0"
                       >
                         <Download className="size-3.5 mr-1" />
                         Download

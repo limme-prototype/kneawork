@@ -91,12 +91,12 @@ export function ProfilePage() {
         </div>
 
         {/* Secondary Navigation Tabs (Account Settings Pattern using Button component) */}
-        <div className="flex items-center gap-1 border-b border-border pb-px text-xs overflow-x-auto">
+        <div className="flex items-center gap-1 border-b border-border pb-px text-xs overflow-x-auto scrollbar-none whitespace-nowrap">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("profile")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors ${
+            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
               activeTab === "profile"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -109,7 +109,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("security")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors ${
+            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
               activeTab === "security"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -122,7 +122,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("notifications")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors ${
+            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
               activeTab === "notifications"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -135,7 +135,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("language")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors ${
+            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
               activeTab === "language"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -148,7 +148,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("accounts")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors ${
+            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
               activeTab === "accounts"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"

@@ -211,7 +211,7 @@ export function NewRequestPage() {
         </div>
 
         {/* Guided Flow Breadcrumb / Indicator (Details → Evidence → Review route → Submit) */}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 p-2.5 rounded-lg border border-border overflow-x-auto">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 p-2.5 rounded-lg border border-border overflow-x-auto scrollbar-none whitespace-nowrap">
           <span className="font-semibold text-primary">1. Details</span>
           <span className="text-muted-foreground">→</span>
           <span className="font-semibold text-primary">2. Evidence</span>
@@ -222,9 +222,9 @@ export function NewRequestPage() {
         </div>
 
         {/* 2-Column Responsive Layout: Form (Left 7-8 cols) + Route Preview / Summary (Right 4-5 cols) */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 min-w-0">
           {/* LEFT: Request Details & Evidence Form */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-5">
+          <div className="lg:col-span-7 xl:col-span-8 space-y-5 min-w-0">
             <form id="request-form" onSubmit={handleSubmit} className="space-y-5">
               {/* SECTION: Request Details */}
               <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
@@ -354,11 +354,11 @@ export function NewRequestPage() {
                 </div>
 
                 {uploadedFile ? (
-                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 text-xs">
-                    <div className="flex items-center gap-2.5">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 text-xs gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <FileCheck className="size-5 text-success shrink-0" />
-                      <div>
-                        <p className="font-semibold text-foreground">{uploadedFile.name}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-foreground truncate">{uploadedFile.name}</p>
                         <p className="text-[11px] text-muted-foreground">
                           {uploadedFile.size} · Uploaded and ready
                         </p>
@@ -369,7 +369,7 @@ export function NewRequestPage() {
                       variant="ghost"
                       size="icon"
                       onClick={() => setUploadedFile(null)}
-                      className="size-7 text-muted-foreground hover:text-foreground"
+                      className="size-7 text-muted-foreground hover:text-foreground shrink-0"
                     >
                       <X className="size-4" />
                     </Button>
@@ -437,7 +437,7 @@ export function NewRequestPage() {
           </div>
 
           {/* RIGHT: Compact Read-Only Approval Route Preview (Not an editable form block) */}
-          <div className="lg:col-span-5 xl:col-span-4 space-y-4">
+          <div className="lg:col-span-5 xl:col-span-4 space-y-4 min-w-0">
             <RoutePreview type={type} collapsible={false} />
 
             <div className="rounded-lg border border-border bg-card p-4 text-xs text-muted-foreground space-y-2">

@@ -119,8 +119,8 @@ function OperationsOverviewPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="relative w-64">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
                 <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
                 <Input
                   value={search}
@@ -133,7 +133,7 @@ function OperationsOverviewPage() {
               <Button
                 asChild
                 size="sm"
-                className="h-8 gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary-hover"
+                className="h-8 gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
               >
                 <Link to="/requests/new">
                   <Plus className="size-3.5" />

@@ -27,81 +27,137 @@ export function TemplateStepNavigation({
   onSelectStep,
   issues,
 }: TemplateStepNavigationProps) {
-  return (
-    <nav
-      aria-label="Template builder progress"
-      className="border-b border-border bg-card/60 px-4 py-2 sm:px-6 overflow-x-auto"
-    >
-      <ol className="flex items-center justify-between min-w-[640px] gap-2">
-        {STEPS.map((step, idx) => {
-          const isActive = currentStep === step.id;
-          const isCompleted = currentStep > step.id;
-          const stepIssues = issues.filter((issue) => issue.step === step.id);
-          const hasIssues = stepIssues.length > 0;
+  const currentStepObj = STEPS.find((s) => s.id === currentStep) ?? (STEPS[0] as StepItem);
 
-          return (
-            <li key={step.id} className="flex-1">
-              <button
-                type="button"
-                onClick={() => onSelectStep(step.id)}
-                className={cn(
-                  "group flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors cursor-pointer",
-                  isActive
-                    ? "bg-primary/10 border border-primary/20"
-                    : "hover:bg-muted/60 border border-transparent",
-                )}
-                aria-current={isActive ? "step" : undefined}
-              >
-                {/* Step badge */}
-                <span
+  return (
+    <>
+      {/* Mobile Step Header (< sm) */}
+      <div className="sm:hidden px-3.5 py-2.5 space-y-2 border-b border-border bg-card/60">
+        <div className="flex items-center justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-semibold text-primary">
+                Step {currentStep} of {STEPS.length}
+              </span>
+              <span className="text-muted-foreground text-[11px]">·</span>
+              <span className="text-xs font-bold text-foreground truncate">
+                {currentStepObj.title}
+              </span>
+            </div>
+            <p className="text-[11px] text-muted-foreground truncate">{currentStepObj.subtitle}</p>
+          </div>
+          {/* Quick step pill buttons */}
+          <div className="flex items-center gap-1 shrink-0 ml-2">
+            {STEPS.map((step) => {
+              const isActive = currentStep === step.id;
+              const isCompleted = currentStep > step.id;
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => onSelectStep(step.id)}
+                  aria-label={`Go to step ${step.id}: ${step.title}`}
                   className={cn(
-                    "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
-                    hasIssues && !isActive
-                      ? "bg-warning-soft text-warning border border-warning-border"
+                    "flex size-6 items-center justify-center rounded-full text-[10px] font-bold transition-all cursor-pointer",
+                    isActive
+                      ? "bg-primary text-primary-foreground ring-2 ring-primary/30"
                       : isCompleted
                         ? "bg-success text-success-foreground"
-                        : isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground",
+                        : "bg-muted text-muted-foreground hover:bg-muted/80",
                   )}
                 >
-                  {hasIssues && !isActive ? (
-                    <AlertTriangle className="size-3.5" />
-                  ) : isCompleted ? (
-                    <Check className="size-3.5 stroke-[2.5]" />
-                  ) : (
-                    step.id
-                  )}
-                </span>
+                  {isCompleted ? <Check className="size-3 stroke-[2.5]" /> : step.id}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-                {/* Step labels */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      className={cn(
-                        "text-xs font-semibold truncate",
-                        isActive
-                          ? "text-primary"
-                          : isCompleted
-                            ? "text-foreground"
-                            : "text-muted-foreground",
-                      )}
-                    >
-                      {step.id}. {step.title}
-                    </span>
-                    {hasIssues ? (
-                      <span className="inline-block size-1.5 rounded-full bg-warning" />
-                    ) : null}
-                  </div>
-                  <span className="block text-[11px] text-muted-foreground truncate">
-                    {step.subtitle}
+        {/* Linear progress bar */}
+        <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
+          <div
+            className="bg-primary h-full transition-all duration-300"
+            style={{ width: `${(currentStep / STEPS.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Desktop/Tablet Step Bar (>= sm) */}
+      <nav
+        aria-label="Template builder progress"
+        className="hidden sm:block border-b border-border bg-card/60 px-4 py-2 sm:px-6 overflow-x-auto scrollbar-none"
+      >
+        <ol className="flex items-center justify-between gap-1.5 md:gap-2">
+          {STEPS.map((step) => {
+            const isActive = currentStep === step.id;
+            const isCompleted = currentStep > step.id;
+            const stepIssues = issues.filter((issue) => issue.step === step.id);
+            const hasIssues = stepIssues.length > 0;
+
+            return (
+              <li key={step.id} className="flex-1">
+                <button
+                  type="button"
+                  onClick={() => onSelectStep(step.id)}
+                  className={cn(
+                    "group flex w-full items-center gap-2 lg:gap-3 rounded-md p-2 text-left transition-colors cursor-pointer",
+                    isActive
+                      ? "bg-primary/10 border border-primary/20"
+                      : "hover:bg-muted/60 border border-transparent",
+                  )}
+                  aria-current={isActive ? "step" : undefined}
+                >
+                  {/* Step badge */}
+                  <span
+                    className={cn(
+                      "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
+                      hasIssues && !isActive
+                        ? "bg-warning-soft text-warning border border-warning-border"
+                        : isCompleted
+                          ? "bg-success text-success-foreground"
+                          : isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {hasIssues && !isActive ? (
+                      <AlertTriangle className="size-3.5" />
+                    ) : isCompleted ? (
+                      <Check className="size-3.5 stroke-[2.5]" />
+                    ) : (
+                      step.id
+                    )}
                   </span>
-                </div>
-              </button>
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
+
+                  {/* Step labels */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={cn(
+                          "text-xs font-semibold truncate",
+                          isActive
+                            ? "text-primary"
+                            : isCompleted
+                              ? "text-foreground"
+                              : "text-muted-foreground",
+                        )}
+                      >
+                        {step.id}. {step.title}
+                      </span>
+                      {hasIssues ? (
+                        <span className="inline-block size-1.5 rounded-full bg-warning" />
+                      ) : null}
+                    </div>
+                    <span className="block text-[11px] text-muted-foreground truncate hidden md:block">
+                      {step.subtitle}
+                    </span>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    </>
   );
 }
