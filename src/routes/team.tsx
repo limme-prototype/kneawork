@@ -216,25 +216,25 @@ export function TeamAndRolesPage() {
         {/* Desktop Table View */}
         <div className="hidden sm:block overflow-hidden rounded-lg border border-border bg-card shadow-2xs">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-foreground">
-              <thead className="border-b border-border bg-muted/40 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <table className="w-full text-left text-sm text-foreground">
+              <thead className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 <tr>
-                  <th scope="col" className="py-3 pl-4 pr-3">
+                  <th scope="col" className="py-3.5 pl-4 pr-3">
                     Member
                   </th>
-                  <th scope="col" className="py-3 px-3">
+                  <th scope="col" className="py-3.5 px-3">
                     Department
                   </th>
-                  <th scope="col" className="py-3 px-3">
+                  <th scope="col" className="py-3.5 px-3">
                     Role
                   </th>
-                  <th scope="col" className="py-3 px-3">
+                  <th scope="col" className="py-3.5 px-3">
                     Workload
                   </th>
-                  <th scope="col" className="py-3 px-3">
+                  <th scope="col" className="py-3.5 px-3">
                     Status
                   </th>
-                  <th scope="col" className="py-3 pr-4 pl-3 text-right">
+                  <th scope="col" className="py-3.5 pr-4 pl-3 text-right">
                     Action
                   </th>
                 </tr>
@@ -251,23 +251,23 @@ export function TeamAndRolesPage() {
                       className="group cursor-pointer hover:bg-muted/30 transition-colors"
                     >
                       {/* Member */}
-                      <td className="py-3.5 pl-4 pr-3">
+                      <td className="py-4 pl-4 pr-3">
                         <div className="flex items-center gap-2.5">
-                          <span className="flex size-7.5 items-center justify-center rounded-full bg-foreground font-bold text-background text-[11px]">
+                          <span className="flex size-8 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs">
                             {p.initials}
                           </span>
                           <div>
                             <div className="flex items-center gap-1.5">
-                              <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                              <span className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm">
                                 {p.name}
                               </span>
                               {isCurrent ? (
-                                <span className="rounded bg-muted px-1.5 py-0.2 text-[10px] font-semibold text-muted-foreground">
+                                <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
                                   You
                                 </span>
                               ) : null}
                             </div>
-                            <span className="block text-[11px] text-muted-foreground">
+                            <span className="block text-[13px] text-muted-foreground">
                               {p.name.toLowerCase().replace(" ", ".")}@kneawork.com
                             </span>
                           </div>
@@ -275,20 +275,20 @@ export function TeamAndRolesPage() {
                       </td>
 
                       {/* Department */}
-                      <td className="py-3.5 px-3 font-medium text-foreground">{p.department}</td>
+                      <td className="py-4 px-3 font-medium text-foreground text-sm">{p.department}</td>
 
                       {/* Role */}
-                      <td className="py-3.5 px-3">
+                      <td className="py-4 px-3">
                         <div>
-                          <span className="font-semibold text-foreground">{p.role}</span>
-                          <span className="block text-[11px] text-muted-foreground">
+                          <span className="font-semibold text-foreground text-sm">{p.role}</span>
+                          <span className="block text-[13px] text-muted-foreground">
                             {p.title ?? p.role}
                           </span>
                         </div>
                       </td>
 
                       {/* Workload */}
-                      <td className="py-3.5 px-3">
+                      <td className="py-4 px-3">
                         <span
                           className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${
                             workload.urgent
@@ -301,14 +301,14 @@ export function TeamAndRolesPage() {
                       </td>
 
                       {/* Status */}
-                      <td className="py-3.5 px-3">
-                        <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-[11px] font-semibold text-success">
+                      <td className="py-4 px-3">
+                        <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                           Active
                         </span>
                       </td>
 
                       {/* Action */}
-                      <td className="py-3.5 pr-4 pl-3 text-right">
+                      <td className="py-4 pr-4 pl-3 text-right">
                         <Button
                           variant="outline"
                           size="sm"
@@ -316,7 +316,7 @@ export function TeamAndRolesPage() {
                             e.stopPropagation();
                             setSelectedMember(p);
                           }}
-                          className="h-7 text-xs font-medium"
+                          className="font-medium"
                         >
                           View details
                         </Button>
@@ -330,7 +330,7 @@ export function TeamAndRolesPage() {
         </div>
 
         {/* Mobile Member Cards */}
-        <div className="sm:hidden space-y-2.5">
+        <div className="sm:hidden space-y-3">
           {filtered.map((p) => {
             const workload = getWorkload(p.id);
             const isCurrent = p.id === currentUserId;
@@ -339,36 +339,36 @@ export function TeamAndRolesPage() {
               <div
                 key={p.id}
                 onClick={() => setSelectedMember(p)}
-                className="rounded-lg border border-border bg-card p-3.5 shadow-2xs space-y-2.5 cursor-pointer hover:bg-muted/30 transition-colors"
+                className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-3 cursor-pointer hover:bg-muted/30 transition-colors"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <span className="flex size-8 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs shrink-0">
+                    <span className="flex size-9 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs shrink-0">
                       {p.initials}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-semibold text-foreground text-xs">{p.name}</span>
+                        <span className="font-semibold text-foreground text-sm">{p.name}</span>
                         {isCurrent ? (
-                          <span className="rounded bg-muted px-1.5 py-0.2 text-[10px] font-semibold text-muted-foreground">
+                          <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
                             You
                           </span>
                         ) : null}
                       </div>
-                      <span className="block text-[11px] text-muted-foreground truncate">
+                      <span className="block text-[13px] text-muted-foreground truncate">
                         {p.role} · {p.department}
                       </span>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-[10px] font-semibold text-success shrink-0">
+                  <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success shrink-0">
                     Active
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] border-t border-border pt-2">
+                <div className="flex items-center justify-between text-[13px] border-t border-border pt-2.5">
                   <span className="text-muted-foreground">Workload</span>
                   <span
-                    className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium ${
+                    className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${
                       workload.urgent
                         ? "bg-warning-soft text-warning border border-warning-border"
                         : "text-muted-foreground"
@@ -378,8 +378,8 @@ export function TeamAndRolesPage() {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-border pt-2">
-                  <span className="text-[11px] text-muted-foreground truncate">
+                <div className="flex items-center justify-between border-t border-border pt-2.5">
+                  <span className="text-[13px] text-muted-foreground truncate">
                     {p.name.toLowerCase().replace(" ", ".")}@kneawork.com
                   </span>
                   <Button
@@ -389,7 +389,7 @@ export function TeamAndRolesPage() {
                       e.stopPropagation();
                       setSelectedMember(p);
                     }}
-                    className="h-6.5 text-[11px] font-medium shrink-0 ml-2"
+                    className="font-medium shrink-0 ml-2"
                   >
                     Details
                   </Button>
@@ -410,39 +410,39 @@ export function TeamAndRolesPage() {
                   {selectedMember.initials}
                 </span>
                 <div>
-                  <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                  <DialogTitle className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
                     {selectedMember.name}
-                    <span className="rounded bg-success-soft border border-success-border px-2 py-0.2 text-[10px] font-semibold text-success">
+                    <span className="rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                       Active
                     </span>
                   </DialogTitle>
-                  <DialogDescription className="text-xs text-muted-foreground">
+                  <DialogDescription className="text-sm text-muted-foreground">
                     {selectedMember.role} · {selectedMember.department}
                   </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
 
-            <div className="space-y-4 text-xs py-2">
+            <div className="space-y-4 py-2">
               {/* Workload Breakdown */}
               <div className="rounded-lg border border-border bg-muted/40 p-3.5 space-y-1">
-                <span className="font-semibold text-foreground text-[11px] block">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
                   Current approval workload
                 </span>
-                <p className="text-foreground font-medium">
+                <p className="text-foreground font-semibold text-sm">
                   {getWorkload(selectedMember.id).label} waiting for action
                 </p>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs sm:text-[13px] text-muted-foreground">
                   Average turnaround time: 4.2 hours · 0 requests currently escalated.
                 </p>
               </div>
 
               {/* Approval Responsibilities */}
               <div className="space-y-1.5">
-                <span className="font-semibold text-foreground text-[11px] block">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
                   Approval responsibilities
                 </span>
-                <ul className="list-disc pl-4 text-muted-foreground space-y-1 leading-relaxed">
+                <ul className="list-disc pl-4 text-sm text-muted-foreground space-y-1 leading-relaxed">
                   {(ROLE_RESPONSIBILITIES[selectedMember.id] ?? ["Standard member access."]).map(
                     (item) => (
                       <li key={item}>{item}</li>
@@ -503,10 +503,10 @@ export function TeamAndRolesPage() {
                   className="mt-0.5 text-primary"
                 />
                 <div>
-                  <span className="font-semibold text-foreground block">
+                  <span className="font-semibold text-foreground text-sm block">
                     Reassign to another reviewer
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-xs sm:text-[13px] text-muted-foreground">
                     Open requests will automatically be reassigned to Sokha (Manager Approver).
                   </span>
                 </div>
@@ -521,10 +521,10 @@ export function TeamAndRolesPage() {
                   className="mt-0.5 text-primary"
                 />
                 <div>
-                  <span className="font-semibold text-foreground block">
+                  <span className="font-semibold text-foreground text-sm block">
                     Leave assigned and notify admin
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-xs sm:text-[13px] text-muted-foreground">
                     Keep existing queue and notify Dara (Workspace Admin) to manually reassign.
                   </span>
                 </div>

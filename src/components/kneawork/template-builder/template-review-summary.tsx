@@ -65,14 +65,14 @@ export function TemplateReviewSummary({
             ) : (
               <AlertTriangle className="size-4 text-warning" />
             )}
-            <h3 className="text-xs font-bold text-foreground">
+            <h3 className="text-sm sm:text-base font-bold text-foreground">
               {isPublishable
                 ? "Ready to publish"
                 : `Cannot publish yet · ${issues.length} issue(s) need attention`}
             </h3>
           </div>
           <span
-            className={`rounded px-2 py-0.5 text-[10px] font-semibold border ${
+            className={`rounded px-2.5 py-0.5 text-xs font-semibold border ${
               isPublishable
                 ? "bg-success-soft border-success-border text-success"
                 : "bg-warning-soft border-warning-border text-warning"
@@ -83,7 +83,7 @@ export function TemplateReviewSummary({
         </div>
 
         {/* Checklist items */}
-        <div className="space-y-2 text-xs">
+        <div className="space-y-2 text-sm">
           <CheckItem
             passed={template.label.trim().length >= 3 && template.description.trim().length >= 10}
             label="Template name and description defined"
@@ -137,18 +137,18 @@ export function TemplateReviewSummary({
 
         {/* Direct Issue Fix Links */}
         {!isPublishable ? (
-          <div className="mt-3 divide-y divide-warning-border/40 rounded-md border border-warning-border bg-card p-2 text-xs">
+          <div className="mt-3 divide-y divide-warning-border/40 rounded-md border border-warning-border bg-card p-2 text-sm">
             {issues.map((issue, idx) => (
               <div key={idx} className="flex items-center justify-between py-2 px-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-warning">!</span>
+                  <span className="text-warning font-bold">!</span>
                   <span className="text-foreground">{issue.message}</span>
                 </div>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onGoToStep(issue.step)}
-                  className="h-6 text-[11px] font-semibold text-attention border-attention-border hover:bg-attention-soft"
+                  className="h-7 px-2.5 text-xs font-semibold text-attention border-attention-border hover:bg-attention-soft"
                 >
                   {issue.fixLabel}
                 </Button>
@@ -163,17 +163,17 @@ export function TemplateReviewSummary({
         {/* Template Overview */}
         <div className="border-b border-border pb-4 space-y-1">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-foreground">
+            <h3 className="text-base font-bold text-foreground">
               {template.label || "Untitled Template"}
             </h3>
-            <span className="rounded bg-muted border border-border px-2 py-0.5 text-[11px] font-mono font-medium text-foreground">
+            <span className="rounded bg-muted border border-border px-2 py-0.5 text-xs font-mono font-medium text-foreground">
               v{template.version} · {template.versionStatus}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {template.description || "No description provided"}
           </p>
-          <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground pt-1">
+          <div className="flex flex-wrap items-center gap-3 text-xs sm:text-[13px] text-muted-foreground pt-1">
             <span>
               Category: <strong className="text-foreground capitalize">{template.category}</strong>
             </span>
@@ -186,7 +186,7 @@ export function TemplateReviewSummary({
               Owner: <strong className="text-foreground">{template.ownerName}</strong>
             </span>
           </div>
-          <div className="rounded bg-muted/30 border border-border p-2.5 mt-2 text-[11px] text-muted-foreground">
+          <div className="rounded bg-muted/30 border border-border p-3 mt-2 text-xs sm:text-[13px] text-muted-foreground">
             <strong className="text-foreground">Completion outcome:</strong>{" "}
             {template.completionOutcome || "Not defined"}
           </div>
@@ -195,11 +195,11 @@ export function TemplateReviewSummary({
         {/* Request Form Summary */}
         <div className="border-b border-border pb-4 space-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <FileText className="size-3.5 text-foreground" />
+            <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+              <FileText className="size-4 text-foreground" />
               Request form
             </h4>
-            <span className="text-[11px] text-muted-foreground">
+            <span className="text-xs sm:text-[13px] text-muted-foreground">
               {template.fields.length} total fields · {requiredFields.length} required ·{" "}
               {fileFields.length} attachment(s)
             </span>
@@ -208,10 +208,10 @@ export function TemplateReviewSummary({
             {template.fields.map((f) => (
               <span
                 key={f.id}
-                className="rounded bg-muted border border-border px-2 py-0.5 text-[11px] text-foreground flex items-center gap-1"
+                className="rounded bg-muted border border-border px-2.5 py-1 text-xs text-foreground flex items-center gap-1 font-medium"
               >
                 {f.label}
-                {f.required ? <span className="text-attention text-[9px] font-bold">*</span> : null}
+                {f.required ? <span className="text-attention text-xs font-bold">*</span> : null}
               </span>
             ))}
           </div>
@@ -220,22 +220,22 @@ export function TemplateReviewSummary({
         {/* Approval Route Summary */}
         <div className="border-b border-border pb-4 space-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <UserCheck className="size-3.5 text-foreground" />
+            <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+              <UserCheck className="size-4 text-foreground" />
               Approval route ({template.routeSteps.length} steps)
             </h4>
-            <span className="text-[11px] text-muted-foreground">Sequential progression</span>
+            <span className="text-xs text-muted-foreground">Sequential progression</span>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="rounded bg-muted px-2 py-0.5 text-foreground border border-border font-medium text-[11px]">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="rounded bg-muted px-2.5 py-1 text-foreground border border-border font-medium text-xs">
               Requester
             </span>
             {template.routeSteps.map((step) => (
               <span key={step.id} className="flex items-center gap-1.5">
-                <ArrowRight className="size-3 text-muted-foreground" />
-                <span className="rounded bg-card px-2 py-0.5 text-foreground border border-border font-medium text-[11px] flex items-center gap-1">
+                <ArrowRight className="size-3.5 text-muted-foreground" />
+                <span className="rounded bg-card px-2.5 py-1 text-foreground border border-border font-medium text-xs flex items-center gap-1">
                   {step.name}
-                  <span className="text-muted-foreground text-[10px]">
+                  <span className="text-muted-foreground text-xs">
                     ({step.assigneeName ?? "No assignee"})
                   </span>
                 </span>
@@ -246,11 +246,11 @@ export function TemplateReviewSummary({
 
         {/* Policy & Rules Summary */}
         <div className="space-y-2">
-          <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-            <ShieldCheck className="size-3.5 text-foreground" />
+          <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+            <ShieldCheck className="size-4 text-foreground" />
             Rules & evidence policy
           </h4>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-[11px] text-muted-foreground">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-xs sm:text-[13px] text-muted-foreground">
             <div>
               Quotation required:{" "}
               <strong className="text-foreground">
@@ -283,8 +283,8 @@ export function TemplateReviewSummary({
         </div>
 
         {/* Version Immutability Notice */}
-        <div className="rounded-md border border-border bg-muted/40 p-3 text-[11px] text-muted-foreground flex items-start gap-2">
-          <Lock className="size-3.5 text-muted-foreground mt-0.5 shrink-0" />
+        <div className="rounded-md border border-border bg-muted/40 p-3 text-xs sm:text-[13px] text-muted-foreground flex items-start gap-2">
+          <Lock className="size-4 text-muted-foreground mt-0.5 shrink-0" />
           <span>
             <strong>Version immutability notice:</strong> Once published, this workflow version
             becomes locked. Future requests will strictly execute according to version{" "}
@@ -296,7 +296,7 @@ export function TemplateReviewSummary({
 
       {/* Action Footer */}
       <div className="flex items-center justify-between border-t border-border pt-4">
-        <Button variant="outline" size="sm" onClick={() => onGoToStep(1)} className="text-xs">
+        <Button variant="outline" size="sm" onClick={() => onGoToStep(1)}>
           Back to edit
         </Button>
 
@@ -305,7 +305,7 @@ export function TemplateReviewSummary({
             variant="outline"
             size="sm"
             onClick={onSaveDraft}
-            className="text-xs border-attention-border text-attention hover:bg-attention-soft"
+            className="border-attention-border text-attention hover:bg-attention-soft"
           >
             Save draft
           </Button>
@@ -314,7 +314,7 @@ export function TemplateReviewSummary({
             size="sm"
             onClick={onOpenPublishDialog}
             disabled={!isPublishable}
-            className="text-xs font-semibold gap-1.5"
+            className="font-semibold gap-1.5"
           >
             <Check className="size-3.5" />
             Publish template
@@ -337,10 +337,10 @@ function CheckItem({
   onFix: (step: BuilderStepId) => void;
 }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between py-0.5">
       <div className="flex items-center gap-2">
         <span
-          className={`flex size-4 items-center justify-center rounded-full text-[10px] font-bold ${
+          className={`flex size-5 items-center justify-center rounded-full text-xs font-bold ${
             passed ? "bg-success text-success-foreground" : "bg-warning text-warning-foreground"
           }`}
         >
@@ -352,7 +352,7 @@ function CheckItem({
         <button
           type="button"
           onClick={() => onFix(step)}
-          className="text-[11px] text-attention hover:underline cursor-pointer"
+          className="text-xs font-semibold text-attention hover:underline cursor-pointer"
         >
           Fix
         </button>

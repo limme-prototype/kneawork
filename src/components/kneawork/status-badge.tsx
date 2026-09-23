@@ -132,7 +132,7 @@ export function StatusBadge({
 export function StepStatusBadge({ status }: { status: ApprovalStepStatus }) {
   if (status === "approved") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-success-border bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">
+      <span className="inline-flex items-center gap-1 rounded-md border border-success-border bg-success-soft px-2 py-0.5 text-xs font-medium text-success">
         <CheckCircle2 className="size-3" />
         Approved
       </span>
@@ -140,7 +140,7 @@ export function StepStatusBadge({ status }: { status: ApprovalStepStatus }) {
   }
   if (status === "pending") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-attention-border bg-attention-soft px-2 py-0.5 text-[11px] font-semibold text-attention">
+      <span className="inline-flex items-center gap-1 rounded-md border border-attention-border bg-attention-soft px-2 py-0.5 text-xs font-semibold text-attention">
         <Clock className="size-3" />
         Current step
       </span>
@@ -148,7 +148,7 @@ export function StepStatusBadge({ status }: { status: ApprovalStepStatus }) {
   }
   if (status === "changes_requested") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-warning-border bg-warning-soft px-2 py-0.5 text-[11px] font-medium text-warning">
+      <span className="inline-flex items-center gap-1 rounded-md border border-warning-border bg-warning-soft px-2 py-0.5 text-xs font-medium text-warning">
         <RotateCcw className="size-3" />
         Changes requested
       </span>
@@ -156,14 +156,14 @@ export function StepStatusBadge({ status }: { status: ApprovalStepStatus }) {
   }
   if (status === "rejected") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-md border border-danger-border bg-danger-soft px-2 py-0.5 text-[11px] font-medium text-danger">
+      <span className="inline-flex items-center gap-1 rounded-md border border-danger-border bg-danger-soft px-2 py-0.5 text-xs font-medium text-danger">
         <XCircle className="size-3" />
         Rejected
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+    <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-xs font-medium text-muted-foreground">
       <Lock className="size-3" />
       Upcoming
     </span>

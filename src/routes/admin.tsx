@@ -56,28 +56,28 @@ function OperationsOverviewPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {/* Needs My Action (Attention token) */}
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
-            <span className="text-xs font-semibold text-attention">Needs my action</span>
+            <span className="text-xs font-semibold text-attention uppercase tracking-wider">Needs my action</span>
             <div className="mt-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold text-foreground">{needsActionCount}</span>
-              <span className="text-[11px] text-muted-foreground">Requires you</span>
+              <span className="text-xs text-muted-foreground">Requires you</span>
             </div>
           </div>
 
           {/* Waiting on Others (Warning token) */}
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
-            <span className="text-xs font-semibold text-warning">Waiting on others</span>
+            <span className="text-xs font-semibold text-warning uppercase tracking-wider">Waiting on others</span>
             <div className="mt-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold text-foreground">{waitingOthersCount}</span>
-              <span className="text-[11px] text-muted-foreground">In route</span>
+              <span className="text-xs text-muted-foreground">In route</span>
             </div>
           </div>
 
           {/* Approved This Month (Success token) */}
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
-            <span className="text-xs font-semibold text-success">Approved this month</span>
+            <span className="text-xs font-semibold text-success uppercase tracking-wider">Approved this month</span>
             <div className="mt-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold text-foreground">{approvedCount}</span>
-              <span className="text-[11px] text-muted-foreground">Recorded</span>
+              <span className="text-xs text-muted-foreground">Recorded</span>
             </div>
           </div>
 
@@ -88,7 +88,7 @@ function OperationsOverviewPage() {
             }`}
           >
             <span
-              className={`text-xs font-semibold ${
+              className={`text-xs font-semibold uppercase tracking-wider ${
                 overdueCount > 0 ? "text-danger" : "text-muted-foreground"
               }`}
             >
@@ -102,7 +102,7 @@ function OperationsOverviewPage() {
               >
                 {overdueCount}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {overdueCount > 0 ? "Urgent attention" : "All on track"}
               </span>
             </div>
@@ -113,8 +113,8 @@ function OperationsOverviewPage() {
         <div className="space-y-3">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-sm font-bold text-foreground">Requests requiring attention</h2>
-              <p className="text-xs text-muted-foreground">
+              <h2 className="text-base font-bold text-foreground">Requests requiring attention</h2>
+              <p className="text-[13px] text-muted-foreground">
                 Track sequential progression and active approvers across departments
               </p>
             </div>
@@ -126,14 +126,14 @@ function OperationsOverviewPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search requests, IDs, or people..."
-                  className="h-8 rounded-md pl-8 text-xs bg-card"
+                  className="bg-card"
                 />
               </div>
 
               <Button
                 asChild
                 size="sm"
-                className="h-8 gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
+                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
               >
                 <Link to="/requests/new">
                   <Plus className="size-3.5" />
@@ -148,24 +148,24 @@ function OperationsOverviewPage() {
         </div>
 
         {/* 3. Actionable Approval Bottlenecks (Why it matters, oldest request) */}
-        <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
+        <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <div>
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="text-base font-semibold text-foreground">
                 Approval bottleneck analysis
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[13px] text-muted-foreground">
                 Stages where work is currently waiting for reviews
               </p>
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="flex items-start justify-between rounded-md border border-border bg-muted/30 p-3.5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex items-start justify-between rounded-md border border-border bg-muted/30 p-4">
               <div>
-                <span className="font-bold text-foreground text-xs">Finance review</span>
-                <p className="text-xs text-muted-foreground mt-0.5">Assigned to Vanna (Finance)</p>
-                <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
+                <span className="font-bold text-foreground text-sm">Finance review</span>
+                <p className="text-[13px] text-muted-foreground mt-0.5">Assigned to Vanna (Finance)</p>
+                <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="font-semibold text-danger">Oldest: 3 days</span>
                   <span>·</span>
                   <span>2 requests waiting</span>
@@ -175,19 +175,19 @@ function OperationsOverviewPage() {
                 size="sm"
                 variant="outline"
                 onClick={() => setSearch("Finance")}
-                className="h-7 text-xs font-semibold"
+                className="font-semibold"
               >
                 Filter
               </Button>
             </div>
 
-            <div className="flex items-start justify-between rounded-md border border-border bg-muted/30 p-3.5">
+            <div className="flex items-start justify-between rounded-md border border-border bg-muted/30 p-4">
               <div>
-                <span className="font-bold text-foreground text-xs">Manager approval</span>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <span className="font-bold text-foreground text-sm">Manager approval</span>
+                <p className="text-[13px] text-muted-foreground mt-0.5">
                   Assigned to Sokha (Operations)
                 </p>
-                <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
+                <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="text-warning font-medium">Oldest: Today</span>
                   <span>·</span>
                   <span>1 request waiting</span>
@@ -197,7 +197,7 @@ function OperationsOverviewPage() {
                 size="sm"
                 variant="outline"
                 onClick={() => setSearch("Manager")}
-                className="h-7 text-xs font-semibold"
+                className="font-semibold"
               >
                 Filter
               </Button>

@@ -202,8 +202,8 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
           <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-6">
             <div className="rounded-lg border border-border bg-card p-4 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between border-b border-border pb-2">
-                <h3 className="text-xs font-bold text-foreground">Live template summary</h3>
-                <span className="rounded bg-muted border border-border px-1.5 py-0.2 text-[10px] font-mono text-muted-foreground">
+                <h3 className="text-sm font-bold text-foreground">Live template summary</h3>
+                <span className="rounded bg-muted border border-border px-2 py-0.5 text-xs font-mono text-muted-foreground">
                   Step {currentStep} of 5
                 </span>
               </div>
@@ -211,14 +211,14 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
               {/* Mini Card Preview */}
               <div className="space-y-2">
                 <div className="flex items-start justify-between">
-                  <h4 className="text-xs font-bold text-foreground">
+                  <h4 className="text-sm font-bold text-foreground">
                     {template.label.trim() ? template.label : "Untitled template"}
                   </h4>
-                  <span className="rounded bg-success-soft border border-success-border px-1.5 py-0.2 text-[10px] font-semibold text-success">
+                  <span className="rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                     {template.versionStatus}
                   </span>
                 </div>
-                <p className="text-[11px] text-muted-foreground line-clamp-2">
+                <p className="text-xs sm:text-[13px] text-muted-foreground line-clamp-2">
                   {template.description.trim()
                     ? template.description
                     : "No description provided yet"}
@@ -226,19 +226,19 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
               </div>
 
               {/* Route Summary */}
-              <div className="rounded-md border border-border/60 bg-muted/40 p-2.5 space-y-1.5 text-xs">
-                <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="rounded-md border border-border/60 bg-muted/40 p-3 space-y-2">
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <span>Approval route</span>
                   <span>{template.routeSteps.length} step(s)</span>
                 </div>
-                <div className="flex flex-wrap items-center gap-1">
-                  <span className="rounded bg-card px-1.5 py-0.5 border border-border text-[10px] font-medium text-foreground">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="rounded bg-card px-2 py-0.5 border border-border text-xs font-medium text-foreground">
                     Requester
                   </span>
                   {template.routeSteps.map((s) => (
                     <span key={s.id} className="flex items-center gap-1">
-                      <span className="text-muted-foreground text-[10px]">→</span>
-                      <span className="rounded bg-card px-1.5 py-0.5 border border-border text-[10px] font-medium text-foreground">
+                      <span className="text-muted-foreground text-xs">→</span>
+                      <span className="rounded bg-card px-2 py-0.5 border border-border text-xs font-medium text-foreground">
                         {s.name || "Step"}
                       </span>
                     </span>
@@ -247,7 +247,7 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
               </div>
 
               {/* Governance & Evidence Summary */}
-              <div className="space-y-1 text-[11px] text-muted-foreground bg-muted/20 p-2.5 rounded border border-border/50">
+              <div className="space-y-1.5 text-xs sm:text-[13px] text-muted-foreground bg-muted/20 p-3 rounded border border-border/50">
                 <div className="flex items-center justify-between">
                   <span>Form fields:</span>
                   <span className="font-medium text-foreground">
@@ -279,7 +279,7 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
 
               {/* Validation Status Preview */}
               <div className="border-t border-border pt-3">
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center justify-between text-xs sm:text-[13px]">
                   <span className="font-medium text-muted-foreground">Validation status:</span>
                   {isPublishable ? (
                     <span className="text-success font-semibold flex items-center gap-1">

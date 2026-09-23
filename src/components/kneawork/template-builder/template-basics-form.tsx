@@ -21,8 +21,8 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-bold text-foreground">Template basics</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
+        <h2 className="text-base sm:text-lg font-bold text-foreground">Template basics</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">
           Define what this template is for, who may submit requests, and what successful completion
           means.
         </p>
@@ -32,20 +32,20 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
         {/* Template Name */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="template-name" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="template-name" className="text-sm font-semibold text-foreground">
               Template name <span className="text-danger">*</span>
             </Label>
-            <span className="text-[11px] text-muted-foreground">{template.label.length}/80</span>
+            <span className="text-xs text-muted-foreground">{template.label.length}/80</span>
           </div>
           <Input
             id="template-name"
             value={template.label}
             onChange={(e) => onChange({ label: e.target.value })}
             placeholder="e.g. Purchase Request"
-            className="text-xs bg-card h-9"
+            className="bg-card"
             maxLength={80}
           />
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs sm:text-[13px] text-muted-foreground">
             Clear, recognizable title shown to employees on the request start page.
           </p>
         </div>
@@ -53,10 +53,10 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
         {/* Short Description */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="template-desc" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="template-desc" className="text-sm font-semibold text-foreground">
               Short description <span className="text-danger">*</span>
             </Label>
-            <span className="text-[11px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {template.description.length}/240
             </span>
           </div>
@@ -65,10 +65,10 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
             value={template.description}
             onChange={(e) => onChange({ description: e.target.value })}
             placeholder="e.g. Buy goods or services from an approved vendor"
-            className="text-xs bg-card min-h-[64px] resize-none"
+            className="bg-card min-h-[72px] resize-none"
             maxLength={240}
           />
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs sm:text-[13px] text-muted-foreground">
             Explains the primary purpose so employees choose the correct request process.
           </p>
         </div>
@@ -77,14 +77,14 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Category */}
           <div className="space-y-1.5">
-            <Label htmlFor="template-category" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="template-category" className="text-sm font-semibold text-foreground">
               Request category <span className="text-danger">*</span>
             </Label>
             <Select
               value={template.category}
               onValueChange={(val: TemplateCategory) => onChange({ category: val })}
             >
-              <SelectTrigger id="template-category" className="text-xs bg-card h-9">
+              <SelectTrigger id="template-category" className="bg-card min-h-10 text-sm">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -95,21 +95,21 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
                 <SelectItem value="general">General request</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs sm:text-[13px] text-muted-foreground">
               Controls reporting classification and standard policy templates.
             </p>
           </div>
 
           {/* Department Scope */}
           <div className="space-y-1.5">
-            <Label htmlFor="template-department" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="template-department" className="text-sm font-semibold text-foreground">
               Department scope
             </Label>
             <Select
               value={template.departmentScope}
               onValueChange={(val) => onChange({ departmentScope: val })}
             >
-              <SelectTrigger id="template-department" className="text-xs bg-card h-9">
+              <SelectTrigger id="template-department" className="bg-card min-h-10 text-sm">
                 <SelectValue placeholder="Select departments" />
               </SelectTrigger>
               <SelectContent>
@@ -121,7 +121,7 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
                 <SelectItem value="Executive">Executive</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs sm:text-[13px] text-muted-foreground">
               Which teams have permission to see and submit this template.
             </p>
           </div>
@@ -131,14 +131,14 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Who can submit */}
           <div className="space-y-1.5">
-            <Label htmlFor="template-submitters" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="template-submitters" className="text-sm font-semibold text-foreground">
               Who can submit?
             </Label>
             <Select
               value={template.whoCanSubmit}
               onValueChange={(val) => onChange({ whoCanSubmit: val })}
             >
-              <SelectTrigger id="template-submitters" className="text-xs bg-card h-9">
+              <SelectTrigger id="template-submitters" className="bg-card min-h-10 text-sm">
                 <SelectValue placeholder="Select permission" />
               </SelectTrigger>
               <SelectContent>
@@ -152,7 +152,7 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
 
           {/* Template Owner */}
           <div className="space-y-1.5">
-            <Label htmlFor="template-owner" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="template-owner" className="text-sm font-semibold text-foreground">
               Template owner <span className="text-danger">*</span>
             </Label>
             <Select
@@ -165,7 +165,7 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
                 });
               }}
             >
-              <SelectTrigger id="template-owner" className="text-xs bg-card h-9">
+              <SelectTrigger id="template-owner" className="bg-card min-h-10 text-sm">
                 <SelectValue placeholder="Select owner" />
               </SelectTrigger>
               <SelectContent>
@@ -176,7 +176,7 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs sm:text-[13px] text-muted-foreground">
               Accountable administrator responsible for updating this process.
             </p>
           </div>
@@ -184,7 +184,7 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
 
         {/* Typical Completion Time */}
         <div className="space-y-1.5">
-          <Label htmlFor="template-time" className="text-xs font-semibold text-foreground">
+          <Label htmlFor="template-time" className="text-sm font-semibold text-foreground">
             Typical completion time
           </Label>
           <Input
@@ -192,9 +192,9 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
             value={template.typicalCompletionTime}
             onChange={(e) => onChange({ typicalCompletionTime: e.target.value })}
             placeholder="e.g. 1–2 business days"
-            className="text-xs bg-card h-9"
+            className="bg-card"
           />
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs sm:text-[13px] text-muted-foreground">
             Sets realistic expectations for requesters before submission.
           </p>
         </div>
@@ -202,19 +202,19 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
         {/* What Does Completion Mean? (Spec requirement: Completion outcome prevents vague workflows) */}
         <div className="space-y-1.5 rounded-lg border border-border bg-muted/30 p-4">
           <div className="flex items-center gap-1.5">
-            <Label htmlFor="template-outcome" className="text-xs font-bold text-foreground">
+            <Label htmlFor="template-outcome" className="text-sm font-bold text-foreground">
               What does completion mean? <span className="text-danger">*</span>
             </Label>
-            <Info className="size-3.5 text-muted-foreground" />
+            <Info className="size-4 text-muted-foreground" />
           </div>
           <Input
             id="template-outcome"
             value={template.completionOutcome}
             onChange={(e) => onChange({ completionOutcome: e.target.value })}
             placeholder="e.g. Approved purchase ready for fulfillment and vendor invoice processing"
-            className="text-xs bg-card h-9"
+            className="bg-card"
           />
-          <p className="text-[11px] text-muted-foreground leading-relaxed">
+          <p className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
             A trustworthy workflow defines the concrete business deliverable produced upon final
             approval, preventing ambiguous or dead-end requests.
           </p>

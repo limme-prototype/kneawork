@@ -36,15 +36,15 @@ export function TemplateStepNavigation({
         <div className="flex items-center justify-between">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-primary">
+              <span className="text-xs font-semibold text-primary">
                 Step {currentStep} of {STEPS.length}
               </span>
-              <span className="text-muted-foreground text-[11px]">·</span>
-              <span className="text-xs font-bold text-foreground truncate">
+              <span className="text-muted-foreground text-xs">·</span>
+              <span className="text-sm font-bold text-foreground truncate">
                 {currentStepObj.title}
               </span>
             </div>
-            <p className="text-[11px] text-muted-foreground truncate">{currentStepObj.subtitle}</p>
+            <p className="text-xs text-muted-foreground truncate">{currentStepObj.subtitle}</p>
           </div>
           {/* Quick step pill buttons */}
           <div className="flex items-center gap-1 shrink-0 ml-2">
@@ -58,7 +58,7 @@ export function TemplateStepNavigation({
                   onClick={() => onSelectStep(step.id)}
                   aria-label={`Go to step ${step.id}: ${step.title}`}
                   className={cn(
-                    "flex size-6 items-center justify-center rounded-full text-[10px] font-bold transition-all cursor-pointer",
+                    "flex size-6 items-center justify-center rounded-full text-xs font-bold transition-all cursor-pointer",
                     isActive
                       ? "bg-primary text-primary-foreground ring-2 ring-primary/30"
                       : isCompleted
@@ -134,7 +134,7 @@ export function TemplateStepNavigation({
                     <div className="flex items-center gap-1.5">
                       <span
                         className={cn(
-                          "text-xs font-semibold truncate",
+                          "text-xs sm:text-[13px] font-semibold truncate",
                           isActive
                             ? "text-primary"
                             : isCompleted
@@ -148,7 +148,7 @@ export function TemplateStepNavigation({
                         <span className="inline-block size-1.5 rounded-full bg-warning" />
                       ) : null}
                     </div>
-                    <span className="block text-[11px] text-muted-foreground truncate hidden md:block">
+                    <span className="block text-xs text-muted-foreground truncate hidden md:block">
                       {step.subtitle}
                     </span>
                   </div>

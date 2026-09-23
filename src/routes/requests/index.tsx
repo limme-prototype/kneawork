@@ -43,31 +43,31 @@ function RequestsListPage() {
         {/* Header Bar */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
           <div>
-            <h1 className="text-base font-bold text-foreground">
+            <h1 className="text-base sm:text-lg font-bold text-foreground">
               Team requests repository ({requests.length})
             </h1>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Audit record of all operational purchase, expense, and leave submissions
             </p>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" />
+              <Search className="absolute left-3 top-3 size-4 text-muted-foreground" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search ID, title..."
-                className="h-8 rounded-md pl-8 text-xs bg-card"
+                className="pl-9 bg-card"
               />
             </div>
             <Button
               asChild
               size="sm"
-              className="h-8 gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
+              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
             >
               <Link to="/requests/new">
-                <Plus className="size-3.5" />
+                <Plus className="size-4" />
                 New request
               </Link>
             </Button>
@@ -75,13 +75,13 @@ function RequestsListPage() {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs sm:text-[13px] scrollbar-none">
           <Button
             type="button"
             size="sm"
             variant={statusFilter === "all" ? "default" : "outline"}
             onClick={() => setStatusFilter("all")}
-            className="h-7 text-xs font-semibold"
+            className="font-semibold"
           >
             All ({requests.length})
           </Button>
@@ -90,7 +90,7 @@ function RequestsListPage() {
             size="sm"
             variant="outline"
             onClick={() => setStatusFilter("in_review")}
-            className={`h-7 text-xs font-semibold ${
+            className={`font-semibold ${
               statusFilter === "in_review"
                 ? "bg-attention text-attention-foreground border-attention hover:bg-attention/90 hover:text-attention-foreground"
                 : ""
@@ -103,7 +103,7 @@ function RequestsListPage() {
             size="sm"
             variant="outline"
             onClick={() => setStatusFilter("approved")}
-            className={`h-7 text-xs font-semibold ${
+            className={`font-semibold ${
               statusFilter === "approved"
                 ? "bg-success text-white border-success hover:bg-success/90 hover:text-white"
                 : ""
@@ -116,7 +116,7 @@ function RequestsListPage() {
             size="sm"
             variant="outline"
             onClick={() => setStatusFilter("changes_requested")}
-            className={`h-7 text-xs font-semibold ${
+            className={`font-semibold ${
               statusFilter === "changes_requested"
                 ? "bg-warning text-white border-warning hover:bg-warning/90 hover:text-white"
                 : ""
@@ -129,7 +129,7 @@ function RequestsListPage() {
             size="sm"
             variant="outline"
             onClick={() => setStatusFilter("rejected")}
-            className={`h-7 text-xs font-semibold ${
+            className={`font-semibold ${
               statusFilter === "rejected"
                 ? "bg-danger text-white border-danger hover:bg-danger/90 hover:text-white"
                 : ""
@@ -144,7 +144,7 @@ function RequestsListPage() {
           <RequestTable requests={filtered} currentUserId={currentUserId} />
         ) : (
           <div className="rounded-lg border border-dashed border-border bg-card p-12 text-center">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               No requests match the specified filters.
             </p>
           </div>

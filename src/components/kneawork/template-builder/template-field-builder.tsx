@@ -153,8 +153,8 @@ export function TemplateFieldBuilder({
       <div className="space-y-3">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <div>
-            <h3 className="text-xs font-bold text-foreground">Required information</h3>
-            <p className="text-[11px] text-muted-foreground">
+            <h3 className="text-sm sm:text-base font-bold text-foreground">Required information</h3>
+            <p className="text-xs sm:text-[13px] text-muted-foreground">
               Essential business details needed for reviewers to evaluate the request.
             </p>
           </div>
@@ -162,15 +162,15 @@ export function TemplateFieldBuilder({
             variant="outline"
             size="sm"
             onClick={() => openAddDialog("required")}
-            className="h-7 text-xs gap-1"
+            className="gap-1 font-semibold"
           >
-            <Plus className="size-3" />
+            <Plus className="size-3.5" />
             Add field
           </Button>
         </div>
 
         {requiredFields.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
+          <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             No required fields configured yet. Add at least one required field.
           </div>
         ) : (
@@ -198,8 +198,8 @@ export function TemplateFieldBuilder({
       <div className="space-y-3">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <div>
-            <h3 className="text-xs font-bold text-foreground">Supporting information</h3>
-            <p className="text-[11px] text-muted-foreground">
+            <h3 className="text-sm sm:text-base font-bold text-foreground">Supporting information</h3>
+            <p className="text-xs sm:text-[13px] text-muted-foreground">
               Optional context, references, or vendor data that assist the approval decision.
             </p>
           </div>
@@ -207,9 +207,9 @@ export function TemplateFieldBuilder({
             variant="outline"
             size="sm"
             onClick={() => openAddDialog("supporting")}
-            className="h-7 text-xs gap-1"
+            className="gap-1 font-semibold"
           >
-            <Plus className="size-3" />
+            <Plus className="size-3.5" />
             Add field
           </Button>
         </div>
@@ -243,17 +243,17 @@ export function TemplateFieldBuilder({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-sm font-bold">
+            <DialogTitle className="text-base font-bold">
               {editingField ? "Edit request field" : "Add request field"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
+            <DialogDescription className="text-sm text-muted-foreground">
               Define the label, input type, and whether requesters must complete this field.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label htmlFor="field-label" className="text-xs font-semibold">
+              <Label htmlFor="field-label" className="text-sm font-semibold">
                 Field label <span className="text-danger">*</span>
               </Label>
               <Input
@@ -261,16 +261,16 @@ export function TemplateFieldBuilder({
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
                 placeholder="e.g. Vendor name or Item count"
-                className="text-xs bg-card h-9"
+                className="bg-card"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="field-type" className="text-xs font-semibold">
+              <Label htmlFor="field-type" className="text-sm font-semibold">
                 Field type
               </Label>
               <Select value={type} onValueChange={(val: TemplateFieldType) => setType(val)}>
-                <SelectTrigger id="field-type" className="text-xs bg-card h-9">
+                <SelectTrigger id="field-type" className="bg-card min-h-10 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -289,7 +289,7 @@ export function TemplateFieldBuilder({
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="field-help" className="text-xs font-semibold">
+              <Label htmlFor="field-help" className="text-sm font-semibold">
                 Help text
               </Label>
               <Input
@@ -297,16 +297,16 @@ export function TemplateFieldBuilder({
                 value={helpText}
                 onChange={(e) => setHelpText(e.target.value)}
                 placeholder="Guidance shown beneath the input"
-                className="text-xs bg-card h-9"
+                className="bg-card"
               />
             </div>
 
             <div className="flex items-center justify-between rounded-lg border border-border p-3 bg-muted/30">
               <div>
-                <Label htmlFor="field-req" className="text-xs font-semibold block cursor-pointer">
+                <Label htmlFor="field-req" className="text-sm font-semibold block cursor-pointer">
                   Required field
                 </Label>
-                <span className="text-[11px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   Requesters cannot submit without completing this item
                 </span>
               </div>
@@ -326,7 +326,6 @@ export function TemplateFieldBuilder({
               variant="outline"
               size="sm"
               onClick={() => setIsDialogOpen(false)}
-              className="text-xs"
             >
               Cancel
             </Button>
@@ -334,7 +333,7 @@ export function TemplateFieldBuilder({
               size="sm"
               onClick={handleSaveField}
               disabled={!label.trim()}
-              className="text-xs font-semibold"
+              className="font-semibold"
             >
               {editingField ? "Save changes" : "Add field"}
             </Button>
@@ -368,22 +367,22 @@ function FieldRow({
         <GripVertical className="size-4 text-muted-foreground/50 shrink-0" />
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-foreground">{field.label}</span>
-            <span className="rounded bg-muted border border-border px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+            <span className="text-sm font-semibold text-foreground">{field.label}</span>
+            <span className="rounded bg-muted border border-border px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
               {FIELD_TYPE_LABELS[field.type]}
             </span>
             {field.required ? (
-              <span className="rounded bg-attention-soft border border-attention-border px-1.5 py-0.2 text-[10px] font-semibold text-attention">
+              <span className="rounded bg-attention-soft border border-attention-border px-1.5 py-0.5 text-xs font-semibold text-attention">
                 Required
               </span>
             ) : (
-              <span className="rounded bg-muted/60 text-[10px] text-muted-foreground px-1.5 py-0.2">
+              <span className="rounded bg-muted/60 text-xs text-muted-foreground px-1.5 py-0.5">
                 Optional
               </span>
             )}
           </div>
           {field.helpText ? (
-            <p className="text-[11px] text-muted-foreground mt-0.5">{field.helpText}</p>
+            <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5">{field.helpText}</p>
           ) : null}
         </div>
       </div>

@@ -201,25 +201,25 @@ function RequestDetailPage() {
           {/* LEFT COLUMN: Summary, Attachments, Timeline, Comments */}
           <div className="space-y-6 lg:col-span-8 min-w-0">
             {/* Request Summary Box */}
-            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
-              <h2 className="text-sm font-semibold text-foreground">Request summary</h2>
-              <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 text-xs">
+            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+              <h2 className="text-base font-semibold text-foreground">Request summary</h2>
+              <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 text-sm">
                 <div>
-                  <dt className="text-muted-foreground">Total value / amount</dt>
-                  <dd className="mt-0.5 text-base font-bold text-foreground">
+                  <dt className="text-[13px] text-muted-foreground font-medium">Total value / amount</dt>
+                  <dd className="mt-1 text-2xl font-bold text-foreground">
                     {request.valueLabel}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-muted-foreground">Needed by date</dt>
-                  <dd className="mt-0.5 font-medium text-foreground">
+                  <dt className="text-[13px] text-muted-foreground font-medium">Needed by date</dt>
+                  <dd className="mt-1 text-sm font-medium text-foreground">
                     {step ? step.dueLabel : "Standard timeline"}
                   </dd>
                 </div>
-                <div className="sm:col-span-2 border-t border-border pt-3">
-                  <dt className="text-muted-foreground">Business justification & reason</dt>
-                  <dd className="mt-1 text-xs text-foreground leading-relaxed bg-muted/30 p-3 rounded-md border border-border">
-                    <article className="prose prose-sm prose-kneawork max-w-none text-xs">
+                <div className="sm:col-span-2 border-t border-border pt-4">
+                  <dt className="text-[13px] text-muted-foreground font-medium">Business justification & reason</dt>
+                  <dd className="mt-1.5 text-sm text-foreground leading-relaxed bg-muted/30 p-3.5 rounded-md border border-border">
+                    <article className="prose prose-sm prose-kneawork max-w-none text-sm">
                       <p>{request.reason}</p>
                     </article>
                   </dd>
@@ -228,28 +228,28 @@ function RequestDetailPage() {
             </div>
 
             {/* Attachments Section */}
-            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
+            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-foreground">
+                <h2 className="text-base font-semibold text-foreground">
                   Attachments & evidence ({request.attachments.length})
                 </h2>
               </div>
               {request.attachments.length > 0 ? (
                 <div className="mt-3 divide-y divide-border">
                   {request.attachments.map((att) => (
-                    <div key={att.id} className="flex items-center justify-between py-2.5 text-xs gap-2">
+                    <div key={att.id} className="flex items-center justify-between py-3 gap-2">
                       <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <Paperclip className="size-4 text-muted-foreground shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="font-semibold text-foreground truncate">{att.filename}</p>
-                          <p className="text-[11px] text-muted-foreground">{att.size}</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{att.filename}</p>
+                          <p className="text-xs text-muted-foreground">{att.size}</p>
                         </div>
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-7 text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10 shrink-0"
+                        className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10 shrink-0"
                       >
                         <Download className="size-3.5 mr-1" />
                         Download
@@ -258,21 +258,21 @@ function RequestDetailPage() {
                   ))}
                 </div>
               ) : (
-                <p className="mt-2 text-xs text-muted-foreground">No attachments provided.</p>
+                <p className="mt-2 text-sm text-muted-foreground">No attachments provided.</p>
               )}
             </div>
 
             {/* Approval Progress Timeline */}
-            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
-              <h2 className="text-sm font-semibold text-foreground mb-4">
+            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs">
+              <h2 className="text-base font-semibold text-foreground mb-4">
                 Approval progress & decisions
               </h2>
               <ApprovalTimeline request={request} currentUserId={currentUserId} />
             </div>
 
             {/* Comments & Conversation */}
-            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
-              <h2 className="text-sm font-semibold text-foreground">Comments & discussion</h2>
+            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+              <h2 className="text-base font-semibold text-foreground">Comments & discussion</h2>
 
               <div className="space-y-3">
                 {request.audit
@@ -282,20 +282,20 @@ function RequestDetailPage() {
                     return (
                       <div
                         key={item.id}
-                        className="rounded-md border border-border bg-muted/30 p-3 text-xs"
+                        className="rounded-md border border-border bg-muted/30 p-3.5 text-sm"
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-semibold text-foreground">
                             {author.name}{" "}
-                            <span className="font-normal text-muted-foreground">
+                            <span className="font-normal text-muted-foreground text-[13px]">
                               ({author.role})
                             </span>
                           </span>
-                          <span className="text-[11px] text-muted-foreground">
+                          <span className="text-xs text-muted-foreground">
                             {item.timestampLabel}
                           </span>
                         </div>
-                        <article className="prose prose-sm prose-kneawork max-w-none text-xs mt-1">
+                        <article className="prose prose-sm prose-kneawork max-w-none text-sm mt-1.5">
                           <p className="text-foreground leading-relaxed">{item.comment}</p>
                         </article>
                       </div>
@@ -308,7 +308,7 @@ function RequestDetailPage() {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Add an operational note or remark..."
-                  className="text-xs rounded-md"
+                  className="rounded-md"
                 />
                 <Button type="submit" size="sm" disabled={!newComment.trim()}>
                   <Send className="size-3.5 mr-1" />
@@ -319,15 +319,15 @@ function RequestDetailPage() {
           </div>
 
           {/* RIGHT ASIDE: Status Panel, Metadata & Activity History (Sentinel Style) */}
-          <div className="space-y-6 lg:col-span-4">
+          <div className="space-y-6 lg:col-span-4 min-w-0">
             {/* 1. Status Panel */}
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
-              <h3 className="text-sm font-semibold text-foreground">Status panel</h3>
+              <h3 className="text-base font-semibold text-foreground">Status panel</h3>
 
-              <div className="space-y-3 text-xs">
+              <div className="space-y-3.5 text-sm">
                 <div>
-                  <span className="text-muted-foreground block text-[11px]">Workflow state</span>
-                  <div className="mt-1">
+                  <span className="text-muted-foreground block text-[13px] font-medium">Workflow state</span>
+                  <div className="mt-1.5">
                     <StatusBadge
                       status={request.status}
                       currentStepName={step?.name}
@@ -339,43 +339,43 @@ function RequestDetailPage() {
 
                 {step ? (
                   <>
-                    <div className="border-t border-border pt-2.5">
-                      <span className="text-muted-foreground block text-[11px]">Current step</span>
-                      <p className="mt-0.5 font-semibold text-foreground">{step.name}</p>
+                    <div className="border-t border-border pt-3">
+                      <span className="text-muted-foreground block text-[13px] font-medium">Current step</span>
+                      <p className="mt-0.5 text-base font-semibold text-foreground">{step.name}</p>
                     </div>
 
-                    <div className="border-t border-border pt-2.5">
-                      <span className="text-muted-foreground block text-[11px]">
+                    <div className="border-t border-border pt-3">
+                      <span className="text-muted-foreground block text-[13px] font-medium">
                         Assigned approver
                       </span>
-                      <p className="mt-0.5 font-semibold text-foreground">
+                      <p className="mt-0.5 text-sm font-medium text-foreground">
                         {owner?.name}{" "}
-                        <span className="font-normal text-muted-foreground">({owner?.role})</span>
+                        <span className="font-normal text-muted-foreground text-[13px]">({owner?.role})</span>
                       </p>
                     </div>
 
-                    <div className="border-t border-border pt-2.5">
-                      <span className="text-muted-foreground block text-[11px]">Due timeline</span>
-                      <div className="mt-0.5">
+                    <div className="border-t border-border pt-3">
+                      <span className="text-muted-foreground block text-[13px] font-medium">Due timeline</span>
+                      <div className="mt-1">
                         <UrgencyBadge urgency={request.urgency} dueLabel={step.dueLabel} />
                       </div>
                     </div>
 
                     {nextStep ? (
-                      <div className="border-t border-border pt-2.5">
-                        <span className="text-muted-foreground block text-[11px]">
+                      <div className="border-t border-border pt-3">
+                        <span className="text-muted-foreground block text-[13px] font-medium">
                           Next step after approval
                         </span>
-                        <p className="mt-0.5 text-muted-foreground">
+                        <p className="mt-0.5 text-sm text-foreground">
                           {nextStep.name} ({personById(nextStep.assigneeId).name})
                         </p>
                       </div>
                     ) : (
-                      <div className="border-t border-border pt-2.5">
-                        <span className="text-muted-foreground block text-[11px]">
+                      <div className="border-t border-border pt-3">
+                        <span className="text-muted-foreground block text-[13px] font-medium">
                           Final action
                         </span>
-                        <p className="mt-0.5 text-muted-foreground">
+                        <p className="mt-0.5 text-sm text-muted-foreground">
                           Request will be completed and archived.
                         </p>
                       </div>
@@ -386,23 +386,23 @@ function RequestDetailPage() {
             </div>
 
             {/* 2. Request Metadata Box */}
-            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-3 text-xs">
-              <h3 className="text-sm font-semibold text-foreground">Request details</h3>
-              <div className="space-y-2 text-muted-foreground">
-                <div className="flex justify-between">
-                  <span>Requester</span>
+            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-3.5 text-sm">
+              <h3 className="text-base font-semibold text-foreground">Request details</h3>
+              <div className="space-y-2.5 text-muted-foreground">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[13px]">Requester</span>
                   <span className="font-medium text-foreground">{requester.name}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Department</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[13px]">Department</span>
                   <span className="font-medium text-foreground">{request.department}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Currency</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[13px]">Currency</span>
                   <span className="font-medium text-foreground">USD ($)</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Due status</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[13px]">Due status</span>
                   <span className="font-medium text-foreground">
                     {formatDueStatus(request.urgency, step?.dueLabel)}
                   </span>
@@ -410,16 +410,16 @@ function RequestDetailPage() {
               </div>
             </div>
 
-            {/* 3. Activity Log (Sentinel Compact History) */}
-            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-3">
-              <h3 className="text-sm font-semibold text-foreground">Audit activity history</h3>
-              <div className="space-y-3 text-xs">
+            {/* 3. Activity Log (Event titles 14px, timestamps 12px) */}
+            <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-3.5">
+              <h3 className="text-base font-semibold text-foreground">Audit activity history</h3>
+              <div className="space-y-3.5">
                 {request.audit.map((evt) => {
                   const actor = personById(evt.actorId);
                   return (
-                    <div key={evt.id} className="border-l-2 border-border pl-3">
-                      <p className="font-semibold text-foreground">{evt.action}</p>
-                      <p className="text-[11px] text-muted-foreground">
+                    <div key={evt.id} className="border-l-2 border-border pl-3.5 py-0.5">
+                      <p className="text-sm font-semibold text-foreground">{evt.action}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {actor.name} · {evt.timestampLabel}
                       </p>
                     </div>

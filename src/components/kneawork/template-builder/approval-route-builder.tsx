@@ -162,23 +162,23 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
       {/* Vertical Steps List */}
       <div className="space-y-3">
         {/* Requester Start Step (Fixed Anchor) */}
-        <div className="flex items-center gap-3 rounded-lg border border-dashed border-border bg-card/60 p-3.5 text-xs">
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
+        <div className="flex items-center gap-3 rounded-lg border border-dashed border-border bg-card/60 p-3.5">
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
             0
           </span>
           <div className="flex-1">
-            <span className="font-semibold text-foreground">Employee submits request</span>
-            <p className="text-[11px] text-muted-foreground">
+            <span className="text-sm font-semibold text-foreground">Employee submits request</span>
+            <p className="text-xs sm:text-[13px] text-muted-foreground">
               Provides required form details and evidence attachments
             </p>
           </div>
-          <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
             Trigger
           </span>
         </div>
 
         {template.routeSteps.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-warning-border bg-warning-soft/30 p-6 text-center text-xs text-warning">
+          <div className="rounded-lg border border-dashed border-warning-border bg-warning-soft/30 p-6 text-center text-sm text-warning">
             No approval steps configured. A workflow requires at least one reviewer step.
           </div>
         ) : (
@@ -193,29 +193,29 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-bold text-primary mt-0.5">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary mt-0.5">
                       {idx + 1}
                     </span>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-bold text-foreground">{step.name}</span>
-                        <span className="rounded bg-muted border border-border px-2 py-0.5 text-[10px] font-medium text-foreground">
+                        <span className="text-sm sm:text-base font-bold text-foreground">{step.name}</span>
+                        <span className="rounded bg-muted border border-border px-2 py-0.5 text-xs font-medium text-foreground">
                           {step.roleName}
                         </span>
                         {hasActiveAssignee ? (
-                          <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                            <UserCheck className="size-3 text-success" />
+                          <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                            <UserCheck className="size-3.5 text-success" />
                             Assigned to {step.assigneeName ?? role?.activeAssigneeName}
                           </span>
                         ) : (
-                          <span className="rounded bg-danger-soft border border-danger-border px-2 py-0.5 text-[10px] font-semibold text-danger flex items-center gap-1">
-                            <AlertTriangle className="size-3" />
+                          <span className="rounded bg-danger-soft border border-danger-border px-2 py-0.5 text-xs font-semibold text-danger flex items-center gap-1">
+                            <AlertTriangle className="size-3.5" />
                             No active member assigned
                           </span>
                         )}
                       </div>
 
-                      <p className="text-xs text-foreground/90 mt-1 leading-relaxed">
+                      <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
                         {step.responsibility}
                       </p>
                     </div>
@@ -257,17 +257,17 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
                       size="sm"
                       onClick={() => handleRemove(step.id)}
                       title="Remove step"
-                      className="h-7 w-7 p-0 text-danger hover:bg-danger-soft hover:text-danger"
+                      className="h-8 w-8 p-0 text-danger hover:bg-danger-soft hover:text-danger"
                     >
-                      <Trash2 className="size-3.5" />
+                      <Trash2 className="size-4" />
                     </Button>
                   </div>
                 </div>
 
                 {/* Timing & Policy metadata */}
-                <div className="flex flex-wrap items-center gap-4 text-[11px] text-muted-foreground border-t border-border/50 pt-2.5">
+                <div className="flex flex-wrap items-center gap-4 text-xs sm:text-[13px] text-muted-foreground border-t border-border/50 pt-2.5">
                   <div className="flex items-center gap-1">
-                    <Clock className="size-3 text-muted-foreground" />
+                    <Clock className="size-3.5 text-muted-foreground" />
                     <span>Due in {step.dueDays} business day(s)</span>
                   </div>
                   <div>
@@ -287,8 +287,8 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
                 </div>
 
                 {!hasActiveAssignee ? (
-                  <div className="rounded border border-danger-border bg-danger-soft/40 p-2 text-[11px] text-danger flex items-center gap-2">
-                    <AlertTriangle className="size-3.5 shrink-0" />
+                  <div className="rounded border border-danger-border bg-danger-soft/40 p-2.5 text-xs text-danger flex items-center gap-2">
+                    <AlertTriangle className="size-4 shrink-0" />
                     <span>
                       <strong>Publishing blocked:</strong> {step.roleName} has no active member
                       assigned in this workspace. Assign a member before publishing this template.
@@ -305,17 +305,17 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-sm font-bold">
+            <DialogTitle className="text-base font-bold">
               {editingStep ? "Edit approval step" : "Add approval step"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
+            <DialogDescription className="text-sm text-muted-foreground">
               Define the review checkpoint, assigned role, pass/fail responsibility, and time limit.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label htmlFor="step-name" className="text-xs font-semibold">
+              <Label htmlFor="step-name" className="text-sm font-semibold">
                 Step name <span className="text-danger">*</span>
               </Label>
               <Input
@@ -323,16 +323,16 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
                 value={stepName}
                 onChange={(e) => setStepName(e.target.value)}
                 placeholder="e.g. Finance Review or Director Confirmation"
-                className="text-xs bg-card h-9"
+                className="bg-card"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="step-role" className="text-xs font-semibold">
+              <Label htmlFor="step-role" className="text-sm font-semibold">
                 Who approves? (Assigned role) <span className="text-danger">*</span>
               </Label>
               <Select value={roleId} onValueChange={(val) => setRoleId(val)}>
-                <SelectTrigger id="step-role" className="text-xs bg-card h-9">
+                <SelectTrigger id="step-role" className="bg-card min-h-10 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -346,13 +346,13 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs sm:text-[13px] text-muted-foreground">
                 Assign roles first and people second so templates remain valid if employees change.
               </p>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="step-resp" className="text-xs font-semibold">
+              <Label htmlFor="step-resp" className="text-sm font-semibold">
                 Decision responsibility <span className="text-danger">*</span>
               </Label>
               <Textarea
@@ -360,9 +360,9 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
                 value={responsibility}
                 onChange={(e) => setResponsibility(e.target.value)}
                 placeholder="e.g. Checks quotation, receipt, and budget availability"
-                className="text-xs bg-card min-h-[64px] resize-none"
+                className="bg-card min-h-[72px] resize-none"
               />
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs sm:text-[13px] text-muted-foreground">
                 Clear pass/fail criteria approvers must verify before signing off.
               </p>
             </div>

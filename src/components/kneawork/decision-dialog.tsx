@@ -121,7 +121,7 @@ export function DecisionDialog({
         {/* Change Reasons Quick Chips */}
         {decision === "changes" ? (
           <div className="space-y-1.5">
-            <span className="text-[11px] font-semibold text-muted-foreground">Quick reasons:</span>
+            <span className="text-xs font-semibold text-muted-foreground">Quick reasons:</span>
             <div className="flex flex-wrap gap-1.5">
               {CHANGE_REASONS.map((r) => (
                 <Button
@@ -130,7 +130,7 @@ export function DecisionDialog({
                   variant="outline"
                   size="sm"
                   onClick={() => handleChipClick(r)}
-                  className="h-6 rounded-md px-2 py-0 text-xs font-normal bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border"
+                  className="h-7 rounded-md px-2.5 py-0 text-xs font-medium bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border"
                 >
                   + {r}
                 </Button>
@@ -140,7 +140,7 @@ export function DecisionDialog({
         ) : null}
 
         <div className="space-y-2">
-          <Label htmlFor="decision-note" className="text-xs font-semibold text-foreground">
+          <Label htmlFor="decision-note" className="text-sm font-semibold text-foreground">
             {noteRequired ? "Reason (required)" : "Comment (optional)"}
           </Label>
           <Textarea
@@ -158,7 +158,7 @@ export function DecisionDialog({
                   : "Add an optional remark for the permanent audit trail..."
             }
             rows={3}
-            className="text-xs"
+            className="bg-card"
           />
           {error ? (
             <p role="alert" className="text-xs font-medium text-danger flex items-center gap-1">

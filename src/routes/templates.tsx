@@ -238,14 +238,14 @@ export function TemplatesPage() {
                   key={t.id}
                   className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4 hover:border-border/80 transition-colors flex flex-col justify-between"
                 >
-                  <div className="space-y-3">
+                  <div className="space-y-3.5">
                     {/* Title & Status */}
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h2 className="text-sm font-bold text-foreground">{t.label}</h2>
+                          <h2 className="text-base font-semibold text-foreground">{t.label}</h2>
                           <span
-                            className={`rounded border px-2 py-0.2 text-[10px] font-semibold ${
+                            className={`rounded border px-2 py-0.5 text-xs font-semibold ${
                               isDraft
                                 ? "bg-warning-soft border-warning-border text-warning"
                                 : "bg-success-soft border-success-border text-success"
@@ -254,28 +254,28 @@ export function TemplatesPage() {
                             {t.versionStatus}
                           </span>
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
                           {t.description}
                         </p>
                       </div>
                     </div>
 
-                    {/* Sequential Ordered Route (Spec requirement: Approval route · 3 steps) */}
-                    <div className="rounded-md border border-border/60 bg-muted/40 p-3 text-xs space-y-2">
-                      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {/* Sequential Ordered Route (Spec: Approval route · 3 steps) */}
+                    <div className="rounded-md border border-border/60 bg-muted/40 p-3 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
                         <span>Approval route · {routeSteps.length} steps</span>
-                        <span className="text-[10px] text-muted-foreground lowercase font-normal">
+                        <span className="text-xs text-muted-foreground font-normal">
                           sequential
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-1.5 text-foreground font-medium">
-                        <span className="rounded bg-card px-2 py-0.5 border border-border text-foreground text-[11px]">
+                        <span className="rounded bg-card px-2.5 py-0.5 border border-border text-foreground text-sm font-medium">
                           Requester
                         </span>
                         {routeSteps.map((step) => (
                           <span key={step.id} className="flex items-center gap-1.5">
                             <span className="text-muted-foreground text-xs">→</span>
-                            <span className="rounded bg-card px-2 py-0.5 border border-border text-foreground text-[11px]">
+                            <span className="rounded bg-card px-2.5 py-0.5 border border-border text-foreground text-sm font-medium">
                               {step.name}
                             </span>
                           </span>
@@ -283,11 +283,11 @@ export function TemplatesPage() {
                       </div>
                     </div>
 
-                    {/* Policy & Governance (Spec requirement: Clean readable policy) */}
-                    <div className="space-y-1 text-[11px] text-muted-foreground bg-muted/30 p-2.5 rounded border border-border/50">
+                    {/* Policy & Governance (Spec: Policy 14px, stronger than owner 13px) */}
+                    <div className="space-y-1.5 text-[13px] text-muted-foreground bg-muted/30 p-3 rounded border border-border/50">
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Policy:</span>
-                        <span className="font-medium text-foreground">
+                        <span className="font-medium text-sm text-foreground">
                           {t.rules.requireQuotation
                             ? `Quotation required above USD ${t.rules.quotationThreshold}`
                             : "Standard documentation"}
@@ -298,18 +298,18 @@ export function TemplatesPage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Version:</span>
-                        <span className="font-mono text-foreground">
+                        <span className="font-mono text-foreground text-[13px]">
                           Version {t.version} · Updated {t.updatedDate}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Action Footer (Spec requirement: Owner, usage count, Open template) */}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border/60 pt-3 mt-2">
+                  {/* Action Footer (Owner 13px, Open template button 14px) */}
+                  <div className="flex items-center justify-between text-[13px] text-muted-foreground border-t border-border/60 pt-3 mt-2">
                     <div className="space-y-0.5">
-                      <div className="text-[11px] text-muted-foreground">Owner: {t.ownerName}</div>
-                      <div className="text-[10px] text-muted-foreground/80">
+                      <div className="text-[13px] text-foreground font-medium">Owner: {t.ownerName}</div>
+                      <div className="text-xs text-muted-foreground">
                         Used {t.usageCount} times · Last used {t.lastUsed}
                       </div>
                     </div>
@@ -319,9 +319,9 @@ export function TemplatesPage() {
                         <Button
                           size="sm"
                           onClick={() => setEditingTemplate(t)}
-                          className="h-7 text-xs font-semibold gap-1"
+                          className="font-semibold gap-1"
                         >
-                          <Edit2 className="size-3" />
+                          <Edit2 className="size-3.5" />
                           Edit draft
                         </Button>
                       ) : (
@@ -329,7 +329,7 @@ export function TemplatesPage() {
                           size="sm"
                           variant="outline"
                           onClick={() => setSelectedTemplate(t)}
-                          className="h-7 text-xs font-semibold"
+                          className="font-semibold"
                         >
                           Open template
                         </Button>
@@ -350,28 +350,28 @@ export function TemplatesPage() {
             <DialogHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                  <DialogTitle className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
                     {selectedTemplate.label}
-                    <span className="rounded bg-success-soft border border-success-border px-2 py-0.2 text-[10px] font-semibold text-success">
+                    <span className="rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                       v{selectedTemplate.version} · {selectedTemplate.versionStatus}
                     </span>
                   </DialogTitle>
-                  <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                  <DialogDescription className="text-sm text-muted-foreground mt-0.5">
                     Governed workflow specification and approval integrity rules
                   </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
 
-            <div className="space-y-4 text-xs py-2">
+            <div className="space-y-4 py-2">
               {/* Description & Completion Outcome */}
               <div className="space-y-2">
-                <span className="font-semibold text-foreground text-[11px] block">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
                   Purpose & completion outcome
                 </span>
-                <div className="bg-muted/40 p-3 rounded-lg border border-border space-y-1.5">
-                  <p className="text-foreground leading-relaxed">{selectedTemplate.description}</p>
-                  <div className="border-t border-border/60 pt-1.5 text-[11px] text-muted-foreground">
+                <div className="bg-muted/40 p-3 rounded-lg border border-border space-y-2">
+                  <p className="text-sm text-foreground leading-relaxed">{selectedTemplate.description}</p>
+                  <div className="border-t border-border/60 pt-2 text-xs sm:text-[13px] text-muted-foreground">
                     <strong className="text-foreground">Successful completion deliverable:</strong>{" "}
                     {selectedTemplate.completionOutcome}
                   </div>
@@ -379,25 +379,25 @@ export function TemplatesPage() {
               </div>
 
               {/* Sequential Steps with Named Approvers */}
-              <div className="space-y-1.5">
-                <span className="font-semibold text-foreground text-[11px] block">
+              <div className="space-y-2">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
                   Sequential approval route ({selectedTemplate.routeSteps.length} steps)
                 </span>
                 <div className="divide-y divide-border/60 rounded-md border border-border bg-card">
                   {selectedTemplate.routeSteps.map((step, idx) => (
-                    <div key={step.id} className="flex items-center justify-between p-2.5">
-                      <div className="flex items-center gap-2">
-                        <span className="flex size-5 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-foreground">
+                    <div key={step.id} className="flex items-center justify-between p-3 text-sm">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-bold text-foreground">
                           {idx + 1}
                         </span>
                         <div>
                           <span className="font-semibold text-foreground">{step.name}</span>
-                          <span className="block text-[11px] text-muted-foreground">
+                          <span className="block text-[13px] text-muted-foreground">
                             {step.roleName} · {step.assigneeName ?? "Workspace member"}
                           </span>
                         </div>
                       </div>
-                      <span className="text-[11px] font-medium text-muted-foreground">
+                      <span className="text-xs sm:text-[13px] font-medium text-muted-foreground">
                         Due in {step.dueDays}d
                       </span>
                     </div>
@@ -406,11 +406,11 @@ export function TemplatesPage() {
               </div>
 
               {/* Evidence Rules */}
-              <div className="space-y-1 bg-muted/20 p-3 rounded-lg border border-border/60">
-                <span className="font-semibold text-foreground text-[11px] block">
+              <div className="space-y-1.5 bg-muted/20 p-3.5 rounded-lg border border-border/60">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
                   Evidence & policy rules
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-muted-foreground pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-[13px] text-muted-foreground pt-1">
                   <div>
                     Quotation:{" "}
                     <strong className="text-foreground">
@@ -445,8 +445,8 @@ export function TemplatesPage() {
               </div>
 
               {/* Version Immutability Notice (Spec requirement) */}
-              <div className="rounded-md border border-border bg-muted/40 p-3 text-[11px] text-muted-foreground flex items-start gap-2">
-                <Lock className="size-3.5 text-muted-foreground mt-0.5 shrink-0" />
+              <div className="rounded-md border border-border bg-muted/40 p-3 text-xs sm:text-[13px] text-muted-foreground flex items-start gap-2">
+                <Lock className="size-4 text-muted-foreground mt-0.5 shrink-0" />
                 <span>
                   <strong>Version immutability:</strong> Published workflow versions cannot be
                   modified directly. Editing this workflow creates a new draft version. Requests

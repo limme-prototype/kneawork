@@ -53,7 +53,7 @@ export function AppShell({
     <div className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
       {/* Section 1: Workspace */}
       <div>
-        <p className="px-3 text-[11px] font-semibold text-muted-foreground">Workspace</p>
+        <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Workspace</p>
         <nav className="mt-1.5 space-y-1">
           {/* Home */}
           <Link
@@ -64,9 +64,9 @@ export function AppShell({
             inactiveProps={{
               className: "text-muted-foreground hover:bg-accent hover:text-foreground",
             }}
-            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
           >
-            <Home className="size-4" />
+            <Home className="size-4.5 shrink-0" />
             <span>Home</span>
           </Link>
 
@@ -80,14 +80,14 @@ export function AppShell({
               inactiveProps={{
                 className: "text-muted-foreground hover:bg-accent hover:text-foreground",
               }}
-              className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors"
+              className="flex min-h-10 items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               <div className="flex items-center gap-2.5">
-                <Inbox className="size-4" />
+                <Inbox className="size-4.5 shrink-0" />
                 <span>My Action</span>
               </div>
               {actionCount > 0 ? (
-                <span className="flex size-4.5 items-center justify-center rounded-full bg-attention text-[10px] font-bold text-attention-foreground">
+                <span className="flex size-5 items-center justify-center rounded-full bg-attention text-xs font-bold text-attention-foreground">
                   {actionCount}
                 </span>
               ) : null}
@@ -103,9 +103,9 @@ export function AppShell({
             inactiveProps={{
               className: "text-muted-foreground hover:bg-accent hover:text-foreground",
             }}
-            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
           >
-            <FileText className="size-4" />
+            <FileText className="size-4.5 shrink-0" />
             <span>{isStaff ? "My Requests" : "All Requests"}</span>
           </Link>
         </nav>
@@ -114,7 +114,7 @@ export function AppShell({
       {/* Section 2: Manage (Admins & Managers) */}
       {!isStaff ? (
         <div>
-          <p className="px-3 text-[11px] font-semibold text-muted-foreground">Manage</p>
+          <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Manage</p>
           <nav className="mt-1.5 space-y-1">
             {/* Operations Overview */}
             <Link
@@ -125,9 +125,9 @@ export function AppShell({
               inactiveProps={{
                 className: "text-muted-foreground hover:bg-accent hover:text-foreground",
               }}
-              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+              className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
-              <LayoutDashboard className="size-4" />
+              <LayoutDashboard className="size-4.5 shrink-0" />
               <span>Operations overview</span>
             </Link>
 
@@ -139,9 +139,9 @@ export function AppShell({
               inactiveProps={{
                 className: "text-muted-foreground hover:bg-accent hover:text-foreground",
               }}
-              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+              className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
-              <Layers className="size-4" />
+              <Layers className="size-4.5 shrink-0" />
               <span>Templates</span>
             </Link>
             <Link
@@ -152,9 +152,9 @@ export function AppShell({
               inactiveProps={{
                 className: "text-muted-foreground hover:bg-accent hover:text-foreground",
               }}
-              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+              className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
-              <Users className="size-4" />
+              <Users className="size-4.5 shrink-0" />
               <span>Team & roles</span>
             </Link>
           </nav>
@@ -163,7 +163,7 @@ export function AppShell({
 
       {/* Section 3: Settings */}
       <div>
-        <p className="px-3 text-[11px] font-semibold text-muted-foreground">Settings</p>
+        <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Settings</p>
         <nav className="mt-1.5 space-y-1">
           {isAdmin ? (
             <Link
@@ -174,9 +174,9 @@ export function AppShell({
               inactiveProps={{
                 className: "text-muted-foreground hover:bg-accent hover:text-foreground",
               }}
-              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+              className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
-              <Settings className="size-4" />
+              <Settings className="size-4.5 shrink-0" />
               <span>Workspace settings</span>
             </Link>
           ) : null}
@@ -189,9 +189,9 @@ export function AppShell({
             inactiveProps={{
               className: "text-muted-foreground hover:bg-accent hover:text-foreground",
             }}
-            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium transition-colors"
+            className="flex min-h-10 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
           >
-            <Shield className="size-4" />
+            <Shield className="size-4.5 shrink-0" />
             <span>My profile</span>
           </Link>
         </nav>
@@ -210,7 +210,7 @@ export function AppShell({
           </div>
           <div>
             <span className="font-bold text-foreground text-sm tracking-tight">KneaWork</span>
-            <span className="ml-1.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <span className="ml-1.5 rounded bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
               Operations
             </span>
           </div>
@@ -230,7 +230,7 @@ export function AppShell({
               </span>
               <div className="min-w-0">
                 <p className="truncate text-xs font-semibold text-foreground">{me.name}</p>
-                <p className="truncate text-[11px] text-muted-foreground">
+                <p className="truncate text-[13px] text-muted-foreground">
                   {me.role.split(" ")[0]}
                 </p>
               </div>
@@ -278,7 +278,7 @@ export function AppShell({
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-semibold text-foreground">{me.name}</p>
-                      <p className="truncate text-[11px] text-muted-foreground">{me.role}</p>
+                      <p className="truncate text-[13px] text-muted-foreground">{me.role}</p>
                     </div>
                   </Link>
                 </div>
@@ -309,7 +309,7 @@ export function AppShell({
                 <div className="min-w-0">
                   <h1 className="text-sm font-bold text-foreground truncate">{title}</h1>
                   {subtitle ? (
-                    <p className="text-[11px] text-muted-foreground truncate hidden sm:block">{subtitle}</p>
+                    <p className="text-xs sm:text-[13px] text-muted-foreground truncate hidden sm:block">{subtitle}</p>
                   ) : null}
                 </div>
               )}
@@ -326,7 +326,7 @@ export function AppShell({
               >
                 <Bell className="size-4" />
                 {actionCount > 0 ? (
-                  <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-attention text-[9px] font-bold text-attention-foreground">
+                  <span className="absolute -top-1.5 -right-1.5 flex size-4.5 items-center justify-center rounded-full bg-attention text-xs font-bold text-attention-foreground">
                     {actionCount}
                   </span>
                 ) : null}
@@ -363,7 +363,7 @@ export function AppShell({
                 activeOptions={{ exact: true }}
                 activeProps={{ className: "text-primary" }}
                 inactiveProps={{ className: "text-muted-foreground" }}
-                className="flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
+                className="flex flex-col items-center gap-1 py-2 text-xs font-medium"
               >
                 <Home className="size-4.5" />
                 <span>Home</span>
@@ -375,12 +375,12 @@ export function AppShell({
                   to="/action"
                   activeProps={{ className: "text-primary" }}
                   inactiveProps={{ className: "text-muted-foreground" }}
-                  className="relative flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
+                  className="relative flex flex-col items-center gap-1 py-2 text-xs font-medium"
                 >
                   <Inbox className="size-4.5" />
                   <span>Action</span>
                   {actionCount > 0 ? (
-                    <span className="absolute top-1 right-1/2 -mr-3 flex size-3.5 items-center justify-center rounded-full bg-attention text-[8px] font-bold text-attention-foreground">
+                    <span className="absolute top-0.5 right-1/2 -mr-3.5 flex size-4 items-center justify-center rounded-full bg-attention text-xs font-bold text-attention-foreground">
                       {actionCount}
                     </span>
                   ) : null}
@@ -392,7 +392,7 @@ export function AppShell({
                 to="/requests"
                 activeProps={{ className: "text-primary" }}
                 inactiveProps={{ className: "text-muted-foreground" }}
-                className="flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
+                className="flex flex-col items-center gap-1 py-2 text-xs font-medium"
               >
                 <FileText className="size-4.5" />
                 <span>Requests</span>
@@ -404,7 +404,7 @@ export function AppShell({
                   to="/admin"
                   activeProps={{ className: "text-primary" }}
                   inactiveProps={{ className: "text-muted-foreground" }}
-                  className="flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
+                  className="flex flex-col items-center gap-1 py-2 text-xs font-medium"
                 >
                   <LayoutDashboard className="size-4.5" />
                   <span>Overview</span>
@@ -416,7 +416,7 @@ export function AppShell({
                 to="/profile"
                 activeProps={{ className: "text-primary" }}
                 inactiveProps={{ className: "text-muted-foreground" }}
-                className="flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
+                className="flex flex-col items-center gap-1 py-2 text-xs font-medium"
               >
                 <Shield className="size-4.5" />
                 <span>Profile</span>

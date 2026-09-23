@@ -63,21 +63,21 @@ export function ProfilePage() {
         <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <span className="flex size-13 items-center justify-center rounded-full bg-foreground text-base font-bold text-background shadow-2xs">
+              <span className="flex size-14 items-center justify-center rounded-full bg-foreground text-lg font-bold text-background shadow-2xs">
                 {me.initials}
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-lg font-bold text-foreground">{me.name}</h1>
-                  <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.2 text-[10px] font-semibold text-success">
+                  <h1 className="text-lg sm:text-xl font-bold text-foreground">{me.name}</h1>
+                  <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                     Active
                   </span>
                 </div>
                 {/* Department, role, and reporting line grouped together */}
-                <p className="text-xs text-foreground font-medium mt-0.5">
+                <p className="text-sm text-foreground font-medium mt-0.5">
                   {me.role} · <span className="text-muted-foreground">{me.department}</span>
                 </p>
-                <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 mt-1 text-[13px] text-muted-foreground">
                   <span>
                     Reports to{" "}
                     <strong className="text-foreground font-semibold">{reportsTo}</strong>
@@ -91,12 +91,12 @@ export function ProfilePage() {
         </div>
 
         {/* Secondary Navigation Tabs (Account Settings Pattern using Button component) */}
-        <div className="flex items-center gap-1 border-b border-border pb-px text-xs overflow-x-auto scrollbar-none whitespace-nowrap">
+        <div className="flex items-center gap-1 border-b border-border pb-px text-xs sm:text-[13px] overflow-x-auto scrollbar-none whitespace-nowrap">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("profile")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
               activeTab === "profile"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -109,7 +109,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("security")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
               activeTab === "security"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -122,7 +122,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("notifications")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
               activeTab === "notifications"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -135,7 +135,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("language")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
               activeTab === "language"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -148,7 +148,7 @@ export function ProfilePage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("accounts")}
-            className={`flex items-center gap-1.5 h-9 rounded-none border-b-2 text-xs transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
               activeTab === "accounts"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -165,63 +165,63 @@ export function ProfilePage() {
             {/* Left: Editable Personal Information */}
             <div className="md:col-span-7 rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="border-b border-border/60 pb-2">
-                <h2 className="text-xs font-semibold text-foreground">Personal information</h2>
-                <p className="text-[11px] text-muted-foreground">
+                <h2 className="text-base font-semibold text-foreground">Personal information</h2>
+                <p className="text-sm text-muted-foreground">
                   Contact details used for approval alert notifications
                 </p>
               </div>
 
               {savedNotice ? (
-                <div className="rounded-md border border-success-border bg-success-soft p-2.5 text-xs text-success flex items-center gap-2">
+                <div className="rounded-md border border-success-border bg-success-soft p-2.5 text-sm text-success flex items-center gap-2">
                   <Check className="size-4 text-success" />
                   <span>{savedNotice}</span>
                 </div>
               ) : null}
 
-              <form onSubmit={handleSave} className="space-y-3.5 text-xs">
-                <div className="space-y-1">
+              <form onSubmit={handleSave} className="space-y-4">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <Label className="text-muted-foreground">Full name</Label>
-                    <span className="text-[10px] text-muted-foreground">
+                    <Label className="text-sm font-semibold text-muted-foreground">Full name</Label>
+                    <span className="text-xs text-muted-foreground">
                       Organization controlled
                     </span>
                   </div>
-                  <Input disabled value={me.name} className="text-xs bg-muted/40 font-medium" />
+                  <Input disabled value={me.name} className="bg-muted/40 font-medium" />
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <Label className="text-muted-foreground">Work email</Label>
-                    <span className="text-[10px] font-semibold text-success bg-success-soft px-1.5 py-0.2 rounded border border-success-border">
+                    <Label className="text-sm font-semibold text-muted-foreground">Work email</Label>
+                    <span className="text-xs font-semibold text-success bg-success-soft px-1.5 py-0.5 rounded border border-success-border">
                       Verified
                     </span>
                   </div>
                   <Input
                     disabled
                     value={`${me.name.toLowerCase().replace(" ", ".")}@kneawork.com`}
-                    className="text-xs bg-muted/40"
+                    className="bg-muted/40"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="phone" className="text-foreground font-semibold">
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-foreground">
                     Mobile phone
                   </Label>
                   <Input
                     id="phone"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="text-xs bg-card"
+                    className="bg-card"
                   />
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="telegram" className="text-foreground font-semibold">
+                    <Label htmlFor="telegram" className="text-sm font-semibold text-foreground">
                       Telegram username
                     </Label>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-success bg-success-soft px-1.5 py-0.2 rounded border border-success-border">
-                      <Send className="size-2.5" />
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-success bg-success-soft px-1.5 py-0.5 rounded border border-success-border">
+                      <Send className="size-3" />
                       Connected
                     </span>
                   </div>
@@ -229,20 +229,20 @@ export function ProfilePage() {
                     id="telegram"
                     value={telegram}
                     onChange={(e) => setTelegram(e.target.value)}
-                    className="text-xs bg-card"
+                    className="bg-card"
                   />
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Connected to @KneaWorkBot for instant approval alerts.
                   </p>
                 </div>
 
                 <div className="pt-2 flex items-center justify-between border-t border-border/60">
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     {savedNotice
                       ? "All changes saved"
                       : "Unsaved changes will update notifications immediately"}
                   </span>
-                  <Button type="submit" size="sm" className="text-xs font-semibold">
+                  <Button type="submit" size="sm" className="font-semibold">
                     Save changes
                   </Button>
                 </div>
@@ -252,28 +252,28 @@ export function ProfilePage() {
             {/* Right: Access & Responsibilities (Read-Only Organization Permissions) */}
             <div className="md:col-span-5 rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="border-b border-border/60 pb-2">
-                <h2 className="text-xs font-semibold text-foreground">Access & responsibilities</h2>
-                <p className="text-[11px] text-muted-foreground">
+                <h2 className="text-base font-semibold text-foreground">Access & responsibilities</h2>
+                <p className="text-sm text-muted-foreground">
                   Assigned permissions determined by workspace policy
                 </p>
               </div>
 
-              <div className="space-y-4 text-xs">
+              <div className="space-y-4">
                 <div className="rounded-md border border-border/60 bg-muted/40 p-3">
-                  <span className="text-[11px] font-semibold text-muted-foreground block">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground block">
                     Assigned role
                   </span>
-                  <p className="text-sm font-bold text-foreground mt-0.5">{me.role}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                  <p className="text-base font-bold text-foreground mt-0.5">{me.role}</p>
+                  <p className="text-[13px] text-muted-foreground mt-0.5">
                     {me.department} Department
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <span className="text-[11px] font-semibold text-foreground block">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground block">
                     You can submit
                   </span>
-                  <ul className="list-disc pl-4 text-muted-foreground space-y-1 leading-relaxed">
+                  <ul className="list-disc pl-4 text-sm text-muted-foreground space-y-1 leading-relaxed">
                     <li>Purchase requests up to USD 10,000</li>
                     <li>Expense and travel claims</li>
                     <li>Annual and sick leave requests</li>
@@ -282,10 +282,10 @@ export function ProfilePage() {
                 </div>
 
                 <div className="space-y-1.5 border-t border-border/60 pt-3">
-                  <span className="text-[11px] font-semibold text-foreground block">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-foreground block">
                     Approval responsibilities
                   </span>
-                  <ul className="list-disc pl-4 text-muted-foreground space-y-1 leading-relaxed">
+                  <ul className="list-disc pl-4 text-sm text-muted-foreground space-y-1 leading-relaxed">
                     {me.id === "u_manager" ? (
                       <>
                         <li>Manager Approval for Operations department expenditures</li>
@@ -309,7 +309,7 @@ export function ProfilePage() {
                   </ul>
                 </div>
 
-                <div className="rounded-md border border-border bg-muted/30 p-3 text-[11px] text-muted-foreground leading-relaxed">
+                <div className="rounded-md border border-border bg-muted/30 p-3 text-xs text-muted-foreground leading-relaxed">
                   Organizational roles, approval delegations, and spending limits are governed by
                   Workspace Administrators. Contact Dara for permission adjustments.
                 </div>
@@ -318,12 +318,12 @@ export function ProfilePage() {
           </div>
         ) : (
           /* Other Tabs Placeholder */
-          <div className="rounded-lg border border-border bg-card p-8 text-center text-xs text-muted-foreground">
+          <div className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground">
             <ShieldCheck className="mx-auto size-8 text-muted-foreground mb-2" />
-            <h3 className="font-semibold text-foreground text-sm capitalize">
+            <h3 className="font-semibold text-foreground text-base capitalize">
               {activeTab} settings
             </h3>
-            <p className="mt-1 text-muted-foreground">
+            <p className="mt-1 text-muted-foreground text-sm">
               Configured with standard organizational security policies and enterprise SAML SSO.
             </p>
           </div>

@@ -19,14 +19,14 @@ export function ApprovalTimeline({
         <span className="absolute -left-7 top-0.5 flex size-5.5 items-center justify-center rounded-full bg-success text-white ring-4 ring-card shadow-2xs">
           <CheckCircle2 className="size-3.5" />
         </span>
-        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 text-xs">
+        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 text-sm">
           <div>
             <span className="font-semibold text-foreground">Submitted</span>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5">
               {requester.name} · <span>{requester.role}</span>
             </p>
           </div>
-          <span className="text-[11px] text-muted-foreground sm:text-right">
+          <span className="text-xs sm:text-[13px] text-muted-foreground sm:text-right">
             {request.submittedLabel}
           </span>
         </div>
@@ -68,14 +68,14 @@ export function ApprovalTimeline({
               ) : isChanges ? (
                 <RotateCcw className="size-3.5" />
               ) : (
-                <span className="text-[10px] font-bold text-muted-foreground">{idx + 1}</span>
+                <span className="text-xs font-bold text-muted-foreground">{idx + 1}</span>
               )}
             </span>
 
             {/* Step Body */}
             <div
               className={cn(
-                "rounded-lg text-xs transition-colors",
+                "rounded-lg text-sm transition-colors",
                 isCurrent
                   ? isMe
                     ? "border border-attention-border bg-attention-soft/70 p-3 shadow-2xs"
@@ -85,39 +85,39 @@ export function ApprovalTimeline({
             >
               {/* Top row: Step Name & Single Distinct Status Badge */}
               <div className="flex items-center justify-between gap-2">
-                <span className="font-bold text-foreground text-xs">{step.name}</span>
+                <span className="font-semibold text-foreground text-sm">{step.name}</span>
 
                 {/* Single, non-duplicated status indicator */}
                 <div>
                   {isDone ? (
-                    <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-[11px] font-semibold text-success">
+                    <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                       <CheckCircle2 className="size-3" />
                       Approved
                     </span>
                   ) : isCurrent ? (
                     isMe ? (
-                      <span className="inline-flex items-center gap-1 rounded bg-attention px-2 py-0.5 text-[11px] font-semibold text-attention-foreground shadow-2xs">
+                      <span className="inline-flex items-center gap-1 rounded bg-attention px-2 py-0.5 text-xs font-semibold text-attention-foreground shadow-2xs">
                         <Clock className="size-3" />
                         You must act
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded bg-attention-soft border border-attention-border px-2 py-0.5 text-[11px] font-semibold text-attention">
+                      <span className="inline-flex items-center gap-1 rounded bg-attention-soft border border-attention-border px-2 py-0.5 text-xs font-semibold text-attention">
                         <Clock className="size-3" />
                         Current step
                       </span>
                     )
                   ) : isChanges ? (
-                    <span className="inline-flex items-center gap-1 rounded bg-warning-soft border border-warning-border px-2 py-0.5 text-[11px] font-semibold text-warning">
+                    <span className="inline-flex items-center gap-1 rounded bg-warning-soft border border-warning-border px-2 py-0.5 text-xs font-semibold text-warning">
                       <RotateCcw className="size-3" />
                       Changes requested
                     </span>
                   ) : isRejected ? (
-                    <span className="inline-flex items-center gap-1 rounded bg-danger-soft border border-danger-border px-2 py-0.5 text-[11px] font-semibold text-danger">
+                    <span className="inline-flex items-center gap-1 rounded bg-danger-soft border border-danger-border px-2 py-0.5 text-xs font-semibold text-danger">
                       <XCircle className="size-3" />
                       Rejected
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 rounded bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                    <span className="inline-flex items-center gap-1 rounded bg-muted border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground">
                       Upcoming
                     </span>
                   )}
@@ -125,7 +125,7 @@ export function ApprovalTimeline({
               </div>
 
               {/* Subtitle row: Assignee & Timeline */}
-              <div className="mt-1 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+              <div className="mt-1 flex items-center justify-between gap-2 text-xs sm:text-[13px] text-muted-foreground">
                 <p>
                   <span className="font-semibold text-foreground">{person.name}</span>
                   <span className="text-muted-foreground"> · {person.role}</span>
@@ -142,10 +142,10 @@ export function ApprovalTimeline({
               {/* Note / Comment */}
               {step.note ? (
                 <div className="mt-2.5 rounded-md border border-border bg-card p-2.5 text-foreground shadow-2xs">
-                  <span className="font-semibold text-muted-foreground text-[10px] block">
+                  <span className="font-semibold text-muted-foreground text-xs block">
                     Review note:
                   </span>
-                  <p className="mt-0.5 text-xs text-foreground italic">"{step.note}"</p>
+                  <p className="mt-0.5 text-sm text-foreground italic">"{step.note}"</p>
                 </div>
               ) : null}
             </div>

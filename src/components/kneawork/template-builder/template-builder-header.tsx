@@ -33,14 +33,14 @@ export function TemplateBuilderHeader({
             <span className="font-medium text-foreground truncate max-w-[120px] sm:max-w-none">
               {template.label.trim() ? template.label : "New template"}
             </span>
-            <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.2 text-[10px] font-semibold text-attention ml-1 flex items-center gap-1 shrink-0">
+            <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.5 text-xs font-semibold text-attention ml-1 flex items-center gap-1 shrink-0">
               <Layers className="size-3" />v{template.version} · {template.versionStatus}
             </span>
           </div>
           <h1 className="text-base sm:text-lg font-bold text-foreground break-words">
             {template.label.trim() ? `Edit ${template.label}` : "Create new request template"}
           </h1>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Guided workflow designer for governed request forms, sequential reviewers, and evidence
             rules
           </p>
@@ -51,7 +51,7 @@ export function TemplateBuilderHeader({
             variant="outline"
             size="sm"
             onClick={onCancel}
-            className="h-8 text-xs text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground"
           >
             <X className="size-3.5 mr-1" />
             Cancel
@@ -62,7 +62,7 @@ export function TemplateBuilderHeader({
             size="sm"
             onClick={onSaveDraft}
             disabled={isSavingDraft}
-            className="h-8 text-xs border-attention-border text-attention hover:bg-attention-soft"
+            className="border-attention-border text-attention hover:bg-attention-soft"
           >
             <Save className="size-3.5 mr-1" />
             {isSavingDraft ? "Saving draft..." : "Save draft"}
@@ -71,7 +71,7 @@ export function TemplateBuilderHeader({
           <Button
             size="sm"
             onClick={onContinue}
-            className="h-8 text-xs font-semibold gap-1.5"
+            className="font-semibold gap-1.5"
             disabled={isLastStep && !canPublish}
           >
             {isLastStep ? (

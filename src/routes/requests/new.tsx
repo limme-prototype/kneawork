@@ -201,8 +201,8 @@ export function NewRequestPage() {
                     : "border-border bg-card text-foreground hover:bg-muted font-medium"
                 }`}
               >
-                <span className="block text-xs font-bold">{t.label}</span>
-                <span className="block text-[10px] text-muted-foreground mt-0.5">
+                <span className="block text-sm font-bold">{t.label}</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">
                   {t.fieldsCount} fields
                 </span>
               </Button>
@@ -227,17 +227,17 @@ export function NewRequestPage() {
           <div className="lg:col-span-7 xl:col-span-8 space-y-5 min-w-0">
             <form id="request-form" onSubmit={handleSubmit} className="space-y-5">
               {/* SECTION: Request Details */}
-              <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
-                <div className="border-b border-border pb-2.5">
-                  <h2 className="text-sm font-semibold text-foreground">Request details</h2>
-                  <p className="text-xs text-muted-foreground">
+              <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+                <div className="border-b border-border pb-3">
+                  <h2 className="text-base font-semibold text-foreground">Request details</h2>
+                  <p className="text-[13px] text-muted-foreground">
                     Core operational information required for sign-off
                   </p>
                 </div>
 
                 {/* Title */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="title" className="text-xs font-semibold text-foreground">
+                  <Label htmlFor="title" className="text-sm font-semibold text-foreground">
                     {type === "leave" ? "Leave title / reason *" : "Item or purpose *"}
                   </Label>
                   <Input
@@ -254,14 +254,13 @@ export function NewRequestPage() {
                             ? "e.g. Annual Family Leave"
                             : "e.g. Office Space Lease Agreement"
                     }
-                    className="text-xs"
                   />
                 </div>
 
                 {/* Vendor / Counterparty (For Purchase & Contract) */}
                 {type === "purchase" || type === "contract" ? (
                   <div className="space-y-1.5">
-                    <Label htmlFor="vendor" className="text-xs font-semibold text-foreground">
+                    <Label htmlFor="vendor" className="text-sm font-semibold text-foreground">
                       Supplier / vendor name
                     </Label>
                     <Input
@@ -269,7 +268,6 @@ export function NewRequestPage() {
                       value={vendor}
                       onChange={(e) => setVendor(e.target.value)}
                       placeholder="e.g. Anana Computer Co., Ltd."
-                      className="text-xs"
                     />
                   </div>
                 ) : null}
@@ -278,11 +276,11 @@ export function NewRequestPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="valueLabel" className="text-xs font-semibold text-foreground">
+                      <Label htmlFor="valueLabel" className="text-sm font-semibold text-foreground">
                         {currentTemplate.valueLabel} *
                       </Label>
                       {type !== "leave" ? (
-                        <span className="text-[10px] text-muted-foreground font-medium">
+                        <span className="text-xs text-muted-foreground font-medium">
                           USD ($)
                         </span>
                       ) : null}
@@ -293,16 +291,15 @@ export function NewRequestPage() {
                       value={valueLabel}
                       onChange={(e) => setValueLabel(e.target.value)}
                       placeholder={currentTemplate.valuePlaceholder}
-                      className="text-xs"
                     />
                     {/* Policy Hint directly beneath value */}
-                    <p className="text-xs text-warning bg-warning-soft p-2 rounded border border-warning-border">
+                    <p className="text-[13px] text-warning bg-warning-soft p-2.5 rounded border border-warning-border leading-relaxed font-medium">
                       {currentTemplate.evidenceRule}
                     </p>
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="neededBy" className="text-xs font-semibold text-foreground">
+                    <Label htmlFor="neededBy" className="text-sm font-semibold text-foreground">
                       {type === "leave" ? "Start date" : "Needed-by date"}
                     </Label>
                     <Input
@@ -310,9 +307,8 @@ export function NewRequestPage() {
                       type="date"
                       value={neededBy}
                       onChange={(e) => setNeededBy(e.target.value)}
-                      className="text-xs"
                     />
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-[13px] text-muted-foreground">
                       Target review completion within standard turnaround.
                     </p>
                   </div>
@@ -320,7 +316,7 @@ export function NewRequestPage() {
 
                 {/* Business Justification */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="reason" className="text-xs font-semibold text-foreground">
+                  <Label htmlFor="reason" className="text-sm font-semibold text-foreground">
                     Business justification & context *
                   </Label>
                   <Textarea
@@ -330,36 +326,35 @@ export function NewRequestPage() {
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="Provide clear rationale so reviewers have all necessary facts without needing follow-up messages."
-                    className="text-xs"
                   />
                 </div>
               </div>
 
               {/* SECTION: Supporting Evidence & Attachment */}
-              <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
-                <div className="border-b border-border pb-2.5">
+              <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+                <div className="border-b border-border pb-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-sm font-semibold text-foreground">Supporting evidence</h2>
-                      <p className="text-xs text-muted-foreground">
+                      <h2 className="text-base font-semibold text-foreground">Supporting evidence</h2>
+                      <p className="text-[13px] text-muted-foreground">
                         {currentTemplate.requiresAttachment
                           ? "Mandatory documentation"
                           : "Optional supporting documents"}
                       </p>
                     </div>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       PDF, JPG, PNG up to 10MB
                     </span>
                   </div>
                 </div>
 
                 {uploadedFile ? (
-                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 text-xs gap-2">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 text-sm gap-2">
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <FileCheck className="size-5 text-success shrink-0" />
                       <div className="min-w-0 flex-1">
                         <p className="font-semibold text-foreground truncate">{uploadedFile.name}</p>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {uploadedFile.size} · Uploaded and ready
                         </p>
                       </div>
@@ -395,11 +390,11 @@ export function NewRequestPage() {
                     }`}
                   >
                     <Upload className="size-6 text-muted-foreground mb-1.5" />
-                    <p className="text-xs font-semibold text-foreground">
+                    <p className="text-sm font-semibold text-foreground">
                       Click to attach {type === "expense" ? "receipt" : "quotation"} or drag file
                       here
                     </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                    <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5">
                       Official tax receipt, supplier quotation, or agreement PDF
                     </p>
                   </div>

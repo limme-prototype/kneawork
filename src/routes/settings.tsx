@@ -53,28 +53,28 @@ export function WorkspaceSettingsPage() {
       <div className="space-y-6 max-w-5xl">
         {/* Header */}
         <div className="border-b border-border pb-4">
-          <h1 className="text-base font-bold text-foreground">Workspace governance & policies</h1>
-          <p className="text-xs text-muted-foreground">
+          <h1 className="text-base sm:text-lg font-bold text-foreground">Workspace governance & policies</h1>
+          <p className="text-sm text-muted-foreground">
             Settings apply organization-wide across all sequential approval routes and audit logs
           </p>
         </div>
 
         {/* Feedback Alert */}
         {savedMessage ? (
-          <div className="rounded-md border border-success-border bg-success-soft p-3 text-xs text-success flex items-center gap-2 shadow-2xs">
+          <div className="rounded-md border border-success-border bg-success-soft p-3 text-sm text-success flex items-center gap-2 shadow-2xs">
             <Check className="size-4 shrink-0" />
             <span className="font-medium text-foreground">{savedMessage}</span>
           </div>
         ) : null}
 
         {/* Modular Navigation Categories (HiBob Pattern: Organization by Intent) */}
-        <div className="flex items-center gap-1 border-b border-border pb-px text-xs overflow-x-auto scrollbar-none whitespace-nowrap">
+        <div className="flex items-center gap-1 border-b border-border pb-px text-xs sm:text-[13px] overflow-x-auto scrollbar-none whitespace-nowrap">
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("workflow")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "workflow"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -88,7 +88,7 @@ export function WorkspaceSettingsPage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("workspace")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "workspace"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -102,7 +102,7 @@ export function WorkspaceSettingsPage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("notifications")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "notifications"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -116,7 +116,7 @@ export function WorkspaceSettingsPage() {
             variant="ghost"
             size="sm"
             onClick={() => setActiveCategory("security")}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-none border-b-2 transition-colors shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-none border-b-2 transition-colors shrink-0 ${
               activeCategory === "security"
                 ? "border-primary text-primary font-semibold"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -134,29 +134,29 @@ export function WorkspaceSettingsPage() {
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border pb-3">
                 <div>
-                  <h2 className="text-sm font-semibold text-foreground">
+                  <h2 className="text-base font-semibold text-foreground">
                     Automated follow-up reminders
                   </h2>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Sends automated notifications when a request is waiting longer than designated
                     thresholds
                   </p>
                 </div>
-                <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground self-start sm:self-auto">
+                <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground self-start sm:self-auto">
                   Active rule
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 text-xs">
-                <div className="space-y-1">
-                  <Label htmlFor="reminders" className="text-foreground font-medium">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="reminders" className="text-sm font-semibold text-foreground">
                     Reminder interval
                   </Label>
                   <select
                     id="reminders"
                     value={reminderHours}
                     onChange={(e) => setReminderHours(e.target.value)}
-                    className="w-full rounded-md border border-border bg-card p-2 text-xs text-foreground"
+                    className="w-full min-h-10 rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground"
                   >
                     <option value="12">After 12 hours waiting</option>
                     <option value="24">After 24 hours waiting (Standard)</option>
@@ -164,14 +164,14 @@ export function WorkspaceSettingsPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1">
-                  <Label className="text-foreground font-medium">Repeat frequency</Label>
-                  <Input disabled value="Every 24 hours" className="text-xs bg-muted/40" />
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-semibold text-foreground">Repeat frequency</Label>
+                  <Input disabled value="Every 24 hours" className="bg-muted/40" />
                 </div>
 
-                <div className="space-y-1">
-                  <Label className="text-foreground font-medium">Dispatched channels</Label>
-                  <Input disabled value="In-app · Telegram Bot" className="text-xs bg-muted/40" />
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-semibold text-foreground">Dispatched channels</Label>
+                  <Input disabled value="In-app · Telegram Bot" className="bg-muted/40" />
                 </div>
               </div>
             </div>
@@ -180,18 +180,18 @@ export function WorkspaceSettingsPage() {
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-3">
               <div className="flex items-center justify-between border-b border-border pb-3">
                 <div>
-                  <h2 className="text-sm font-semibold text-foreground">
+                  <h2 className="text-base font-semibold text-foreground">
                     Escalation & out-of-office delegation
                   </h2>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Auto-reassign pending decisions when designated approvers are on approved leave
                   </p>
                 </div>
-                <span className="rounded bg-success-soft border border-success-border px-2 py-0.5 text-[10px] font-semibold text-success">
+                <span className="rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                   Enabled
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Delegated manager approvals temporarily route to{" "}
                 <strong className="text-foreground">Mr. Lim (Director)</strong> when Sokha is on
                 leave.
@@ -202,7 +202,7 @@ export function WorkspaceSettingsPage() {
               <Button
                 type="submit"
                 size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary-hover text-xs font-semibold"
+                className="bg-primary text-primary-foreground hover:bg-primary-hover font-semibold"
               >
                 Save workflow settings
               </Button>
@@ -215,39 +215,39 @@ export function WorkspaceSettingsPage() {
           <form onSubmit={handleSave} className="space-y-4">
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="border-b border-border pb-3">
-                <h2 className="text-sm font-semibold text-foreground">
+                <h2 className="text-base font-semibold text-foreground">
                   Regional & localization defaults
                 </h2>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Language, currency, and timezone formats
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 text-xs">
-                <div className="space-y-1">
-                  <Label htmlFor="currency" className="text-foreground font-medium">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="currency" className="text-sm font-semibold text-foreground">
                     Operational currency
                   </Label>
                   <select
                     id="currency"
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full rounded-md border border-border bg-card p-2 text-xs text-foreground"
+                    className="w-full min-h-10 rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground"
                   >
                     <option value="USD">USD ($) — United States Dollar</option>
                     <option value="KHR">KHR (៛) — Khmer Riel</option>
                   </select>
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="lang" className="text-foreground font-medium">
+                <div className="space-y-1.5">
+                  <Label htmlFor="lang" className="text-sm font-semibold text-foreground">
                     Workspace language
                   </Label>
                   <select
                     id="lang"
                     value={lang}
                     onChange={(e) => setLang(e.target.value)}
-                    className="w-full rounded-md border border-border bg-card p-2 text-xs text-foreground"
+                    className="w-full min-h-10 rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground"
                   >
                     <option value="km_en">English & Khmer (Bilingual UI)</option>
                     <option value="en">English (Primary)</option>
@@ -255,10 +255,10 @@ export function WorkspaceSettingsPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1 sm:col-span-2">
-                  <Label className="text-foreground font-medium">Workspace timezone</Label>
-                  <Input disabled value="Asia/Phnom Penh (GMT+7)" className="text-xs bg-muted/40" />
-                  <span className="text-[10px] text-muted-foreground">
+                <div className="space-y-1.5 sm:col-span-2">
+                  <Label className="text-sm font-semibold text-foreground">Workspace timezone</Label>
+                  <Input disabled value="Asia/Phnom Penh (GMT+7)" className="bg-muted/40" />
+                  <span className="text-xs text-muted-foreground">
                     Used for all immutable audit log timestamps
                   </span>
                 </div>
@@ -268,7 +268,7 @@ export function WorkspaceSettingsPage() {
                 <Button
                   type="submit"
                   size="sm"
-                  className="bg-primary text-primary-foreground hover:bg-primary-hover text-xs font-semibold"
+                  className="bg-primary text-primary-foreground hover:bg-primary-hover font-semibold"
                 >
                   Save regional settings
                 </Button>
@@ -279,12 +279,12 @@ export function WorkspaceSettingsPage() {
 
         {/* Category 3: Notifications */}
         {activeCategory === "notifications" ? (
-          <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4 text-xs">
+          <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
             <div className="border-b border-border pb-3">
-              <h2 className="text-sm font-semibold text-foreground">
+              <h2 className="text-base font-semibold text-foreground">
                 Notification dispatch channels
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Control alert delivery to approvers and requesters
               </p>
             </div>
@@ -292,40 +292,40 @@ export function WorkspaceSettingsPage() {
             <div className="divide-y divide-border">
               <div className="flex items-center justify-between py-3">
                 <div>
-                  <span className="font-semibold text-foreground">
+                  <span className="text-sm font-semibold text-foreground">
                     In-app alerts & bell notifications
                   </span>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[13px] text-muted-foreground">
                     Top bar notification counter and audit badges
                   </p>
                 </div>
-                <span className="font-semibold text-success bg-success-soft border border-success-border px-2 py-0.5 rounded text-[11px]">
+                <span className="font-semibold text-success bg-success-soft border border-success-border px-2 py-0.5 rounded text-xs">
                   Enabled
                 </span>
               </div>
 
               <div className="flex items-center justify-between py-3">
                 <div>
-                  <span className="font-semibold text-foreground">
+                  <span className="text-sm font-semibold text-foreground">
                     Telegram bot notifications (@KneaWorkBot)
                   </span>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[13px] text-muted-foreground">
                     Instant actionable alerts with decision buttons
                   </p>
                 </div>
-                <span className="font-semibold text-success bg-success-soft border border-success-border px-2 py-0.5 rounded text-[11px]">
+                <span className="font-semibold text-success bg-success-soft border border-success-border px-2 py-0.5 rounded text-xs">
                   Connected
                 </span>
               </div>
 
               <div className="flex items-center justify-between py-3">
                 <div>
-                  <span className="font-semibold text-foreground">Email digest notifications</span>
-                  <p className="text-[11px] text-muted-foreground">
+                  <span className="text-sm font-semibold text-foreground">Email digest notifications</span>
+                  <p className="text-[13px] text-muted-foreground">
                     Daily summary of overdue or escalated approvals
                   </p>
                 </div>
-                <span className="font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded text-[11px]">
+                <span className="font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded text-xs">
                   Optional
                 </span>
               </div>
@@ -335,12 +335,12 @@ export function WorkspaceSettingsPage() {
 
         {/* Category 4: Security */}
         {activeCategory === "security" ? (
-          <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4 text-xs">
+          <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
             <div className="border-b border-border pb-3">
-              <h2 className="text-sm font-semibold text-foreground">
+              <h2 className="text-base font-semibold text-foreground">
                 Enterprise security & audit policies
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Session policies and immutable governance logs
               </p>
             </div>
@@ -348,10 +348,10 @@ export function WorkspaceSettingsPage() {
             <div className="space-y-3">
               <div className="rounded-md border border-border bg-muted/30 p-3 flex justify-between items-center">
                 <div>
-                  <span className="font-semibold text-foreground">
+                  <span className="text-sm font-semibold text-foreground">
                     Single sign-on (Google Workspace SAML)
                   </span>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[13px] text-muted-foreground">
                     All 5 workspace members authenticated via domain SSO
                   </p>
                 </div>
@@ -360,10 +360,10 @@ export function WorkspaceSettingsPage() {
 
               <div className="rounded-md border border-border bg-muted/30 p-3 flex justify-between items-center">
                 <div>
-                  <span className="font-semibold text-foreground">
+                  <span className="text-sm font-semibold text-foreground">
                     Immutable audit trail retention
                   </span>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[13px] text-muted-foreground">
                     Every decision, timestamp, and attachment preserved for 7 years
                   </p>
                 </div>

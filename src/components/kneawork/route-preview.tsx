@@ -46,8 +46,8 @@ export function RoutePreview({
       <div className="p-3.5 sm:p-4 bg-muted/40 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xs font-bold text-foreground">Who reviews this request?</h3>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <h3 className="text-sm font-bold text-foreground">Who reviews this request?</h3>
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
               {steps.length} {steps.length === 1 ? "approval step" : "approval steps"} · Typical
               review time: <strong className="text-foreground">{reviewTime}</strong>
             </p>
@@ -59,7 +59,7 @@ export function RoutePreview({
               variant="outline"
               size="sm"
               onClick={() => setExpanded((prev) => !prev)}
-              className="h-7 text-xs font-semibold"
+              className="font-semibold"
             >
               <span>{expanded ? "Hide route" : "View route"}</span>
               {expanded ? (
@@ -74,22 +74,22 @@ export function RoutePreview({
 
       {/* Expanded Route Content */}
       {expanded ? (
-        <div className="p-3.5 sm:p-4 space-y-2.5">
+        <div className="p-3.5 sm:p-4 space-y-3">
           {/* Submitter Origin (Clear separation: NOT an approval step) */}
-          <div className="flex items-center gap-2.5 rounded-md bg-muted/30 border border-border p-2.5 text-xs text-foreground">
-            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-2xs">
-              <User className="size-3" />
+          <div className="flex items-center gap-2.5 rounded-md bg-muted/30 border border-border p-3 text-sm text-foreground">
+            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-2xs">
+              <User className="size-3.5" />
             </span>
             <div className="min-w-0">
-              <p className="font-semibold text-foreground">You submit the request</p>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="font-semibold text-foreground text-sm">You submit the request</p>
+              <p className="text-[13px] text-muted-foreground">
                 Workflow initiates immediately and notifies the first assigned reviewer
               </p>
             </div>
           </div>
 
           {/* Sequential Ordered Reviewers */}
-          <ol className="space-y-1.5 pt-0.5">
+          <ol className="space-y-2 pt-0.5">
             {steps.map((step, idx) => {
               const person = personById(step.assigneeId);
               const duty = STEP_DUTIES[step.name] ?? "Validates request compliance";
@@ -101,25 +101,25 @@ export function RoutePreview({
                     <ArrowDown className="size-3.5 text-muted-foreground" />
                   </div>
 
-                  <div className="rounded-md border border-border bg-card p-2.5 text-xs shadow-2xs">
+                  <div className="rounded-md border border-border bg-card p-3 shadow-2xs">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2.5">
-                        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-attention-soft border border-attention-border text-[10px] font-bold text-attention mt-0.5">
+                        <span className="flex size-5.5 shrink-0 items-center justify-center rounded-full bg-attention-soft border border-attention-border text-xs font-bold text-attention mt-0.5">
                           {idx + 1}
                         </span>
                         <div>
-                          <p className="font-bold text-foreground">{step.name}</p>
-                          <p className="text-[11px] font-medium text-foreground">
+                          <p className="font-bold text-sm text-foreground">{step.name}</p>
+                          <p className="text-[13px] font-medium text-foreground mt-0.5">
                             {person.name} ·{" "}
                             <span className="text-muted-foreground font-normal">{person.role}</span>
                           </p>
-                          <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                          <p className="text-[13px] text-muted-foreground mt-1 leading-relaxed">
                             {duty}
                           </p>
                         </div>
                       </div>
 
-                      <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground shrink-0">
+                      <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground shrink-0">
                         {idx === 0
                           ? "1st review"
                           : idx === steps.length - 1

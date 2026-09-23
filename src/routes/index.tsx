@@ -121,8 +121,8 @@ export function HomePage() {
                   <span className="flex size-9 items-center justify-center rounded-md bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                     <Icon className="size-4.5" />
                   </span>
-                  <span className="mt-2 text-xs font-bold text-foreground">{tmpl.label}</span>
-                  <span className="mt-0.5 text-[11px] text-muted-foreground truncate w-full">
+                  <span className="mt-2 text-sm font-bold text-foreground">{tmpl.label}</span>
+                  <span className="mt-0.5 text-xs sm:text-[13px] text-muted-foreground truncate w-full">
                     {tmpl.valueLabel}
                   </span>
                 </Link>
@@ -134,10 +134,10 @@ export function HomePage() {
         {/* Personal Requests vs Organization Activity */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-foreground">
+            <h2 className="text-base font-semibold text-foreground">
               {isApprover ? "My submitted requests" : "Recent requests"}
             </h2>
-            <Link to="/requests" className="text-xs font-semibold text-primary hover:underline">
+            <Link to="/requests" className="text-sm font-semibold text-primary hover:underline">
               View all requests ({requests.length})
             </Link>
           </div>

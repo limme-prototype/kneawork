@@ -32,8 +32,8 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-bold text-foreground">Rules & evidence</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
+        <h2 className="text-base sm:text-lg font-bold text-foreground">Rules & evidence</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">
           Establish clear operational guardrails, mandatory supporting proof, and plain-language
           conditions.
         </p>
@@ -44,12 +44,12 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
         <div className="rounded-lg border border-border bg-card p-4 space-y-4">
           <div className="flex items-center gap-2 border-b border-border pb-2">
             <Shield className="size-4 text-foreground" />
-            <h3 className="text-xs font-bold text-foreground">Monetary boundaries</h3>
+            <h3 className="text-sm sm:text-base font-bold text-foreground">Monetary boundaries</h3>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="rule-min" className="text-xs font-semibold">
+              <Label htmlFor="rule-min" className="text-sm font-semibold">
                 Minimum amount (USD)
               </Label>
               <Input
@@ -59,15 +59,15 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
                 value={rules.minAmount ?? 0}
                 onChange={(e) => update({ minAmount: parseFloat(e.target.value) || 0 })}
                 placeholder="0 (No minimum)"
-                className="text-xs bg-card h-9"
+                className="bg-card"
               />
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs sm:text-[13px] text-muted-foreground">
                 Requests below this cannot be submitted.
               </p>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="rule-max" className="text-xs font-semibold">
+              <Label htmlFor="rule-max" className="text-sm font-semibold">
                 Maximum amount (USD)
               </Label>
               <Input
@@ -77,9 +77,9 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
                 value={rules.maxAmount ?? 10000}
                 onChange={(e) => update({ maxAmount: parseFloat(e.target.value) || 0 })}
                 placeholder="10000"
-                className="text-xs bg-card h-9"
+                className="bg-card"
               />
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs sm:text-[13px] text-muted-foreground">
                 Caps the maximum allowable spend under this policy.
               </p>
             </div>
@@ -90,7 +90,7 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
         <div className="rounded-lg border border-border bg-card p-4 space-y-4">
           <div className="flex items-center gap-2 border-b border-border pb-2">
             <FileCheck className="size-4 text-foreground" />
-            <h3 className="text-xs font-bold text-foreground">
+            <h3 className="text-sm sm:text-base font-bold text-foreground">
               Mandatory evidence & documentation
             </h3>
           </div>
@@ -106,20 +106,20 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
                   className="mt-0.5"
                 />
                 <div>
-                  <Label htmlFor="req-quotation" className="text-xs font-semibold cursor-pointer">
+                  <Label htmlFor="req-quotation" className="text-sm font-semibold cursor-pointer">
                     Require supplier quotation
                   </Label>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs sm:text-[13px] text-muted-foreground">
                     Requester must attach an official price quotation or proposal
                   </p>
                 </div>
               </div>
 
               {rules.requireQuotation ? (
-                <div className="flex items-center gap-2 text-xs self-end sm:self-center">
-                  <span className="text-muted-foreground text-[11px]">When amount is above:</span>
+                <div className="flex items-center gap-2 self-end sm:self-center">
+                  <span className="text-xs text-muted-foreground">When amount is above:</span>
                   <div className="flex items-center gap-1">
-                    <span className="text-muted-foreground font-mono">$</span>
+                    <span className="text-muted-foreground font-mono text-sm">$</span>
                     <Input
                       type="number"
                       min={0}
@@ -127,9 +127,9 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
                       onChange={(e) =>
                         update({ quotationThreshold: parseFloat(e.target.value) || 0 })
                       }
-                      className="text-xs bg-card h-8 w-24"
+                      className="bg-card h-9 w-24 text-sm"
                     />
-                    <span className="text-[11px] text-muted-foreground">USD</span>
+                    <span className="text-xs text-muted-foreground">USD</span>
                   </div>
                 </div>
               ) : null}
@@ -138,10 +138,10 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
             {/* Receipt */}
             <div className="flex items-center justify-between rounded-lg border border-border p-3 bg-muted/20">
               <div>
-                <Label htmlFor="req-receipt" className="text-xs font-semibold cursor-pointer">
+                <Label htmlFor="req-receipt" className="text-sm font-semibold cursor-pointer">
                   Require official receipt or tax invoice
                 </Label>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs sm:text-[13px] text-muted-foreground">
                   Essential for reimbursement claims and tax accounting validation
                 </p>
               </div>
@@ -155,10 +155,10 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
             {/* Manager Note */}
             <div className="flex items-center justify-between rounded-lg border border-border p-3 bg-muted/20">
               <div>
-                <Label htmlFor="req-note" className="text-xs font-semibold cursor-pointer">
+                <Label htmlFor="req-note" className="text-sm font-semibold cursor-pointer">
                   Require department lead endorsement note
                 </Label>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs sm:text-[13px] text-muted-foreground">
                   Mandates an explicit rationale commentary before forwarding to finance
                 </p>
               </div>
@@ -172,10 +172,10 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
             {/* Legal Assessment */}
             <div className="flex items-center justify-between rounded-lg border border-border p-3 bg-muted/20">
               <div>
-                <Label htmlFor="req-legal" className="text-xs font-semibold cursor-pointer">
+                <Label htmlFor="req-legal" className="text-sm font-semibold cursor-pointer">
                   Require legal risk assessment
                 </Label>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs sm:text-[13px] text-muted-foreground">
                   Recommended for commercial leases, non-disclosure agreements, and high-liability
                   contracts
                 </p>
@@ -191,21 +191,21 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
 
         {/* File Format & Size Limits */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-4">
-          <h3 className="text-xs font-bold text-foreground">File upload specifications</h3>
+          <h3 className="text-sm sm:text-base font-bold text-foreground">File upload specifications</h3>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label className="text-xs font-semibold">Allowed file formats</Label>
+              <Label className="text-sm font-semibold">Allowed file formats</Label>
               <div className="flex items-center gap-3">
                 {["PDF", "JPG", "PNG", "DOCX", "XLSX"].map((ext) => {
                   const isChecked = rules.allowedFileTypes.includes(ext);
                   return (
                     <label
                       key={ext}
-                      className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer"
+                      className="flex items-center gap-1.5 text-sm text-foreground cursor-pointer"
                     >
                       <Checkbox checked={isChecked} onCheckedChange={() => toggleFileType(ext)} />
-                      <span className="font-mono text-[11px]">{ext}</span>
+                      <span className="font-mono text-xs">{ext}</span>
                     </label>
                   );
                 })}
@@ -213,7 +213,7 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="max-size" className="text-xs font-semibold">
+              <Label htmlFor="max-size" className="text-sm font-semibold">
                 Maximum file size
               </Label>
               <div className="flex items-center gap-2">
@@ -224,9 +224,9 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
                   max={50}
                   value={rules.maxFileSizeMb}
                   onChange={(e) => update({ maxFileSizeMb: parseInt(e.target.value) || 10 })}
-                  className="text-xs bg-card h-9 w-24"
+                  className="bg-card h-10 w-24 text-sm"
                 />
-                <span className="text-xs text-muted-foreground">MB per file</span>
+                <span className="text-sm text-muted-foreground">MB per file</span>
               </div>
             </div>
           </div>
@@ -237,7 +237,7 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldAlert className="size-4 text-attention" />
-              <h3 className="text-xs font-bold text-foreground">
+              <h3 className="text-sm sm:text-base font-bold text-foreground">
                 Plain-language escalation condition
               </h3>
             </div>
@@ -249,13 +249,13 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
             />
           </div>
 
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             Automatically routes high-value requests to the Managing Director without requiring
             complex logic formulas.
           </p>
 
           {rules.conditionalDirectorAbove ? (
-            <div className="rounded-md border border-attention-border/60 bg-card p-3 text-xs flex flex-wrap items-center gap-2">
+            <div className="rounded-md border border-attention-border/60 bg-card p-3 text-sm flex flex-wrap items-center gap-2">
               <span className="font-semibold text-foreground">If total amount is greater than</span>
               <div className="flex items-center gap-1">
                 <span className="font-mono text-muted-foreground">$</span>
@@ -266,7 +266,7 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
                   onChange={(e) =>
                     update({ conditionalDirectorAbove: parseFloat(e.target.value) || 10000 })
                   }
-                  className="text-xs bg-card h-8 w-28"
+                  className="bg-card h-9 w-28 text-sm"
                 />
                 <span className="font-medium text-foreground">USD,</span>
               </div>
@@ -279,8 +279,8 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
 
         {/* Missing Evidence Policy */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-xs font-bold text-foreground">Exception enforcement behavior</h3>
-          <p className="text-xs text-muted-foreground">
+          <h3 className="text-sm sm:text-base font-bold text-foreground">Exception enforcement behavior</h3>
+          <p className="text-sm text-muted-foreground">
             What happens if the employee attempts to submit without mandatory evidence?
           </p>
 
@@ -291,26 +291,26 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
             }
             className="space-y-2"
           >
-            <label className="flex items-start gap-3 rounded-lg border border-border p-3 bg-muted/20 cursor-pointer hover:bg-muted/40">
+            <label className="flex items-start gap-3 rounded-lg border border-border p-3.5 bg-muted/20 cursor-pointer hover:bg-muted/40">
               <RadioGroupItem value="prevent" id="me-prevent" className="mt-0.5" />
               <div>
-                <span className="text-xs font-semibold text-foreground block">
+                <span className="text-sm font-semibold text-foreground block">
                   Prevent submission (Recommended)
                 </span>
-                <span className="text-[11px] text-muted-foreground leading-relaxed block mt-0.5">
+                <span className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed block mt-0.5">
                   The employee cannot click submit until valid quotation or receipt files are
                   attached. Prevents back-and-forth email/Telegram chasing.
                 </span>
               </div>
             </label>
 
-            <label className="flex items-start gap-3 rounded-lg border border-border p-3 bg-muted/20 cursor-pointer hover:bg-muted/40">
+            <label className="flex items-start gap-3 rounded-lg border border-border p-3.5 bg-muted/20 cursor-pointer hover:bg-muted/40">
               <RadioGroupItem value="allow_changes_later" id="me-allow" className="mt-0.5" />
               <div>
-                <span className="text-xs font-semibold text-foreground block">
+                <span className="text-sm font-semibold text-foreground block">
                   Allow submission and request changes later
                 </span>
-                <span className="text-[11px] text-muted-foreground leading-relaxed block mt-0.5">
+                <span className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed block mt-0.5">
                   Allows submission with a warning; approvers can pause the request and request
                   additional proof.
                 </span>
