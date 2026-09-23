@@ -1,0 +1,90 @@
+import { Layers, Save, Sparkles, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { ExtendedTemplate } from "@/lib/kneawork/template-types";
+
+interface TemplateBuilderHeaderProps {
+  template: ExtendedTemplate;
+  isSavingDraft: boolean;
+  onCancel: () => void;
+  onSaveDraft: () => void;
+  onContinue: () => void;
+  isLastStep: boolean;
+  canPublish: boolean;
+}
+
+export function TemplateBuilderHeader({
+  template,
+  isSavingDraft,
+  onCancel,
+  onSaveDraft,
+  onContinue,
+  isLastStep,
+  canPublish,
+}: TemplateBuilderHeaderProps) {
+  return (
+    <div className="border-b border-border bg-card px-4 py-4 sm:px-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+            <span>Manage</span>
+            <span>/</span>
+            <span>Templates</span>
+            <span>/</span>
+            <span className="font-medium text-foreground">
+              {template.label.trim() ? template.label : "New template"}
+            </span>
+            <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.2 text-[10px] font-semibold text-attention ml-1 flex items-center gap-1">
+              <Layers className="size-3" />v{template.version} · {template.versionStatus}
+            </span>
+          </div>
+          <h1 className="text-base sm:text-lg font-bold text-foreground">
+            {template.label.trim() ? `Edit ${template.label}` : "Create new request template"}
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            Guided workflow designer for governed request forms, sequential reviewers, and evidence
+            rules
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onCancel}
+            className="h-8 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <X className="size-3.5 mr-1" />
+            Cancel
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSaveDraft}
+            disabled={isSavingDraft}
+            className="h-8 text-xs border-attention-border text-attention hover:bg-attention-soft"
+          >
+            <Save className="size-3.5 mr-1" />
+            {isSavingDraft ? "Saving draft..." : "Save draft"}
+          </Button>
+
+          <Button
+            size="sm"
+            onClick={onContinue}
+            className="h-8 text-xs font-semibold gap-1.5"
+            disabled={isLastStep && !canPublish}
+          >
+            {isLastStep ? (
+              <>
+                <Sparkles className="size-3.5" />
+                Publish template
+              </>
+            ) : (
+              "Continue"
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
