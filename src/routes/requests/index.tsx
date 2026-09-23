@@ -3,6 +3,7 @@ import { Plus, Filter } from "lucide-react";
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { RequestCard } from "@/components/kneawork/request-card";
 import { RequestTable } from "@/components/kneawork/request-table";
 import { SearchInput } from "@/components/kneawork/search-input";
@@ -40,37 +41,33 @@ function RequestsListPage() {
       breadcrumbs={[{ label: "Workspace", to: "/" }, { label: "Requests" }]}
     >
       <div className="space-y-6">
-        {/* Header Bar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
-          <div>
-            <h1 className="text-base sm:text-lg font-bold text-foreground">
-              Team requests repository ({requests.length})
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Audit record of all operational purchase, expense, and leave submissions
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="flex-1 sm:w-64">
-              <SearchInput
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search ID, title..."
-              />
+        {/* Standard PageHeader */}
+        <PageHeader
+          eyebrow="Workspace"
+          title={`All Requests (${requests.length})`}
+          description="Audit record of all operational purchase, expense, and leave submissions across the team."
+          actions={
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <div className="flex-1 sm:w-64">
+                <SearchInput
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search ID, title, reason..."
+                />
+              </div>
+              <Button
+                asChild
+                size="default"
+                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs"
+              >
+                <Link to="/requests/new">
+                  <Plus className="size-4" />
+                  Create request
+                </Link>
+              </Button>
             </div>
-            <Button
-              asChild
-              size="sm"
-              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0"
-            >
-              <Link to="/requests/new">
-                <Plus className="size-4" />
-                New request
-              </Link>
-            </Button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs sm:text-[13px] scrollbar-none">

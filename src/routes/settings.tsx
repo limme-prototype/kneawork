@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,18 +47,25 @@ export function WorkspaceSettingsPage() {
 
   return (
     <AppShell
-      title="Workspace Settings"
-      subtitle="Configure approval policies, notifications, and regional workspace defaults"
       breadcrumbs={[{ label: "Settings" }, { label: "Workspace Settings" }]}
     >
       <div className="space-y-6 max-w-5xl">
-        {/* Header */}
-        <div className="border-b border-border pb-4">
-          <h1 className="text-base sm:text-lg font-bold text-foreground">Workspace governance & policies</h1>
-          <p className="text-sm text-muted-foreground">
-            Settings apply organization-wide across all sequential approval routes and audit logs
-          </p>
-        </div>
+        <PageHeader
+          eyebrow="Settings"
+          title="Workspace Settings"
+          description="Configure approval policies, notifications, and regional workspace defaults organization-wide."
+          actions={
+            <Button
+              form="settings-form"
+              type="submit"
+              size="default"
+              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs"
+            >
+              <Check className="size-4" />
+              Save changes
+            </Button>
+          }
+        />
 
         {/* Feedback Alert */}
         {savedMessage ? (
@@ -129,7 +137,7 @@ export function WorkspaceSettingsPage() {
 
         {/* Category 1: Workflow */}
         {activeCategory === "workflow" ? (
-          <form onSubmit={handleSave} className="space-y-4">
+          <form id="settings-form" onSubmit={handleSave} className="space-y-4">
             {/* Setting Row 1: Approval Reminders */}
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border pb-3">
@@ -212,7 +220,7 @@ export function WorkspaceSettingsPage() {
 
         {/* Category 2: Workspace & Localization */}
         {activeCategory === "workspace" ? (
-          <form onSubmit={handleSave} className="space-y-4">
+          <form id="settings-form" onSubmit={handleSave} className="space-y-4">
             <div className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="border-b border-border pb-3">
                 <h2 className="text-base font-semibold text-foreground">

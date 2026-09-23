@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { SearchInput } from "@/components/kneawork/search-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -183,33 +184,31 @@ export function TeamAndRolesPage() {
           </div>
         ) : null}
 
-        {/* Header Bar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
-          <div>
-            <h1 className="text-base font-bold text-foreground">Organization members & workload</h1>
-            <p className="text-xs text-muted-foreground">
-              Review team workload, approval roles, and designated signing authorities
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="flex-1 sm:w-64">
-              <SearchInput
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search member, department..."
-              />
+        {/* Standard PageHeader */}
+        <PageHeader
+          eyebrow="Manage"
+          title="Team & Roles"
+          description="Review team workload, approval roles, and designated signing authorities across departments."
+          actions={
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <div className="flex-1 sm:w-64">
+                <SearchInput
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search member, department..."
+                />
+              </div>
+              <Button
+                size="default"
+                onClick={() => setIsInviteOpen(true)}
+                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs"
+              >
+                <UserPlus className="size-4" />
+                Invite member
+              </Button>
             </div>
-            <Button
-              size="sm"
-              onClick={() => setIsInviteOpen(true)}
-              className="gap-1.5 text-xs sm:text-[13px] font-semibold shrink-0"
-            >
-              <UserPlus className="size-3.5" />
-              Invite member
-            </Button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Desktop Table View */}
         <div className="hidden sm:block overflow-hidden rounded-lg border border-border bg-card shadow-2xs">

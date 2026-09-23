@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { RequestCard } from "@/components/kneawork/request-card";
 import { RequestTable } from "@/components/kneawork/request-table";
 import { SearchInput } from "@/components/kneawork/search-input";
@@ -72,26 +73,20 @@ export function ActionInboxPage() {
         ) : null}
 
         {/* Header Summary */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
-          <div>
-            <h1 className="text-base font-bold text-foreground">
-              Needs your action ({myActions.length})
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Decisions and review steps currently assigned to {me.name}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="flex-1 sm:w-64">
+        <PageHeader
+          eyebrow="Workspace"
+          title={`My Action (${myActions.length})`}
+          description={`Requests assigned to ${me.name} that require a decision or confirmation.`}
+          actions={
+            <div className="w-full sm:w-64">
               <SearchInput
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Filter actions..."
               />
             </div>
-          </div>
-        </div>
+          }
+        />
 
         {/* Filter Tabs using Button component */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { RequestCard } from "@/components/kneawork/request-card";
 import { RequestTable } from "@/components/kneawork/request-table";
 import { Button } from "@/components/ui/button";
@@ -36,68 +37,96 @@ export function HomePage() {
   const myRequests = requests.filter((r) => r.requesterId === currentUserId);
   const isApprover = me.id === "u_manager" || me.id === "u_finance" || me.id === "u_director";
   const isAdmin = me.id === "u_admin";
+  const waitingForOthers = myRequests.filter((r) => r.status === "in_review");
+  const completedCount = requests.filter((r) => r.status === "approved").length;
 
   return (
     <AppShell
       title="Home"
-      subtitle={`${me.name} · ${me.title ?? me.role}`}
       breadcrumbs={[{ label: "Workspace" }, { label: "Home" }]}
     >
       <div className="space-y-6 max-w-5xl">
-        {/* User Identity Header */}
-        <div className="flex flex-col gap-1 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-base font-bold text-foreground">Welcome back, {me.name}</h1>
-            <p className="text-xs text-muted-foreground">
-              {me.title ?? `${me.role} · ${me.department}`}
-            </p>
-          </div>
-
-          {isAdmin ? (
-            <Button
-              asChild
-              size="sm"
-              variant="outline"
-              className="text-xs font-semibold gap-1.5 self-start sm:self-auto"
-            >
-              <Link to="/admin">
-                <LayoutDashboard className="size-3.5 text-muted-foreground" />
-                Operations overview
-              </Link>
-            </Button>
-          ) : null}
-        </div>
-
-        {/* Approver / Reviewer Priority Section: "Needs your attention" Banner */}
-        {myActions.length > 0 ? (
-          <div className="rounded-lg border border-attention-border bg-attention-soft p-4 shadow-2xs">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="flex size-8 items-center justify-center rounded-md bg-attention text-xs font-bold text-attention-foreground shadow-2xs">
-                  {myActions.length}
-                </span>
-                <div>
-                  <h2 className="text-xs font-bold text-attention">Needs your attention</h2>
-                  <p className="text-xs text-foreground mt-0.5">
-                    {myActions.length === 1
-                      ? `1 request is waiting for your review as ${me.role}.`
-                      : `${myActions.length} requests require your review to proceed.`}
-                  </p>
-                </div>
-              </div>
+        {/* Consistent Standard PageHeader */}
+        <PageHeader
+          eyebrow="Workspace"
+          title={`Good morning, ${me.name}`}
+          description="Here is what needs your attention today across active requests and approval routes."
+          actions={
+            <div className="flex items-center gap-2">
+              {isAdmin && (
+                <Button asChild size="sm" variant="outline" className="gap-1.5 font-semibold text-xs sm:text-[13px]">
+                  <Link to="/admin">
+                    <LayoutDashboard className="size-3.5 text-muted-foreground" />
+                    Overview
+                  </Link>
+                </Button>
+              )}
               <Button
                 asChild
-                size="sm"
-                className="bg-attention text-attention-foreground hover:bg-attention/90 text-xs font-semibold h-8 self-start sm:self-auto"
+                size="default"
+                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs"
               >
-                <Link to="/action">
-                  Review now
-                  <ArrowRight className="size-3.5 ml-1.5" />
+                <Link to="/requests/new">
+                  <Plus className="size-4" />
+                  Create request
                 </Link>
               </Button>
             </div>
+          }
+        />
+
+        {/* Actionable KPI Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="rounded-lg border border-attention-border bg-attention-soft/50 p-4 shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground">Needs your action</span>
+              <Inbox className="size-4 text-attention" />
+            </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground">{myActions.length}</span>
+              <span className="text-xs text-muted-foreground">pending decision</span>
+            </div>
+            {myActions.length > 0 && (
+              <div className="mt-3">
+                <Link to="/action" className="text-xs font-bold text-attention hover:underline inline-flex items-center gap-1">
+                  Review queue <ArrowRight className="size-3" />
+                </Link>
+              </div>
+            )}
           </div>
-        ) : null}
+
+          <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground">Waiting for others</span>
+              <Clock className="size-4 text-muted-foreground" />
+            </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground">{waitingForOthers.length}</span>
+              <span className="text-xs text-muted-foreground">in active review</span>
+            </div>
+            <div className="mt-3">
+              <Link to="/requests" className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1">
+                Track requests <ArrowRight className="size-3" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground">Completed in workspace</span>
+              <FileText className="size-4 text-muted-foreground" />
+            </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground">{completedCount}</span>
+              <span className="text-xs text-muted-foreground">approved submissions</span>
+            </div>
+            <div className="mt-3">
+              <Link to="/requests" className="text-xs font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+                View archive <ArrowRight className="size-3" />
+              </Link>
+            </div>
+          </div>
+        </div>
 
         {/* Quick Create Actions */}
         <div>

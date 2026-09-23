@@ -14,9 +14,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { ActionBar } from "@/components/kneawork/action-bar";
 import { AppShell } from "@/components/kneawork/app-shell";
 import { ApprovalTimeline } from "@/components/kneawork/approval-timeline";
 import { DecisionDialog } from "@/components/kneawork/decision-dialog";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { StatusBadge, UrgencyBadge, formatDueStatus } from "@/components/kneawork/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -119,82 +121,73 @@ function RequestDetailPage() {
           </div>
         ) : null}
 
-        {/* 1. Header Bar: Title, Code, Metadata + Immediate Action Buttons */}
-        <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-mono text-xs font-semibold text-muted-foreground shrink-0">
-                {request.code}
-              </span>
-              <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-foreground capitalize shrink-0">
-                {request.type} request
-              </span>
-              <div className="shrink-0">
-                <StatusBadge
-                  status={request.status}
-                  currentStepName={step?.name}
-                  assigneeName={owner?.name}
-                  isAssignedToMe={Boolean(isMe)}
-                />
+        {/* Standard PageHeader */}
+        <PageHeader
+          breadcrumbs={[
+            { label: "Workspace", to: "/" },
+            { label: "Requests", to: "/requests" },
+            { label: request.code },
+          ]}
+          eyebrow={`${request.code} · ${request.type} request`}
+          title={request.title}
+          description={`Submitted by ${requester.name} (${request.department}) · ${request.submittedLabel}`}
+          status={
+            <StatusBadge
+              status={request.status}
+              currentStepName={step?.name}
+              assigneeName={owner?.name}
+              isAssignedToMe={Boolean(isMe)}
+            />
+          }
+          actions={
+            isMe ? (
+              <div className="hidden sm:flex items-center gap-2 shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-border text-danger hover:bg-danger-soft hover:border-danger-border font-semibold"
+                  onClick={() => setActiveDecision("reject")}
+                >
+                  <XCircle className="mr-1.5 size-4 text-danger" />
+                  Reject
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-border text-warning hover:bg-warning-soft hover:border-warning-border font-semibold"
+                  onClick={() => setActiveDecision("changes")}
+                >
+                  <RotateCcw className="mr-1.5 size-4 text-warning" />
+                  Request changes
+                </Button>
+                <Button
+                  size="default"
+                  className="bg-success text-white hover:bg-success/90 font-semibold shadow-2xs"
+                  onClick={() => setActiveDecision("approve")}
+                >
+                  <CheckCircle2 className="mr-1.5 size-4" />
+                  Approve request
+                </Button>
               </div>
-            </div>
-            <h1 className="mt-1.5 text-xl font-bold text-foreground tracking-tight sm:text-2xl break-words">
-              {request.title}
-            </h1>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Submitted by <span className="font-semibold text-foreground">{requester.name}</span> (
-              {request.department}) · {request.submittedLabel}
-            </p>
-          </div>
-
-          {/* Contextual Action Group (Header actions visible sm and up; mobile uses sticky bottom bar) */}
-          {isMe ? (
-            <div className="hidden sm:flex items-center gap-2 shrink-0">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-border text-danger hover:bg-danger-soft hover:border-danger-border font-semibold"
-                onClick={() => setActiveDecision("reject")}
-              >
-                <XCircle className="mr-1.5 size-4 text-danger" />
-                Reject
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-border text-warning hover:bg-warning-soft hover:border-warning-border font-semibold"
-                onClick={() => setActiveDecision("changes")}
-              >
-                <RotateCcw className="mr-1.5 size-4 text-warning" />
-                Request changes
-              </Button>
-              <Button
-                size="sm"
-                className="bg-success text-white hover:bg-success/90 font-semibold shadow-2xs"
-                onClick={() => setActiveDecision("approve")}
-              >
-                <CheckCircle2 className="mr-1.5 size-4" />
-                Approve request
-              </Button>
-            </div>
-          ) : (
-            <div className="text-xs text-muted-foreground shrink-0">
-              {request.status === "approved" ? (
-                <span className="inline-flex items-center gap-1 font-semibold text-success">
-                  <CheckCircle2 className="size-4 text-success" /> Fully approved & closed
-                </span>
-              ) : request.status === "rejected" ? (
-                <span className="inline-flex items-center gap-1 font-semibold text-danger">
-                  <XCircle className="size-4 text-danger" /> Closed as rejected
-                </span>
-              ) : (
-                <span>
-                  Assigned to <strong className="text-foreground">{owner?.name}</strong>
-                </span>
-              )}
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="text-xs text-muted-foreground shrink-0">
+                {request.status === "approved" ? (
+                  <span className="inline-flex items-center gap-1 font-semibold text-success">
+                    <CheckCircle2 className="size-4 text-success" /> Fully approved & closed
+                  </span>
+                ) : request.status === "rejected" ? (
+                  <span className="inline-flex items-center gap-1 font-semibold text-danger">
+                    <XCircle className="size-4 text-danger" /> Closed as rejected
+                  </span>
+                ) : (
+                  <span>
+                    Assigned to <strong className="text-foreground">{owner?.name}</strong>
+                  </span>
+                )}
+              </div>
+            )
+          }
+        />
 
         {/* 2. Sentinel Split Layout: Main Content (Left 8 cols) + Aside Status/Metadata (Right 4 cols) */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 min-w-0">
@@ -433,30 +426,39 @@ function RequestDetailPage() {
 
       {/* Mobile Sticky Action Bar */}
       {isMe ? (
-        <div className="sm:hidden fixed bottom-14 left-0 right-0 p-3 bg-card/95 backdrop-blur-xs border-t border-border z-30 shadow-lg flex items-center justify-between gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 border-border text-danger hover:bg-danger-soft text-xs font-semibold h-9"
-            onClick={() => setActiveDecision("reject")}
-          >
-            Reject
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 border-border text-warning hover:bg-warning-soft text-xs font-semibold h-9"
-            onClick={() => setActiveDecision("changes")}
-          >
-            Changes
-          </Button>
-          <Button
-            size="sm"
-            className="flex-2 bg-success text-white hover:bg-success/90 text-xs font-semibold h-9 shadow-2xs"
-            onClick={() => setActiveDecision("approve")}
-          >
-            Approve
-          </Button>
+        <div className="sm:hidden fixed bottom-14 left-0 right-0 z-30">
+          <ActionBar
+            sticky={false}
+            destructive={
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-border text-danger hover:bg-danger-soft text-xs font-semibold"
+                onClick={() => setActiveDecision("reject")}
+              >
+                Reject
+              </Button>
+            }
+            secondary={
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-border text-warning hover:bg-warning-soft text-xs font-semibold"
+                onClick={() => setActiveDecision("changes")}
+              >
+                Changes
+              </Button>
+            }
+            primary={
+              <Button
+                size="sm"
+                className="bg-success text-white hover:bg-success/90 text-xs font-semibold shadow-2xs"
+                onClick={() => setActiveDecision("approve")}
+              >
+                Approve
+              </Button>
+            }
+          />
         </div>
       ) : null}
 

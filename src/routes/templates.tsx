@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { TemplateBuilder } from "@/components/kneawork/template-builder/template-builder";
 import { TemplatePreviewDialog } from "@/components/kneawork/template-builder/template-preview-dialog";
 import { Button } from "@/components/ui/button";
@@ -140,37 +141,32 @@ export function TemplatesPage() {
           </div>
         ) : null}
 
-        {/* Header Bar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
-          <div>
-            <h1 className="text-base font-bold text-foreground">
-              Standard request & approval workflows
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Governed sequential routes that ensure requests reach designated signers and audit
-              checkpoints
-            </p>
-          </div>
+        {/* Standard PageHeader */}
+        <PageHeader
+          eyebrow="Manage"
+          title="Templates"
+          description="Reusable request and approval processes that ensure requests reach designated signers and audit checkpoints."
+          actions={
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <div className="flex-1 sm:w-64">
+                <SearchInput
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search templates or policies..."
+                />
+              </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="flex-1 sm:w-64">
-              <SearchInput
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search templates or policies..."
-              />
+              <Button
+                size="default"
+                onClick={handleStartNewTemplate}
+                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs"
+              >
+                <Plus className="size-4" />
+                New template
+              </Button>
             </div>
-
-            <Button
-              size="sm"
-              onClick={handleStartNewTemplate}
-              className="gap-1.5 text-xs sm:text-[13px] font-semibold shrink-0"
-            >
-              <Plus className="size-3.5" />
-              New template
-            </Button>
-          </div>
-        </div>
+          }
+        />
 
         {/* Category Filters */}
         <div className="flex items-center gap-1.5 border-b border-border/60 pb-3 overflow-x-auto scrollbar-none">

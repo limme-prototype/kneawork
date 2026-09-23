@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { ActionBar } from "@/components/kneawork/action-bar";
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { RoutePreview } from "@/components/kneawork/route-preview";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -166,8 +168,6 @@ export function NewRequestPage() {
 
   return (
     <AppShell
-      title={`Create ${currentTemplate.label.toLowerCase()}`}
-      subtitle="Complete your request details. The preview on the right shows who will review it."
       breadcrumbs={[
         { label: "Workspace", to: "/" },
         { label: "Requests", to: "/requests" },
@@ -175,15 +175,19 @@ export function NewRequestPage() {
       ]}
     >
       <div className="space-y-6">
-        {/* Draft Notice */}
-        {isDraftSaved ? (
-          <div className="rounded-md border border-success-border bg-success-soft p-3 text-xs text-success flex items-center gap-2 shadow-2xs">
-            <CheckCircle2 className="size-4 shrink-0" />
-            <span className="font-medium text-foreground">
-              Draft saved. You can safely return to complete this submission later.
-            </span>
-          </div>
-        ) : null}
+        <PageHeader
+          eyebrow="Create Request"
+          title={`Create ${currentTemplate.label.toLowerCase()}`}
+          description="Complete your request details. The preview on the right shows who will review and confirm it."
+          status={
+            isDraftSaved ? (
+              <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
+                <CheckCircle2 className="size-3" />
+                Draft saved
+              </span>
+            ) : null
+          }
+        />
 
         {/* 1. Request Type Selector Pills */}
         <div className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-2">
@@ -401,33 +405,6 @@ export function NewRequestPage() {
                 )}
               </div>
 
-              {/* Form Action Footer */}
-              <div className="flex items-center justify-between border-t border-border pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleSaveDraft}
-                  className="text-xs gap-1.5"
-                >
-                  <Save className="size-3.5" />
-                  Save draft
-                </Button>
-
-                <div className="flex items-center gap-2">
-                  <Button asChild variant="outline" size="sm" className="text-xs">
-                    <Link to="/requests">Cancel</Link>
-                  </Button>
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="bg-primary text-primary-foreground hover:bg-primary-hover text-xs font-semibold gap-1.5"
-                  >
-                    <Send className="size-3.5" />
-                    Submit request
-                  </Button>
-                </div>
-              </div>
             </form>
           </div>
 
@@ -447,6 +424,43 @@ export function NewRequestPage() {
             </div>
           </div>
         </div>
+
+        {/* Sticky Workflow Action Bar */}
+        <ActionBar
+          status={
+            isDraftSaved
+              ? "Draft · Saved just now"
+              : "Draft auto-saved locally"
+          }
+          secondary={
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleSaveDraft}
+              className="gap-1.5 font-semibold text-xs sm:text-[13px]"
+            >
+              <Save className="size-3.5" />
+              Save draft
+            </Button>
+          }
+          destructive={
+            <Button asChild variant="outline" size="sm" className="text-xs sm:text-[13px]">
+              <Link to="/requests">Cancel</Link>
+            </Button>
+          }
+          primary={
+            <Button
+              form="request-form"
+              type="submit"
+              size="default"
+              className="bg-primary text-primary-foreground hover:bg-primary-hover font-semibold gap-1.5 shadow-2xs"
+            >
+              <Send className="size-3.5" />
+              Submit request
+            </Button>
+          }
+        />
       </div>
     </AppShell>
   );

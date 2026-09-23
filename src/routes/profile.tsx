@@ -17,6 +17,7 @@ import {
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,11 +55,25 @@ export function ProfilePage() {
 
   return (
     <AppShell
-      title="My Profile"
-      subtitle="Manage your personal information, access, and preferences"
       breadcrumbs={[{ label: "Settings" }, { label: "My Profile" }]}
     >
       <div className="space-y-6 max-w-5xl">
+        <PageHeader
+          eyebrow="Account"
+          title="My Profile"
+          description="Manage your personal contact details, notification dispatch, and security credentials."
+          actions={
+            <Button
+              form="profile-form"
+              type="submit"
+              size="default"
+              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs"
+            >
+              <Check className="size-4" />
+              Save changes
+            </Button>
+          }
+        />
         {/* Profile Identity Card (Compact HiBob Record: Department, Role & Reporting Line grouped) */}
         <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -178,7 +193,7 @@ export function ProfilePage() {
                 </div>
               ) : null}
 
-              <form onSubmit={handleSave} className="space-y-4">
+              <form id="profile-form" onSubmit={handleSave} className="space-y-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold text-muted-foreground">Full name</Label>

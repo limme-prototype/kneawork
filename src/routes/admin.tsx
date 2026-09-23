@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
+import { PageHeader } from "@/components/kneawork/page-header";
 import { RequestTable } from "@/components/kneawork/request-table";
 import { SearchInput } from "@/components/kneawork/search-input";
 import { Button } from "@/components/ui/button";
@@ -46,11 +47,26 @@ function OperationsOverviewPage() {
 
   return (
     <AppShell
-      title="Operations overview"
-      subtitle="All team requests and approval activity"
       breadcrumbs={[{ label: "Manage" }, { label: "Operations overview" }]}
     >
       <div className="space-y-6">
+        <PageHeader
+          eyebrow="Manage"
+          title="Operations Overview"
+          description="Real-time oversight of all departmental requests, review bottlenecks, and SLA compliance."
+          actions={
+            <Button
+              asChild
+              size="default"
+              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs"
+            >
+              <Link to="/requests/new">
+                <Plus className="size-4" />
+                Create request
+              </Link>
+            </Button>
+          }
+        />
         {/* 1. Sentinel Priority Summary Counters */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {/* Needs My Action (Attention token) */}
