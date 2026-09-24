@@ -9,8 +9,18 @@ export const ROUTE_META: Record<string, RouteMeta> = {
   "/": { label: "Home", href: "/", group: "workspace" },
   "/action": { label: "My Action", href: "/action", parent: "/", group: "workspace" },
   "/requests": { label: "All Requests", href: "/requests", parent: "/", group: "workspace" },
-  "/requests/new": { label: "Create Request", href: "/requests/new", parent: "/requests", group: "workspace" },
-  "/requests/$requestId": { label: "Request Details", href: "/requests", parent: "/requests", group: "workspace" },
+  "/requests/new": {
+    label: "Create Request",
+    href: "/requests/new",
+    parent: "/requests",
+    group: "workspace",
+  },
+  "/requests/$requestId": {
+    label: "Request Details",
+    href: "/requests",
+    parent: "/requests",
+    group: "workspace",
+  },
   "/templates": { label: "Templates", href: "/templates", parent: "/", group: "manage" },
   "/team": { label: "Team & Roles", href: "/team", parent: "/", group: "manage" },
   "/admin": { label: "Operations Overview", href: "/admin", parent: "/", group: "manage" },
@@ -20,8 +30,8 @@ export const ROUTE_META: Record<string, RouteMeta> = {
 
 export interface BreadcrumbSegment {
   label: string;
-  to?: string;
-  isCurrent?: boolean;
+  to?: string | undefined;
+  isCurrent?: boolean | undefined;
 }
 
 /**

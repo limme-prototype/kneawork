@@ -30,9 +30,7 @@ export function ResponsiveActionBar({
         {/* Left: Status / Progress / Cancel */}
         <div className="flex items-center gap-3 min-w-0">
           {status ? (
-            <div className="text-xs text-muted-foreground truncate hidden sm:block">
-              {status}
-            </div>
+            <div className="text-xs text-muted-foreground truncate hidden sm:block">{status}</div>
           ) : null}
           {destructive ? <div className="shrink-0">{destructive}</div> : null}
         </div>

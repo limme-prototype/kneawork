@@ -102,7 +102,9 @@ export function TemplateBuilderHeader({
         {/* Global Exit Action (Cancel) only — prevents duplicated decision buttons */}
         <div className="flex items-center gap-2">
           {isSavingDraft ? (
-            <span className="text-xs text-muted-foreground animate-pulse mr-1">Saving draft...</span>
+            <span className="text-xs text-muted-foreground animate-pulse mr-1">
+              Saving draft...
+            </span>
           ) : null}
           <Button
             variant="outline"

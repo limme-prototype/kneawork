@@ -358,7 +358,9 @@ export function TemplatesPage() {
                   {/* Action Footer (Owner 13px, Open template button 14px) */}
                   <div className="flex items-center justify-between text-[13px] text-muted-foreground border-t border-border/60 pt-3 mt-2">
                     <div className="space-y-0.5">
-                      <div className="text-[13px] text-foreground font-medium">Owner: {t.ownerName}</div>
+                      <div className="text-[13px] text-foreground font-medium">
+                        Owner: {t.ownerName}
+                      </div>
                       <div className="text-xs text-muted-foreground">
                         Used {t.usageCount} times · Last used {t.lastUsed}
                       </div>
@@ -420,7 +422,9 @@ export function TemplatesPage() {
                   Purpose & completion outcome
                 </span>
                 <div className="bg-muted/40 p-3 rounded-lg border border-border space-y-2">
-                  <p className="text-sm text-foreground leading-relaxed">{selectedTemplate.description}</p>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {selectedTemplate.description}
+                  </p>
                   <div className="border-t border-border/60 pt-2 text-xs sm:text-[13px] text-muted-foreground">
                     <strong className="text-foreground">Successful completion deliverable:</strong>{" "}
                     {selectedTemplate.completionOutcome}

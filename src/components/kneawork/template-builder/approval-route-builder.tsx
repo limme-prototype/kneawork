@@ -180,9 +180,7 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
     }
   };
 
-  const activeStep = activeId
-    ? template.routeSteps.find((s) => s.id === activeId)
-    : null;
+  const activeStep = activeId ? template.routeSteps.find((s) => s.id === activeId) : null;
 
   return (
     <div className="space-y-6">
@@ -319,7 +317,8 @@ export function ApprovalRouteBuilder({ template, onChange }: ApprovalRouteBuilde
               {editingStep ? "Edit approval step" : "Add approval step"}
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
-              Define the responsible reviewer role, the verification checklist, and the response SLA.
+              Define the responsible reviewer role, the verification checklist, and the response
+              SLA.
             </DialogDescription>
           </DialogHeader>
 
@@ -474,14 +473,9 @@ function SortableStepCard({
   onEdit: () => void;
   onRemove: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: step.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: step.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -535,9 +529,7 @@ function SortableStepCard({
               )}
             </div>
 
-            <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
-              {step.responsibility}
-            </p>
+            <p className="text-sm text-foreground/90 mt-1 leading-relaxed">{step.responsibility}</p>
           </div>
         </div>
 
@@ -614,8 +606,8 @@ function SortableStepCard({
         <div className="rounded border border-danger-border bg-danger-soft/40 p-2.5 text-xs text-danger flex items-center gap-2">
           <AlertTriangle className="size-4 shrink-0" />
           <span>
-            <strong>Publishing blocked:</strong> {step.roleName} has no active member assigned
-            in this workspace. Assign a member before publishing this template.
+            <strong>Publishing blocked:</strong> {step.roleName} has no active member assigned in
+            this workspace. Assign a member before publishing this template.
           </span>
         </div>
       ) : null}

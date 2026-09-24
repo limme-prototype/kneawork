@@ -41,10 +41,7 @@ export function HomePage() {
   const completedCount = requests.filter((r) => r.status === "approved").length;
 
   return (
-    <AppShell
-      title="Home"
-      breadcrumbs={[{ label: "Workspace" }, { label: "Home" }]}
-    >
+    <AppShell title="Home" breadcrumbs={[{ label: "Workspace" }, { label: "Home" }]}>
       <div className="space-y-6">
         {/* Consistent Standard PageHeader */}
         <PageHeader
@@ -54,7 +51,12 @@ export function HomePage() {
           actions={
             <div className="flex items-center gap-2">
               {isAdmin && (
-                <Button asChild size="sm" variant="outline" className="gap-1.5 font-semibold text-xs sm:text-[13px]">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5 font-semibold text-xs sm:text-[13px]"
+                >
                   <Link to="/admin">
                     <LayoutDashboard className="size-3.5 text-muted-foreground" />
                     Overview
@@ -88,7 +90,10 @@ export function HomePage() {
             </div>
             {myActions.length > 0 && (
               <div className="mt-3">
-                <Link to="/action" className="text-xs font-bold text-attention hover:underline inline-flex items-center gap-1">
+                <Link
+                  to="/action"
+                  className="text-xs font-bold text-attention hover:underline inline-flex items-center gap-1"
+                >
                   Review queue <ArrowRight className="size-3" />
                 </Link>
               </div>
@@ -97,7 +102,9 @@ export function HomePage() {
 
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground">Waiting for others</span>
+              <span className="text-xs font-semibold text-muted-foreground">
+                Waiting for others
+              </span>
               <Clock className="size-4 text-muted-foreground" />
             </div>
             <div className="mt-2 flex items-baseline gap-2">
@@ -105,7 +112,10 @@ export function HomePage() {
               <span className="text-xs text-muted-foreground">in active review</span>
             </div>
             <div className="mt-3">
-              <Link to="/requests" className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1">
+              <Link
+                to="/requests"
+                className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+              >
                 Track requests <ArrowRight className="size-3" />
               </Link>
             </div>
@@ -113,7 +123,9 @@ export function HomePage() {
 
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground">Completed in workspace</span>
+              <span className="text-xs font-semibold text-muted-foreground">
+                Completed in workspace
+              </span>
               <FileText className="size-4 text-muted-foreground" />
             </div>
             <div className="mt-2 flex items-baseline gap-2">
@@ -121,7 +133,10 @@ export function HomePage() {
               <span className="text-xs text-muted-foreground">approved submissions</span>
             </div>
             <div className="mt-3">
-              <Link to="/requests" className="text-xs font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+              <Link
+                to="/requests"
+                className="text-xs font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              >
                 View archive <ArrowRight className="size-3" />
               </Link>
             </div>

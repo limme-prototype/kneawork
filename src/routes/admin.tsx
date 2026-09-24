@@ -46,9 +46,7 @@ function OperationsOverviewPage() {
   });
 
   return (
-    <AppShell
-      breadcrumbs={[{ label: "Manage" }, { label: "Operations overview" }]}
-    >
+    <AppShell breadcrumbs={[{ label: "Manage" }, { label: "Operations overview" }]}>
       <div className="space-y-6">
         <PageHeader
           eyebrow="Manage"
@@ -71,7 +69,9 @@ function OperationsOverviewPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {/* Needs My Action (Attention token) */}
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
-            <span className="text-xs font-semibold text-attention uppercase tracking-wider">Needs my action</span>
+            <span className="text-xs font-semibold text-attention uppercase tracking-wider">
+              Needs my action
+            </span>
             <div className="mt-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold text-foreground">{needsActionCount}</span>
               <span className="text-xs text-muted-foreground">Requires you</span>
@@ -80,7 +80,9 @@ function OperationsOverviewPage() {
 
           {/* Waiting on Others (Warning token) */}
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
-            <span className="text-xs font-semibold text-warning uppercase tracking-wider">Waiting on others</span>
+            <span className="text-xs font-semibold text-warning uppercase tracking-wider">
+              Waiting on others
+            </span>
             <div className="mt-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold text-foreground">{waitingOthersCount}</span>
               <span className="text-xs text-muted-foreground">In route</span>
@@ -89,7 +91,9 @@ function OperationsOverviewPage() {
 
           {/* Approved This Month (Success token) */}
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
-            <span className="text-xs font-semibold text-success uppercase tracking-wider">Approved this month</span>
+            <span className="text-xs font-semibold text-success uppercase tracking-wider">
+              Approved this month
+            </span>
             <div className="mt-1 flex items-baseline justify-between">
               <span className="text-2xl font-bold text-foreground">{approvedCount}</span>
               <span className="text-xs text-muted-foreground">Recorded</span>
@@ -177,7 +181,9 @@ function OperationsOverviewPage() {
             <div className="flex items-start justify-between rounded-md border border-border bg-muted/30 p-4">
               <div>
                 <span className="font-bold text-foreground text-sm">Finance review</span>
-                <p className="text-[13px] text-muted-foreground mt-0.5">Assigned to Vanna (Finance)</p>
+                <p className="text-[13px] text-muted-foreground mt-0.5">
+                  Assigned to Vanna (Finance)
+                </p>
                 <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="font-semibold text-danger">Oldest: 3 days</span>
                   <span>·</span>

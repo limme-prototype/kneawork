@@ -56,9 +56,7 @@ export function TemplateBasicsForm({ template, onChange }: TemplateBasicsFormPro
             <Label htmlFor="template-desc" className="text-sm font-semibold text-foreground">
               Short description <span className="text-danger">*</span>
             </Label>
-            <span className="text-xs text-muted-foreground">
-              {template.description.length}/240
-            </span>
+            <span className="text-xs text-muted-foreground">{template.description.length}/240</span>
           </div>
           <Textarea
             id="template-desc"

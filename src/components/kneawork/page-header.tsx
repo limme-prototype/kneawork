@@ -42,10 +42,7 @@ export function PageHeader({
             {breadcrumbs.map((b, i) => (
               <span key={i} className="flex items-center gap-1.5 min-w-0">
                 {b.to ? (
-                  <Link
-                    to={b.to}
-                    className="hover:text-foreground font-medium transition-colors"
-                  >
+                  <Link to={b.to} className="hover:text-foreground font-medium transition-colors">
                     {b.label}
                   </Link>
                 ) : (
@@ -82,25 +79,19 @@ export function PageHeader({
 
         {/* Title & Status */}
         <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-            {title}
-          </h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{title}</h1>
           {status ? <div>{status}</div> : null}
         </div>
 
         {/* Description */}
         {description ? (
-          <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
-            {description}
-          </p>
+          <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">{description}</p>
         ) : null}
       </div>
 
       {/* Primary & Contextual Actions */}
       {actions ? (
-        <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:self-start">
-          {actions}
-        </div>
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:self-start">{actions}</div>
       ) : null}
     </div>
   );

@@ -1,13 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  AlertTriangle,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  Inbox,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, Clock, Inbox, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
@@ -18,7 +10,12 @@ import { SearchInput } from "@/components/kneawork/search-input";
 import { StatusBadge, UrgencyBadge } from "@/components/kneawork/status-badge";
 import { Button } from "@/components/ui/button";
 import { personById } from "@/lib/kneawork/data";
-import { currentStep, needsActionFrom, recentlyCompletedBy, useKneaState } from "@/lib/kneawork/store";
+import {
+  currentStep,
+  needsActionFrom,
+  recentlyCompletedBy,
+  useKneaState,
+} from "@/lib/kneawork/store";
 
 export const Route = createFileRoute("/action")({
   component: ActionInboxPage,
@@ -150,14 +147,14 @@ export function ActionInboxPage() {
                           <span className="font-mono text-xs font-semibold text-muted-foreground shrink-0">
                             {req.code}
                           </span>
-                          <h2 className="text-base font-bold text-foreground truncate">{req.title}</h2>
+                          <h2 className="text-base font-bold text-foreground truncate">
+                            {req.title}
+                          </h2>
                           <span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground capitalize shrink-0">
                             {req.type}
                           </span>
                         </div>
-                        <p className="text-lg font-bold text-foreground mt-1">
-                          {req.valueLabel}
-                        </p>
+                        <p className="text-lg font-bold text-foreground mt-1">{req.valueLabel}</p>
                       </div>
 
                       <div className="flex items-center gap-2">
@@ -172,12 +169,17 @@ export function ActionInboxPage() {
                     <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
                       <div className="space-y-1.5 text-muted-foreground">
                         <div>
-                          Requested by <strong className="text-foreground font-semibold">{requester.name}</strong>{" "}
+                          Requested by{" "}
+                          <strong className="text-foreground font-semibold">
+                            {requester.name}
+                          </strong>{" "}
                           · {req.department}
                         </div>
                         <div>
                           Current step:{" "}
-                          <strong className="text-attention font-semibold">{step?.name ?? "Review"} · You</strong>
+                          <strong className="text-attention font-semibold">
+                            {step?.name ?? "Review"} · You
+                          </strong>
                         </div>
                         <div className="flex items-center gap-2 pt-0.5">
                           <UrgencyBadge
@@ -210,9 +212,12 @@ export function ActionInboxPage() {
             <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
               <CheckCircle2 className="size-5" />
             </div>
-            <h3 className="mt-3 text-sm font-semibold text-foreground">No completed decisions found</h3>
+            <h3 className="mt-3 text-sm font-semibold text-foreground">
+              No completed decisions found
+            </h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Requests you have approved, rejected, or sent changes for will appear here for audit reference.
+              Requests you have approved, rejected, or sent changes for will appear here for audit
+              reference.
             </p>
           </div>
         ) : (

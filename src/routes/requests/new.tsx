@@ -29,10 +29,7 @@ import { ROUTES_BY_TYPE, TEMPLATES, personById, templateByType } from "@/lib/kne
 import { submitRequest, useKneaState } from "@/lib/kneawork/store";
 import type { RequestType, WorkRequest } from "@/lib/kneawork/types";
 
-const REQUEST_TYPE_META: Record<
-  RequestType,
-  { icon: typeof ShoppingBag; subtitle: string }
-> = {
+const REQUEST_TYPE_META: Record<RequestType, { icon: typeof ShoppingBag; subtitle: string }> = {
   purchase: {
     icon: ShoppingBag,
     subtitle: "Buy goods or services · Quotation required > $100",
@@ -246,9 +243,7 @@ export function NewRequestPage() {
                     >
                       <Icon className="size-3.5" />
                     </div>
-                    <span className="text-sm font-bold text-foreground truncate">
-                      {t.label}
-                    </span>
+                    <span className="text-sm font-bold text-foreground truncate">{t.label}</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-snug line-clamp-2">
                     {meta.subtitle}
@@ -329,9 +324,7 @@ export function NewRequestPage() {
                         {currentTemplate.valueLabel} *
                       </Label>
                       {type !== "leave" ? (
-                        <span className="text-xs text-muted-foreground font-medium">
-                          USD ($)
-                        </span>
+                        <span className="text-xs text-muted-foreground font-medium">USD ($)</span>
                       ) : null}
                     </div>
                     <Input
@@ -384,16 +377,16 @@ export function NewRequestPage() {
                 <div className="border-b border-border pb-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-base font-semibold text-foreground">Supporting evidence</h2>
+                      <h2 className="text-base font-semibold text-foreground">
+                        Supporting evidence
+                      </h2>
                       <p className="text-[13px] text-muted-foreground">
                         {currentTemplate.requiresAttachment
                           ? "Mandatory documentation"
                           : "Optional supporting documents"}
                       </p>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      PDF, JPG, PNG up to 10MB
-                    </span>
+                    <span className="text-xs text-muted-foreground">PDF, JPG, PNG up to 10MB</span>
                   </div>
                 </div>
 
@@ -402,7 +395,9 @@ export function NewRequestPage() {
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <FileCheck className="size-5 text-success shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-foreground truncate">{uploadedFile.name}</p>
+                        <p className="font-semibold text-foreground truncate">
+                          {uploadedFile.name}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {uploadedFile.size} · Uploaded and ready
                         </p>
@@ -454,7 +449,6 @@ export function NewRequestPage() {
                   <RoutePreview type={type} collapsible initiallyExpanded={false} />
                 </div>
               </div>
-
             </form>
           </div>
 
@@ -477,11 +471,7 @@ export function NewRequestPage() {
 
         {/* Sticky Workflow Action Bar (44px min-height touch targets) */}
         <ActionBar
-          status={
-            isDraftSaved
-              ? "Draft · Saved just now"
-              : "Draft auto-saved locally"
-          }
+          status={isDraftSaved ? "Draft · Saved just now" : "Draft auto-saved locally"}
           secondary={
             <Button
               type="button"
@@ -495,7 +485,12 @@ export function NewRequestPage() {
             </Button>
           }
           destructive={
-            <Button asChild variant="outline" size="sm" className="h-11 min-h-[44px] px-3.5 text-xs sm:text-[13px] border-border text-foreground">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="h-11 min-h-[44px] px-3.5 text-xs sm:text-[13px] border-border text-foreground"
+            >
               <Link to="/requests">Cancel</Link>
             </Button>
           }

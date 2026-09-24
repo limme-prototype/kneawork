@@ -35,7 +35,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { personById } from "@/lib/kneawork/data";
-import { addComment, currentStep, decide, resubmitRequest, useKneaState } from "@/lib/kneawork/store";
+import {
+  addComment,
+  currentStep,
+  decide,
+  resubmitRequest,
+  useKneaState,
+} from "@/lib/kneawork/store";
 import type { Decision } from "@/lib/kneawork/types";
 
 export const Route = createFileRoute("/requests/$requestId")({
@@ -240,7 +246,8 @@ function RequestDetailPage() {
                         Action required: Changes requested
                       </h3>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        The reviewer requested changes or additional context before this request can proceed.
+                        The reviewer requested changes or additional context before this request can
+                        proceed.
                       </p>
                     </div>
                   </div>
@@ -252,7 +259,8 @@ function RequestDetailPage() {
                 {changeStep?.note && (
                   <div className="rounded-md border border-warning-border/60 bg-card p-3.5 text-xs sm:text-[13px] text-foreground">
                     <span className="font-semibold text-warning block mb-1">
-                      Reviewer feedback ({personById(changeStep.assigneeId).name} · {changeStep.name}):
+                      Reviewer feedback ({personById(changeStep.assigneeId).name} ·{" "}
+                      {changeStep.name}):
                     </span>
                     <p className="italic leading-relaxed">"{changeStep.note}"</p>
                   </div>
@@ -261,7 +269,10 @@ function RequestDetailPage() {
                 {isRequester ? (
                   <form onSubmit={handleResubmit} className="space-y-3 pt-1">
                     <div className="space-y-1.5">
-                      <Label htmlFor="resubmit-notes" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="resubmit-notes"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         Your revision notes / response to reviewer *
                       </Label>
                       <Textarea
@@ -277,7 +288,8 @@ function RequestDetailPage() {
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
                       <span className="text-xs text-muted-foreground">
-                        Resubmitting will return this request to <strong>Waiting for {changeStep?.name}</strong>.
+                        Resubmitting will return this request to{" "}
+                        <strong>Waiting for {changeStep?.name}</strong>.
                       </span>
                       <Button
                         type="submit"
@@ -292,7 +304,9 @@ function RequestDetailPage() {
                   </form>
                 ) : (
                   <p className="text-xs text-muted-foreground">
-                    Currently waiting for requester (<strong className="text-foreground">{requester.name}</strong>) to provide revisions.
+                    Currently waiting for requester (
+                    <strong className="text-foreground">{requester.name}</strong>) to provide
+                    revisions.
                   </p>
                 )}
               </div>
@@ -303,10 +317,10 @@ function RequestDetailPage() {
               <h2 className="text-base font-semibold text-foreground">Request summary</h2>
               <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 text-sm">
                 <div>
-                  <dt className="text-[13px] text-muted-foreground font-medium">Total value / amount</dt>
-                  <dd className="mt-1 text-2xl font-bold text-foreground">
-                    {request.valueLabel}
-                  </dd>
+                  <dt className="text-[13px] text-muted-foreground font-medium">
+                    Total value / amount
+                  </dt>
+                  <dd className="mt-1 text-2xl font-bold text-foreground">{request.valueLabel}</dd>
                 </div>
                 <div>
                   <dt className="text-[13px] text-muted-foreground font-medium">Needed by date</dt>
@@ -315,7 +329,9 @@ function RequestDetailPage() {
                   </dd>
                 </div>
                 <div className="sm:col-span-2 border-t border-border pt-4">
-                  <dt className="text-[13px] text-muted-foreground font-medium">Business justification & reason</dt>
+                  <dt className="text-[13px] text-muted-foreground font-medium">
+                    Business justification & reason
+                  </dt>
                   <dd className="mt-1.5 text-sm text-foreground leading-relaxed bg-muted/30 p-3.5 rounded-md border border-border">
                     <article className="prose prose-sm prose-kneawork max-w-none text-sm">
                       <p>{request.reason}</p>
@@ -339,7 +355,9 @@ function RequestDetailPage() {
                       <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <Paperclip className="size-4 text-muted-foreground shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-foreground truncate">{att.filename}</p>
+                          <p className="text-sm font-semibold text-foreground truncate">
+                            {att.filename}
+                          </p>
                           <p className="text-xs text-muted-foreground">{att.size}</p>
                         </div>
                       </div>
@@ -424,7 +442,9 @@ function RequestDetailPage() {
 
               <div className="space-y-3.5 text-sm">
                 <div>
-                  <span className="text-muted-foreground block text-[13px] font-medium">Workflow state</span>
+                  <span className="text-muted-foreground block text-[13px] font-medium">
+                    Workflow state
+                  </span>
                   <div className="mt-1.5">
                     <StatusBadge
                       status={request.status}
@@ -438,7 +458,9 @@ function RequestDetailPage() {
                 {step ? (
                   <>
                     <div className="border-t border-border pt-3">
-                      <span className="text-muted-foreground block text-[13px] font-medium">Current step</span>
+                      <span className="text-muted-foreground block text-[13px] font-medium">
+                        Current step
+                      </span>
                       <p className="mt-0.5 text-base font-semibold text-foreground">{step.name}</p>
                     </div>
 
@@ -448,12 +470,16 @@ function RequestDetailPage() {
                       </span>
                       <p className="mt-0.5 text-sm font-medium text-foreground">
                         {owner?.name}{" "}
-                        <span className="font-normal text-muted-foreground text-[13px]">({owner?.role})</span>
+                        <span className="font-normal text-muted-foreground text-[13px]">
+                          ({owner?.role})
+                        </span>
                       </p>
                     </div>
 
                     <div className="border-t border-border pt-3">
-                      <span className="text-muted-foreground block text-[13px] font-medium">Due timeline</span>
+                      <span className="text-muted-foreground block text-[13px] font-medium">
+                        Due timeline
+                      </span>
                       <div className="mt-1">
                         <UrgencyBadge urgency={request.urgency} dueLabel={step.dueLabel} />
                       </div>
@@ -621,7 +647,8 @@ function RequestDetailPage() {
                 <span className="text-white/60">Amount:</span> {request.valueLabel}
               </p>
               <p className="text-white/90">
-                <span className="text-white/60">Requester:</span> {requester.name} ({request.department})
+                <span className="text-white/60">Requester:</span> {requester.name} (
+                {request.department})
               </p>
               <p className="text-white/90">
                 <span className="text-white/60">Step:</span> {step?.name ?? "Approval"}

@@ -32,9 +32,7 @@ export function ActionBar({
         {/* Left: Status / Draft indicator & Secondary action (e.g. Save Draft) */}
         <div className="flex items-center gap-3 min-w-0">
           {status ? (
-            <div className="text-xs text-muted-foreground truncate hidden sm:block">
-              {status}
-            </div>
+            <div className="text-xs text-muted-foreground truncate hidden sm:block">{status}</div>
           ) : null}
           {secondary ? <div>{secondary}</div> : null}
         </div>

@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  ArrowDown,
-  ArrowUp,
-  Edit2,
-  Eye,
-  GripVertical,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, Edit2, Eye, GripVertical, Plus, Trash2 } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -243,7 +235,9 @@ export function TemplateFieldBuilder({
         <div className="space-y-3">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-foreground">Required information</h3>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">
+                Required information
+              </h3>
               <p className="text-xs sm:text-[13px] text-muted-foreground">
                 Essential business details needed for reviewers to evaluate the request.
               </p>
@@ -293,7 +287,9 @@ export function TemplateFieldBuilder({
         <div className="space-y-3">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-foreground">Supporting information</h3>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">
+                Supporting information
+              </h3>
               <p className="text-xs sm:text-[13px] text-muted-foreground">
                 Optional context, references, or vendor data that assist the approval decision.
               </p>
@@ -453,11 +449,7 @@ export function TemplateFieldBuilder({
           </div>
 
           <DialogFooter className="gap-2 sm:justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsDialogOpen(false)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
             <Button
@@ -492,14 +484,9 @@ function SortableFieldRow({
   onEdit: () => void;
   onRemove: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: field.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: field.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -545,7 +532,9 @@ function SortableFieldRow({
             )}
           </div>
           {field.helpText ? (
-            <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5 truncate">{field.helpText}</p>
+            <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5 truncate">
+              {field.helpText}
+            </p>
           ) : null}
         </div>
       </div>

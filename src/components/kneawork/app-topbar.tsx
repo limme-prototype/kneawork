@@ -51,10 +51,7 @@ export interface AppTopbarProps {
   onOpenMobileMenu?: () => void;
 }
 
-export function AppTopbar({
-  breadcrumbs,
-  contextTitle,
-}: AppTopbarProps) {
+export function AppTopbar({ breadcrumbs, contextTitle }: AppTopbarProps) {
   const { requests, currentUserId } = useKneaState();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
@@ -67,9 +64,7 @@ export function AppTopbar({
 
   const isStaff = currentUserId === "u_staff";
   const isAdmin =
-    currentUserId === "u_admin" ||
-    currentUserId === "u_director" ||
-    currentUserId === "u_finance";
+    currentUserId === "u_admin" || currentUserId === "u_director" || currentUserId === "u_finance";
 
   // Cmd+K / Ctrl+K listener
   React.useEffect(() => {
@@ -178,7 +173,12 @@ export function AppTopbar({
               </div>
               {actionItems.length > 0 ? (
                 <div className="border-t border-border p-2">
-                  <Button asChild variant="ghost" size="sm" className="w-full text-xs font-semibold">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-xs font-semibold"
+                  >
                     <Link to="/action">View all actions ({actionCount})</Link>
                   </Button>
                 </div>
@@ -214,7 +214,9 @@ export function AppTopbar({
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold text-foreground truncate">{me.name}</p>
-                  <p className="text-[11px] text-muted-foreground truncate">{me.title ?? me.role}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {me.title ?? me.role}
+                  </p>
                   <div className="mt-0.5 flex items-center gap-1.5">
                     <span className="size-1.5 rounded-full bg-success" />
                     <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">

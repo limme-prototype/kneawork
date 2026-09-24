@@ -272,7 +272,9 @@ export function TeamAndRolesPage() {
                       </td>
 
                       {/* Department */}
-                      <td className="py-4 px-3 font-medium text-foreground text-sm">{p.department}</td>
+                      <td className="py-4 px-3 font-medium text-foreground text-sm">
+                        {p.department}
+                      </td>
 
                       {/* Role */}
                       <td className="py-4 px-3">

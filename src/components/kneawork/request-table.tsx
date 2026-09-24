@@ -1,216 +1,350 @@
+import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
+import type { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { StatusBadge, UrgencyBadge } from "./status-badge";
 import { personById } from "@/lib/kneawork/data";
 import { currentStep } from "@/lib/kneawork/store";
 import type { WorkRequest } from "@/lib/kneawork/types";
+import {
+  DataTable,
+  DataTableColumnHeader,
+  DataTableMobileCard,
+  type DataTableFilterableColumn,
+  type DataTableFilterPillsConfig,
+} from "@/components/shared/data-table";
+
+export interface RequestTableProps {
+  requests: WorkRequest[];
+  selectedRequestId?: string | undefined;
+  onSelectRequest?: ((id: string) => void) | undefined;
+  currentUserId: string;
+  hideToolbar?: boolean | undefined;
+  hidePagination?: boolean | undefined;
+  searchPlaceholder?: string | undefined;
+  enableFilters?: boolean | undefined;
+  toolbar?: React.ReactNode | undefined;
+}
 
 export function RequestTable({
   requests,
   selectedRequestId,
   onSelectRequest,
   currentUserId,
-}: {
-  requests: WorkRequest[];
-  selectedRequestId?: string;
-  onSelectRequest?: (id: string) => void;
-  currentUserId: string;
-}) {
-  return (
-    <>
-      {/* Desktop Table View */}
-      <div className="hidden sm:block overflow-hidden rounded-lg border border-border bg-card shadow-2xs">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-foreground">
-            <thead className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              <tr>
-                <th scope="col" className="hidden xl:table-cell py-3.5 pl-4 pr-2">
-                  ID
-                </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Request
-                </th>
-                <th scope="col" className="hidden lg:table-cell py-3.5 px-3">
-                  Requester
-                </th>
-                <th scope="col" className="hidden lg:table-cell py-3.5 px-3">
-                  Current step
-                </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Owner
-                </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Status
-                </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Due / updated
-                </th>
-                <th scope="col" className="py-3.5 pr-4 pl-2 text-right">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {requests.map((req) => {
-                const requester = personById(req.requesterId);
-                const step = currentStep(req);
-                const owner = step ? personById(step.assigneeId) : null;
-                const isSelected = req.id === selectedRequestId;
-                const isMe =
-                  step && step.assigneeId === currentUserId && req.status === "in_review";
+  hideToolbar,
+  hidePagination = false,
+  searchPlaceholder = "Search ID, title, requester, reason...",
+  enableFilters = false,
+  toolbar,
+}: RequestTableProps) {
+  const shouldHideToolbar = hideToolbar !== undefined ? hideToolbar : !enableFilters;
 
-                return (
-                  <tr
-                    key={req.id}
-                    onClick={() => onSelectRequest?.(req.id)}
-                    className={`group cursor-pointer transition-colors ${
-                      isSelected ? "bg-accent font-medium" : "hover:bg-accent/50"
-                    }`}
-                  >
-                    {/* ID */}
-                    <td className="hidden xl:table-cell py-4 pl-4 pr-2 font-mono text-xs font-medium text-muted-foreground">
-                      {req.code}
-                    </td>
-
-                    {/* Request Title & Value */}
-                    <td className="py-4 px-3 min-w-0">
-                      <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate max-w-[200px] sm:max-w-xs md:max-w-sm">
-                        {req.title}
-                      </div>
-                      <div className="text-[13px] font-medium text-muted-foreground">
-                        {req.valueLabel} · <span className="capitalize">{req.type}</span>
-                        {/* On tablet where Requester column is hidden, show requester inline */}
-                        <span className="lg:hidden text-muted-foreground/80"> · {requester.name}</span>
-                      </div>
-                    </td>
-
-                    {/* Requester */}
-                    <td className="hidden lg:table-cell py-4 px-3">
-                      <span className="text-sm font-medium text-foreground">{requester.name}</span>
-                      <span className="block text-[13px] text-muted-foreground">
-                        {req.department}
-                      </span>
-                    </td>
-
-                    {/* Current Step */}
-                    <td className="hidden lg:table-cell py-4 px-3">
-                      {step ? (
-                        <span className="text-sm font-medium text-foreground">{step.name}</span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">—</span>
-                      )}
-                    </td>
-
-                    {/* Owner */}
-                    <td className="py-4 px-3">
-                      {owner ? (
-                        <span
-                          className={`text-sm font-semibold ${isMe ? "text-attention" : "text-foreground"}`}
-                        >
-                          {isMe ? "You" : owner.name}
-                        </span>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">—</span>
-                      )}
-                    </td>
-
-                    {/* Status */}
-                    <td className="py-4 px-3">
-                      <StatusBadge
-                        status={req.status}
-                        currentStepName={step?.name}
-                        assigneeName={owner?.name}
-                        isAssignedToMe={Boolean(isMe)}
-                      />
-                    </td>
-
-                    {/* Due */}
-                    <td className="py-4 px-3 whitespace-nowrap text-[13px]">
-                      {step ? (
-                        <UrgencyBadge urgency={req.urgency} dueLabel={step.dueLabel} />
-                      ) : (
-                        <span className="text-muted-foreground">{req.updatedLabel}</span>
-                      )}
-                    </td>
-
-                    {/* Action */}
-                    <td className="py-4 pr-4 pl-2 text-right">
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="font-semibold"
-                      >
-                        <Link to="/requests/$requestId" params={{ requestId: req.id }}>
-                          {isMe ? "Review" : "View"}
-                          <ChevronRight className="size-3.5 ml-1" />
-                        </Link>
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Mobile Card Conversion View */}
-      <div className="sm:hidden space-y-3">
-        {requests.map((req) => {
+  const columns = React.useMemo<ColumnDef<WorkRequest>[]>(
+    () => [
+      {
+        accessorKey: "code",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+        cell: ({ row }) => (
+          <span className="font-mono text-xs font-semibold text-muted-foreground">
+            {row.original.code}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "title",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Request" />,
+        cell: ({ row }) => {
+          const req = row.original;
           const requester = personById(req.requesterId);
+          return (
+            <div className="min-w-0 py-1">
+              <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate max-w-[220px] sm:max-w-xs md:max-w-sm">
+                {req.title}
+              </div>
+              <div className="text-[12px] font-medium text-muted-foreground mt-0.5">
+                {req.valueLabel} · <span className="capitalize">{req.type}</span>
+                <span className="lg:hidden text-muted-foreground/80"> · {requester.name}</span>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "type",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
+        cell: ({ row }) => (
+          <span className="text-xs font-medium capitalize text-muted-foreground">
+            {row.original.type}
+          </span>
+        ),
+      },
+      {
+        id: "requester",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Requester" />,
+        accessorFn: (row) => personById(row.requesterId).name,
+        cell: ({ row }) => {
+          const requester = personById(row.original.requesterId);
+          return (
+            <div className="text-xs">
+              <span className="block font-medium text-foreground">{requester.name}</span>
+              <span className="block text-[11px] text-muted-foreground">
+                {row.original.department}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        id: "step",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Current Step" />,
+        accessorFn: (row) => currentStep(row)?.name ?? "Completed",
+        cell: ({ row }) => {
+          const step = currentStep(row.original);
+          return step ? (
+            <span className="text-xs font-medium text-foreground">{step.name}</span>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          );
+        },
+      },
+      {
+        id: "owner",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Owner" />,
+        accessorFn: (row) => {
+          const step = currentStep(row);
+          return step ? personById(step.assigneeId).name : "None";
+        },
+        cell: ({ row }) => {
+          const step = currentStep(row.original);
+          const owner = step ? personById(step.assigneeId) : null;
+          const isMe =
+            step && step.assigneeId === currentUserId && row.original.status === "in_review";
+
+          return owner ? (
+            <span
+              className={`text-xs font-semibold ${isMe ? "text-attention" : "text-foreground"}`}
+            >
+              {isMe ? "You" : owner.name}
+            </span>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          );
+        },
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        cell: ({ row }) => {
+          const req = row.original;
           const step = currentStep(req);
           const owner = step ? personById(step.assigneeId) : null;
           const isMe = step && step.assigneeId === currentUserId && req.status === "in_review";
 
           return (
-            <div
-              key={req.id}
-              className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-3"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-mono text-xs text-muted-foreground shrink-0">{req.code}</span>
-                    <span className="text-sm font-bold text-foreground truncate">{req.title}</span>
-                  </div>
-                  <p className="text-[13px] font-semibold text-muted-foreground mt-0.5 truncate">
-                    {req.valueLabel} · <span className="capitalize">{req.type}</span>
-                  </p>
-                </div>
-                <div className="shrink-0">
-                  <StatusBadge
-                    status={req.status}
-                    currentStepName={step?.name}
-                    assigneeName={owner?.name}
-                    isAssignedToMe={Boolean(isMe)}
-                  />
-                </div>
-              </div>
+            <StatusBadge
+              status={req.status}
+              currentStepName={step?.name}
+              assigneeName={owner?.name}
+              isAssignedToMe={Boolean(isMe)}
+            />
+          );
+        },
+      },
+      {
+        id: "due",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Due / Updated" />,
+        accessorFn: (row) => {
+          const step = currentStep(row);
+          return step?.dueLabel ?? row.updatedLabel;
+        },
+        cell: ({ row }) => {
+          const req = row.original;
+          const step = currentStep(req);
+          return step ? (
+            <UrgencyBadge urgency={req.urgency} dueLabel={step.dueLabel} />
+          ) : (
+            <span className="text-xs text-muted-foreground">{req.updatedLabel}</span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: () => <span className="sr-only">Actions</span>,
+        cell: ({ row }) => {
+          const req = row.original;
+          const step = currentStep(req);
+          const isMe = step && step.assigneeId === currentUserId && req.status === "in_review";
 
-              <div className="flex items-center justify-between text-[13px] text-muted-foreground border-t border-border pt-2.5 min-w-0">
-                <div className="truncate mr-2">
-                  <span>Step: </span>
-                  <span className="font-semibold text-foreground">{step?.name ?? "Completed"}</span>
-                  {owner ? <span> · {isMe ? "You" : owner.name}</span> : null}
-                </div>
-                {step ? <div className="shrink-0"><UrgencyBadge urgency={req.urgency} dueLabel={step.dueLabel} /></div> : null}
-              </div>
-
-              <div className="flex items-center justify-between border-t border-border pt-2.5">
-                <span className="text-xs text-muted-foreground">By {requester.name}</span>
-                <Button asChild variant="outline" size="sm" className="font-semibold">
-                  <Link to="/requests/$requestId" params={{ requestId: req.id }}>
-                    {isMe ? "Review" : "View"}
-                  </Link>
-                </Button>
-              </div>
+          return (
+            <div className="flex justify-end" data-no-row-click>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="font-semibold text-xs h-8 px-2.5"
+              >
+                <Link to="/requests/$requestId" params={{ requestId: req.id }}>
+                  {isMe ? "Review" : "View"}
+                  <ChevronRight className="size-3.5 ml-1" />
+                </Link>
+              </Button>
             </div>
           );
-        })}
-      </div>
-    </>
+        },
+      },
+    ],
+    [currentUserId],
+  );
+
+  const filterableColumns = React.useMemo<DataTableFilterableColumn[]>(
+    () => [
+      {
+        id: "type",
+        title: "Category",
+        options: [
+          { value: "purchase", label: "Purchase" },
+          { value: "expense", label: "Expense" },
+          { value: "leave", label: "Leave" },
+          { value: "contract", label: "Contract" },
+        ],
+      },
+    ],
+    [],
+  );
+
+  const countsByStatus = React.useMemo(() => {
+    const counts = {
+      in_review: 0,
+      approved: 0,
+      changes_requested: 0,
+      rejected: 0,
+    };
+    for (const r of requests) {
+      if (r.status in counts) {
+        counts[r.status as keyof typeof counts] += 1;
+      }
+    }
+    return counts;
+  }, [requests]);
+
+  const filterPills = React.useMemo<DataTableFilterPillsConfig>(
+    () => ({
+      columnId: "status",
+      allLabel: "All",
+      allCount: requests.length,
+      items: [
+        {
+          value: "in_review",
+          label: "Waiting on approval",
+          count: countsByStatus.in_review,
+          activeClassName: "bg-attention text-attention-foreground shadow-2xs",
+        },
+        {
+          value: "approved",
+          label: "Completed",
+          count: countsByStatus.approved,
+          activeClassName: "bg-success text-white shadow-2xs",
+        },
+        {
+          value: "changes_requested",
+          label: "Changes requested",
+          count: countsByStatus.changes_requested,
+          activeClassName: "bg-warning text-white shadow-2xs",
+        },
+        {
+          value: "rejected",
+          label: "Rejected",
+          count: countsByStatus.rejected,
+          activeClassName: "bg-danger text-white shadow-2xs",
+        },
+      ],
+    }),
+    [requests.length, countsByStatus],
+  );
+
+  const renderMobileCard = React.useCallback(
+    (req: WorkRequest) => {
+      const requester = personById(req.requesterId);
+      const step = currentStep(req);
+      const owner = step ? personById(step.assigneeId) : null;
+      const isMe = step && step.assigneeId === currentUserId && req.status === "in_review";
+
+      return (
+        <DataTableMobileCard
+          key={req.id}
+          selected={req.id === selectedRequestId}
+          onClick={onSelectRequest ? () => onSelectRequest(req.id) : undefined}
+          title={
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-mono text-xs text-muted-foreground">{req.code}</span>
+              <span className="text-sm font-bold text-foreground">{req.title}</span>
+            </div>
+          }
+          subtitle={`${req.valueLabel} · ${req.type} · By ${requester.name}`}
+          status={
+            <StatusBadge
+              status={req.status}
+              currentStepName={step?.name}
+              assigneeName={owner?.name}
+              isAssignedToMe={Boolean(isMe)}
+            />
+          }
+          attributes={[
+            {
+              label: "Current Step",
+              value: (
+                <span>
+                  {step?.name ?? "Completed"}
+                  {owner && (
+                    <span className="text-muted-foreground font-normal">
+                      {" "}
+                      · {isMe ? "You" : owner.name}
+                    </span>
+                  )}
+                </span>
+              ),
+            },
+            {
+              label: "Due / Updated",
+              value: step ? (
+                <UrgencyBadge urgency={req.urgency} dueLabel={step.dueLabel} />
+              ) : (
+                <span className="text-muted-foreground">{req.updatedLabel}</span>
+              ),
+            },
+          ]}
+          actions={
+            <Button asChild variant="outline" size="sm" className="font-semibold text-xs h-8 px-3">
+              <Link to="/requests/$requestId" params={{ requestId: req.id }}>
+                {isMe ? "Review" : "View"}
+                <ChevronRight className="size-3.5 ml-1" />
+              </Link>
+            </Button>
+          }
+        />
+      );
+    },
+    [currentUserId, onSelectRequest, selectedRequestId],
+  );
+
+  return (
+    <DataTable
+      data={requests}
+      columns={columns}
+      getRowId={(row) => row.id}
+      mode="auto"
+      hideToolbar={shouldHideToolbar}
+      hidePagination={hidePagination}
+      searchPlaceholder={searchPlaceholder}
+      filterableColumns={enableFilters ? filterableColumns : undefined}
+      filterPills={enableFilters ? filterPills : undefined}
+      toolbar={toolbar}
+      renderMobileCard={renderMobileCard}
+      onRowClick={onSelectRequest ? (row) => onSelectRequest(row.id) : undefined}
+      emptyTitle="No requests found"
+      emptyDescription="No requests match the specified search or active filters."
+    />
   );
 }

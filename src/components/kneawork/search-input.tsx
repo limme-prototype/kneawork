@@ -3,8 +3,7 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-export interface SearchInputProps
-  extends Omit<React.ComponentProps<typeof Input>, "type"> {
+export interface SearchInputProps extends Omit<React.ComponentProps<typeof Input>, "type"> {
   onClear?: () => void;
   wrapperClassName?: string;
 }

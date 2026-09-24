@@ -36,6 +36,7 @@ export function TemplateReviewSummary({
   onGoToStep,
   onOpenPublishDialog,
   onSaveDraft,
+  onOpenSimulation,
 }: TemplateReviewSummaryProps) {
   const isPublishable = issues.length === 0;
 

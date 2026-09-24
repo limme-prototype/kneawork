@@ -49,9 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const isStaff = currentUserId === "u_staff";
   const isAdmin =
-    currentUserId === "u_admin" ||
-    currentUserId === "u_director" ||
-    currentUserId === "u_finance";
+    currentUserId === "u_admin" || currentUserId === "u_director" || currentUserId === "u_finance";
 
   const handleLinkClick = () => {
     if (isMobile) {
@@ -134,9 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <span className="font-bold text-foreground text-sm tracking-tight block truncate">
                 KneaWork
               </span>
-              <span className="text-[11px] text-muted-foreground block truncate">
-                Operations
-              </span>
+              <span className="text-[11px] text-muted-foreground block truncate">Operations</span>
             </div>
           </div>
         </div>
@@ -260,7 +256,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
                 {isAdmin && (
                   <DropdownMenuItem asChild className="cursor-pointer text-xs">
-                    <Link to="/settings" onClick={handleLinkClick} className="flex items-center gap-2">
+                    <Link
+                      to="/settings"
+                      onClick={handleLinkClick}
+                      className="flex items-center gap-2"
+                    >
                       <Settings className="size-3.5 text-muted-foreground" />
                       <span>Workspace Settings</span>
                     </Link>

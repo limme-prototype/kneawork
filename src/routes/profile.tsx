@@ -118,7 +118,9 @@ export function ProfilePage() {
               </span>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-base sm:text-xl font-bold text-foreground truncate">{me.name}</h1>
+                  <h1 className="text-base sm:text-xl font-bold text-foreground truncate">
+                    {me.name}
+                  </h1>
                   <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                     Active
                   </span>
@@ -189,7 +191,9 @@ export function ProfilePage() {
 
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold text-muted-foreground">Work email</Label>
+                    <Label className="text-sm font-semibold text-muted-foreground">
+                      Work email
+                    </Label>
                     <span className="text-xs font-semibold text-success bg-success-soft px-1.5 py-0.5 rounded border border-success-border">
                       Verified
                     </span>
@@ -250,7 +254,9 @@ export function ProfilePage() {
             {/* Right: Access & Responsibilities (Read-Only Organization Permissions) */}
             <div className="md:col-span-5 rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4">
               <div className="border-b border-border/60 pb-2">
-                <h2 className="text-base font-semibold text-foreground">Access & responsibilities</h2>
+                <h2 className="text-base font-semibold text-foreground">
+                  Access & responsibilities
+                </h2>
                 <p className="text-sm text-muted-foreground">
                   Assigned permissions determined by workspace policy
                 </p>

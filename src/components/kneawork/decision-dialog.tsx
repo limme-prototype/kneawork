@@ -109,7 +109,8 @@ export function DecisionDialog({
             </DialogTitle>
           </div>
           <DialogDescription className="text-xs sm:text-[13px] text-muted-foreground">
-            {request.title} <span className="font-mono">({request.code})</span> · {request.valueLabel}
+            {request.title} <span className="font-mono">({request.code})</span> ·{" "}
+            {request.valueLabel}
           </DialogDescription>
         </DialogHeader>
 
@@ -123,11 +124,7 @@ export function DecisionDialog({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">
-              {decision === "approve"
-                ? "Next step"
-                : decision === "changes"
-                  ? "Action"
-                  : "Outcome"}
+              {decision === "approve" ? "Next step" : decision === "changes" ? "Action" : "Outcome"}
             </span>
             <span className="font-semibold text-foreground text-right max-w-[220px] truncate">
               {decision === "approve"
@@ -144,9 +141,7 @@ export function DecisionDialog({
         {/* Quick Reasons for Request Changes */}
         {decision === "changes" ? (
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-muted-foreground">
-              Common reasons:
-            </Label>
+            <Label className="text-xs font-semibold text-muted-foreground">Common reasons:</Label>
             <div className="flex flex-wrap gap-1.5">
               {CHANGE_REASONS.map((r) => (
                 <button
@@ -197,12 +192,7 @@ export function DecisionDialog({
         </div>
 
         <DialogFooter className="gap-2 sm:justify-end pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onClose}
-            className="text-xs h-9 sm:h-8"
-          >
+          <Button variant="outline" size="sm" onClick={onClose} className="text-xs h-9 sm:h-8">
             Cancel
           </Button>
           <Button

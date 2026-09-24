@@ -191,7 +191,9 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
 
         {/* File Format & Size Limits */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-4">
-          <h3 className="text-sm sm:text-base font-bold text-foreground">File upload specifications</h3>
+          <h3 className="text-sm sm:text-base font-bold text-foreground">
+            File upload specifications
+          </h3>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -279,7 +281,9 @@ export function RuleBuilder({ template, onChange }: RuleBuilderProps) {
 
         {/* Missing Evidence Policy */}
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-sm sm:text-base font-bold text-foreground">Exception enforcement behavior</h3>
+          <h3 className="text-sm sm:text-base font-bold text-foreground">
+            Exception enforcement behavior
+          </h3>
           <p className="text-sm text-muted-foreground">
             What happens if the employee attempts to submit without mandatory evidence?
           </p>

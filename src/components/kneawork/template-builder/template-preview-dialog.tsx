@@ -149,8 +149,8 @@ export function TemplatePreviewDialog({
             <div className="rounded-lg border border-border bg-muted/30 p-3 text-sm text-muted-foreground flex items-start gap-2">
               <Info className="size-4 text-foreground shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                This preview renders the live submission experience employees will see when submitting
-                under this workflow. Typical turnaround:{" "}
+                This preview renders the live submission experience employees will see when
+                submitting under this workflow. Typical turnaround:{" "}
                 <strong className="text-foreground">{template.typicalCompletionTime}</strong>.
               </div>
             </div>
@@ -235,8 +235,8 @@ export function TemplatePreviewDialog({
               <div>
                 <p className="font-bold text-foreground">Test Before Publish Simulation</p>
                 <p className="text-muted-foreground mt-0.5 leading-relaxed">
-                  Test draft conditions before activating. Change request values to verify which approval route
-                  triggers and ensure company policies prevent unverified spend.
+                  Test draft conditions before activating. Change request values to verify which
+                  approval route triggers and ensure company policies prevent unverified spend.
                 </p>
               </div>
             </div>
@@ -335,7 +335,9 @@ export function TemplatePreviewDialog({
                     <CheckCircle2 className="size-4 text-success" />
                   )}
                   <h4 className="text-sm font-bold text-foreground">
-                    {hasPolicyViolation ? "Policy Flagged · Action Required" : "Route Validated · Ready"}
+                    {hasPolicyViolation
+                      ? "Policy Flagged · Action Required"
+                      : "Route Validated · Ready"}
                   </h4>
                 </div>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded border bg-card text-foreground">
@@ -346,17 +348,21 @@ export function TemplatePreviewDialog({
               <div className="text-xs text-foreground space-y-1">
                 {ceilingExceeded && (
                   <p className="text-danger font-semibold">
-                    • Maximum Spend Violation: Amount (${simAmount.toLocaleString()}) exceeds the template spend ceiling of ${maxAmount?.toLocaleString()}.
+                    • Maximum Spend Violation: Amount (${simAmount.toLocaleString()}) exceeds the
+                    template spend ceiling of ${maxAmount?.toLocaleString()}.
                   </p>
                 )}
                 {quotationMissing && (
                   <p className="text-warning font-semibold">
-                    • Missing Evidence: Company policy requires an official quotation for spend exceeding ${quotationThreshold}. Under strict enforcement, submission is prevented.
+                    • Missing Evidence: Company policy requires an official quotation for spend
+                    exceeding ${quotationThreshold}. Under strict enforcement, submission is
+                    prevented.
                   </p>
                 )}
                 {!hasPolicyViolation && (
                   <p className="text-muted-foreground">
-                    All required policy conditions are satisfied. Request will execute sequentially across {activeSteps.length} designated approval checkpoint(s).
+                    All required policy conditions are satisfied. Request will execute sequentially
+                    across {activeSteps.length} designated approval checkpoint(s).
                   </p>
                 )}
               </div>
@@ -367,7 +373,8 @@ export function TemplatePreviewDialog({
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
                   <ShieldCheck className="size-4 text-foreground" />
-                  Simulated Route Execution ({activeSteps.length} of {template.routeSteps.length} steps active)
+                  Simulated Route Execution ({activeSteps.length} of {template.routeSteps.length}{" "}
+                  steps active)
                 </h4>
                 <span className="text-xs text-muted-foreground">Sequential order</span>
               </div>
@@ -392,7 +399,9 @@ export function TemplatePreviewDialog({
                       </span>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${step.triggered ? "text-foreground" : "text-muted-foreground line-through"}`}>
+                          <span
+                            className={`font-semibold ${step.triggered ? "text-foreground" : "text-muted-foreground line-through"}`}
+                          >
                             {step.name}
                           </span>
                           <span

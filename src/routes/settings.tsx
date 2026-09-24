@@ -46,9 +46,7 @@ export function WorkspaceSettingsPage() {
   };
 
   return (
-    <AppShell
-      breadcrumbs={[{ label: "Settings" }, { label: "Workspace Settings" }]}
-    >
+    <AppShell breadcrumbs={[{ label: "Settings" }, { label: "Workspace Settings" }]}>
       <div className="space-y-6">
         <PageHeader
           eyebrow="Settings"
@@ -178,7 +176,9 @@ export function WorkspaceSettingsPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-sm font-semibold text-foreground">Dispatched channels</Label>
+                  <Label className="text-sm font-semibold text-foreground">
+                    Dispatched channels
+                  </Label>
                   <Input disabled value="In-app · Telegram Bot" className="bg-muted/40" />
                 </div>
               </div>
@@ -264,7 +264,9 @@ export function WorkspaceSettingsPage() {
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
-                  <Label className="text-sm font-semibold text-foreground">Workspace timezone</Label>
+                  <Label className="text-sm font-semibold text-foreground">
+                    Workspace timezone
+                  </Label>
                   <Input disabled value="Asia/Phnom Penh (GMT+7)" className="bg-muted/40" />
                   <span className="text-xs text-muted-foreground">
                     Used for all immutable audit log timestamps
@@ -328,7 +330,9 @@ export function WorkspaceSettingsPage() {
 
               <div className="flex items-center justify-between py-3">
                 <div>
-                  <span className="text-sm font-semibold text-foreground">Email digest notifications</span>
+                  <span className="text-sm font-semibold text-foreground">
+                    Email digest notifications
+                  </span>
                   <p className="text-[13px] text-muted-foreground">
                     Daily summary of overdue or escalated approvals
                   </p>
