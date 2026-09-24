@@ -12,15 +12,18 @@ import {
   FileText,
   Layers,
   Lock,
+  MoreVertical,
   Plus,
   ShieldCheck,
   Users,
+  WandSparkles,
   X,
 } from "lucide-react";
 import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
 import { PageHeader } from "@/components/kneawork/page-header";
+import { ScrollableTabs } from "@/components/kneawork/scrollable-tabs";
 import { AiWorkflowGeneratorDialog } from "@/components/kneawork/template-builder/ai-workflow-generator-dialog";
 import { TemplateBuilder } from "@/components/kneawork/template-builder/template-builder";
 import { TemplatePreviewDialog } from "@/components/kneawork/template-builder/template-preview-dialog";
@@ -149,8 +152,8 @@ export function TemplatesPage() {
           title="Templates"
           description="Reusable request and approval processes that ensure requests reach designated signers and audit checkpoints."
           actions={
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
-              <div className="flex-1 sm:w-64">
+            <div className="hidden sm:flex items-center gap-2.5">
+              <div className="w-56 lg:w-64">
                 <SearchInput
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -180,31 +183,77 @@ export function TemplatesPage() {
           }
         />
 
-        {/* Category Filters */}
-        <div className="flex items-center gap-1.5 border-b border-border/60 pb-3 overflow-x-auto scrollbar-none">
-          {[
-            { id: "all", label: "All templates" },
-            { id: "purchase", label: "Purchase" },
-            { id: "expense", label: "Expense" },
-            { id: "leave", label: "Leave" },
-            { id: "contract", label: "Contract" },
-            { id: "drafts", label: "Drafts" },
-          ].map((cat) => {
-            const isActive = categoryFilter === cat.id;
-            return (
-              <Button
-                key={cat.id}
-                variant={isActive ? "default" : "outline"}
-                size="sm"
-                onClick={() => setCategoryFilter(cat.id)}
-                className={`h-7 text-xs shrink-0 ${
-                  isActive ? "font-semibold" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {cat.label}
-              </Button>
-            );
-          })}
+        {/* Mobile Dedicated Search & Action Row (< sm) */}
+        <div className="sm:hidden space-y-3">
+          <SearchInput
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search templates..."
+          />
+
+          <div className="flex items-center gap-2">
+            <Button
+              size="default"
+              onClick={handleStartNewTemplate}
+              className="h-11 min-h-[44px] flex-1 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs text-sm gap-1.5"
+            >
+              <Plus className="size-4" />
+              New template
+            </Button>
+            <Button
+              variant="outline"
+              size="default"
+              onClick={() => setIsAiDialogOpen(true)}
+              className="h-11 min-h-[44px] px-3.5 border-border text-foreground hover:bg-muted font-semibold text-xs gap-1.5 shrink-0"
+              title="Generate workflow draft with AI"
+            >
+              <Bot className="size-4 text-primary" />
+              <span>AI Draft</span>
+            </Button>
+          </div>
+
+          {/* AI Workflow Secondary Promotional Card */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+                <Bot className="size-4.5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-foreground truncate">
+                  Generate workflow with AI
+                </p>
+                <p className="text-[11px] text-muted-foreground truncate">
+                  Creates a draft for human review
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAiDialogOpen(true)}
+              className="h-8 text-xs font-semibold shrink-0 gap-1 border-primary/30 text-primary hover:bg-primary/10"
+            >
+              <WandSparkles className="size-3" />
+              Draft
+            </Button>
+          </div>
+        </div>
+
+        {/* Category Filters with ScrollableTabs */}
+        <div className="border-b border-border/60 pb-2">
+          <ScrollableTabs
+            tabs={[
+              { id: "all", label: "All templates", count: templates.length },
+              { id: "purchase", label: "Purchase" },
+              { id: "expense", label: "Expense" },
+              { id: "leave", label: "Leave" },
+              { id: "contract", label: "Contract" },
+              { id: "drafts", label: "Drafts" },
+            ]}
+            activeTab={categoryFilter}
+            onTabChange={(id) => setCategoryFilter(id)}
+            ariaLabel="Template categories"
+          />
         </div>
 
         {/* Template Cards Grid */}
@@ -265,24 +314,20 @@ export function TemplatesPage() {
                       </div>
                     </div>
 
-                    {/* Sequential Ordered Route (Spec: Approval route · 3 steps) */}
-                    <div className="rounded-md border border-border/60 bg-muted/40 p-3 space-y-2">
+                    {/* Approval Route (Spec: Single-line clean breadcrumb, avoid wrapping chunky pills) */}
+                    <div className="rounded-md border border-border/60 bg-muted/40 p-3 space-y-1.5">
                       <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
                         <span>Approval route · {routeSteps.length} steps</span>
                         <span className="text-xs text-muted-foreground font-normal">
                           sequential
                         </span>
                       </div>
-                      <div className="flex flex-wrap items-center gap-1.5 text-foreground font-medium">
-                        <span className="rounded bg-card px-2.5 py-0.5 border border-border text-foreground text-sm font-medium">
-                          Requester
-                        </span>
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-[13px] text-foreground">
+                        <span className="font-medium text-muted-foreground">Requester</span>
                         {routeSteps.map((step) => (
-                          <span key={step.id} className="flex items-center gap-1.5">
-                            <span className="text-muted-foreground text-xs">→</span>
-                            <span className="rounded bg-card px-2.5 py-0.5 border border-border text-foreground text-sm font-medium">
-                              {step.name}
-                            </span>
+                          <span key={step.id} className="inline-flex items-center gap-1.5">
+                            <span className="text-muted-foreground text-xs select-none">→</span>
+                            <span className="font-semibold text-foreground">{step.name}</span>
                           </span>
                         ))}
                       </div>
@@ -324,7 +369,7 @@ export function TemplatesPage() {
                         <Button
                           size="sm"
                           onClick={() => setEditingTemplate(t)}
-                          className="font-semibold gap-1"
+                          className="font-semibold gap-1 h-9 sm:h-8"
                         >
                           <Edit2 className="size-3.5" />
                           Edit draft
@@ -334,7 +379,7 @@ export function TemplatesPage() {
                           size="sm"
                           variant="outline"
                           onClick={() => setSelectedTemplate(t)}
-                          className="font-semibold"
+                          className="font-semibold h-9 sm:h-8"
                         >
                           Open template
                         </Button>

@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  ChevronDown,
   Clock,
   Eye,
   FileCheck,
@@ -131,7 +132,7 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
       ) : null}
 
       {/* Main Workspace (Desktop 2-column, Mobile 1-column) */}
-      <div className="flex-1 mx-auto w-full max-w-[1280px] p-4 sm:p-6 lg:p-8">
+      <div className="flex-1 mx-auto w-full max-w-[1280px] p-3.5 pb-28 sm:p-6 lg:p-8 lg:pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Configuration Form (Left 8 cols on desktop) */}
           <div className="lg:col-span-8 bg-card border border-border rounded-lg p-5 sm:p-6 shadow-2xs">
@@ -204,18 +205,24 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
             )}
           </div>
 
-          {/* Live Summary Sidebar (Right 4 cols on desktop, sticky) */}
+          {/* Live Summary Sidebar: Sticky on Desktop, Collapsible Disclosure on Mobile */}
           <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-6">
-            <div className="rounded-lg border border-border bg-card p-4 space-y-4 shadow-2xs">
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <h3 className="text-sm font-bold text-foreground">Live template summary</h3>
-                <span className="rounded bg-muted border border-border px-2 py-0.5 text-xs font-mono text-muted-foreground">
-                  Step {currentStep} of 5
-                </span>
-              </div>
+            <details className="lg:open group rounded-lg border border-border bg-card p-4 space-y-4 shadow-2xs">
+              <summary className="flex items-center justify-between cursor-pointer list-none select-none">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-foreground">Live template summary</h3>
+                  <span className="lg:hidden text-xs text-muted-foreground">(Tap to expand)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded bg-muted border border-border px-2 py-0.5 text-xs font-mono text-muted-foreground">
+                    Step {currentStep} of 5
+                  </span>
+                  <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180 lg:hidden" />
+                </div>
+              </summary>
 
               {/* Mini Card Preview */}
-              <div className="space-y-2">
+              <div className="space-y-2 pt-2 border-t border-border/60">
                 <div className="flex items-start justify-between">
                   <h4 className="text-sm font-bold text-foreground">
                     {template.label.trim() ? template.label : "Untitled template"}
@@ -328,9 +335,51 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
                   Simulate approval route
                 </Button>
               </div>
-            </div>
+            </details>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Action Bar (< sm) */}
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-between gap-3">
+        {currentStep === 1 ? (
+          <Button
+            variant="outline"
+            onClick={handleSaveDraft}
+            disabled={isSavingDraft}
+            className="h-11 min-h-[44px] px-3.5 text-xs font-semibold border-border text-foreground"
+          >
+            <Save className="size-4 mr-1.5" />
+            {isSavingDraft ? "Saving..." : "Save draft"}
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            onClick={handleBack}
+            className="h-11 min-h-[44px] px-3.5 text-xs font-semibold border-border text-foreground"
+          >
+            <ArrowLeft className="size-4 mr-1.5" />
+            Back
+          </Button>
+        )}
+
+        <Button
+          onClick={handleContinue}
+          disabled={currentStep === 5 && !isPublishable}
+          className="h-11 min-h-[44px] flex-1 bg-primary text-primary-foreground hover:bg-primary-hover text-sm font-semibold shadow-2xs gap-1.5"
+        >
+          {currentStep === 5 ? (
+            <>
+              <CheckCircle2 className="size-4" />
+              Publish template
+            </>
+          ) : (
+            <>
+              Continue
+              <ArrowRight className="size-4" />
+            </>
+          )}
+        </Button>
       </div>
 
       {/* Modals */}

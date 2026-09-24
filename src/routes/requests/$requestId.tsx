@@ -112,13 +112,14 @@ function RequestDetailPage() {
   return (
     <AppShell
       title={`${request.title} (${request.code})`}
+      hideMobileNav={Boolean(isMe)}
       breadcrumbs={[
         { label: "Requests", to: "/requests" },
         { label: isMe ? "Needs My Action" : "All Requests", to: isMe ? "/action" : "/requests" },
         { label: request.code },
       ]}
     >
-      <div className={`space-y-6 ${isMe ? "pb-16 sm:pb-0" : ""}`}>
+      <div className={`space-y-6 ${isMe ? "pb-20 sm:pb-0" : ""}`}>
         {/* Action Feedback Banner */}
         {actionFeedback ? (
           <div className="rounded-lg border border-success-border bg-success-soft p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-success">
@@ -547,7 +548,7 @@ function RequestDetailPage() {
 
       {/* Mobile Sticky Action Bar (44px min touch target, no duplication) */}
       {isMe ? (
-        <div className="sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-card/95 backdrop-blur border-t border-border px-3.5 py-2.5 shadow-lg">
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg">
           <div className="flex items-center gap-2 max-w-lg mx-auto">
             <Button
               variant="outline"

@@ -5,6 +5,7 @@ import * as React from "react";
 import { AppSidebar } from "@/components/kneawork/app-sidebar";
 import { AppTopbar } from "@/components/kneawork/app-topbar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import { needsActionFrom, useKneaState } from "@/lib/kneawork/store";
 
 export interface AppShellProps {
@@ -12,6 +13,7 @@ export interface AppShellProps {
   subtitle?: string | undefined;
   breadcrumbs?: { label: string; to?: string }[] | undefined;
   children: React.ReactNode;
+  hideMobileNav?: boolean;
 }
 
 export function AppShell({
@@ -19,6 +21,7 @@ export function AppShell({
   subtitle,
   breadcrumbs,
   children,
+  hideMobileNav = false,
 }: AppShellProps) {
   const { requests, currentUserId } = useKneaState();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -97,15 +100,21 @@ export function AppShell({
         />
 
         {/* Page Content Body */}
-        <main className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8">
+        <main
+          className={cn(
+            "flex-1 w-full min-w-0 max-w-full overflow-x-hidden p-3.5 sm:p-6 lg:p-8 lg:pb-8",
+            hideMobileNav ? "pb-8" : "pb-24",
+          )}
+        >
           <div className="mx-auto w-full min-w-0 max-w-7xl">{children}</div>
         </main>
 
         {/* 4. Mobile Bottom Navigation (Strictly max 5 items for mobile phone ergonomics) */}
-        <nav
-          aria-label="Mobile Main Navigation"
-          className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card lg:hidden"
-        >
+        {!hideMobileNav ? (
+          <nav
+            aria-label="Mobile Main Navigation"
+            className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card lg:hidden"
+          >
           <ul className="flex w-full justify-around">
             <li className="flex-1">
               <Link
@@ -174,7 +183,8 @@ export function AppShell({
             </li>
           </ul>
         </nav>
-      </div>
+      ) : null}
+    </div>
     </div>
   );
 }

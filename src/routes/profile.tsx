@@ -18,6 +18,7 @@ import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
 import { PageHeader } from "@/components/kneawork/page-header";
+import { ScrollableTabs } from "@/components/kneawork/scrollable-tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,15 +34,24 @@ type TabType = "profile" | "security" | "notifications" | "language" | "accounts
 export function ProfilePage() {
   const { currentUserId } = useKneaState();
   const me = personById(currentUserId);
+  const INITIAL_PHONE = "+855 12 889 900";
+  const INITIAL_TELEGRAM = "@sokha_ops";
   const [activeTab, setActiveTab] = useState<TabType>("profile");
-  const [phone, setPhone] = useState("+855 12 889 900");
-  const [telegram, setTelegram] = useState("@sokha_ops");
+  const [phone, setPhone] = useState(INITIAL_PHONE);
+  const [telegram, setTelegram] = useState(INITIAL_TELEGRAM);
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
+  const hasUnsavedChanges = phone !== INITIAL_PHONE || telegram !== INITIAL_TELEGRAM;
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setSavedNotice("Saved just now");
     setTimeout(() => setSavedNotice(null), 4000);
+  };
+
+  const handleDiscard = () => {
+    setPhone(INITIAL_PHONE);
+    setTelegram(INITIAL_TELEGRAM);
   };
 
   const reportsTo =
@@ -56,43 +66,68 @@ export function ProfilePage() {
   return (
     <AppShell
       breadcrumbs={[{ label: "Settings" }, { label: "My Profile" }]}
+      hideMobileNav={hasUnsavedChanges}
     >
-      <div className="space-y-6">
+      <div className="space-y-6 pb-20 sm:pb-8">
         <PageHeader
           eyebrow="Account"
           title="My Profile"
           description="Manage your personal contact details, notification dispatch, and security credentials."
           actions={
-            <Button
-              form="profile-form"
-              type="submit"
-              size="default"
-              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs"
-            >
-              <Check className="size-4" />
-              Save changes
-            </Button>
+            hasUnsavedChanges ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="text-xs font-semibold text-warning">Unsaved changes</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDiscard}
+                  className="text-xs h-8"
+                >
+                  Discard
+                </Button>
+                <Button
+                  form="profile-form"
+                  type="submit"
+                  size="sm"
+                  className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs text-xs h-8"
+                >
+                  <Check className="size-3.5" />
+                  Save changes
+                </Button>
+              </div>
+            ) : savedNotice ? (
+              <span className="text-xs text-success font-semibold flex items-center gap-1">
+                <Check className="size-3" />
+                {savedNotice}
+              </span>
+            ) : (
+              <span className="text-xs text-muted-foreground hidden sm:block">
+                All changes saved
+              </span>
+            )
           }
         />
+
         {/* Profile Identity Card (Compact HiBob Record: Department, Role & Reporting Line grouped) */}
-        <div className="rounded-lg border border-border bg-card p-5 shadow-2xs">
+        <div className="rounded-lg border border-border bg-card p-4 sm:p-5 shadow-2xs">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <span className="flex size-14 items-center justify-center rounded-full bg-foreground text-lg font-bold text-background shadow-2xs">
+              <span className="flex size-12 sm:size-14 items-center justify-center rounded-full bg-foreground text-base sm:text-lg font-bold text-background shadow-2xs shrink-0">
                 {me.initials}
               </span>
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-lg sm:text-xl font-bold text-foreground">{me.name}</h1>
+                  <h1 className="text-base sm:text-xl font-bold text-foreground truncate">{me.name}</h1>
                   <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
                     Active
                   </span>
                 </div>
                 {/* Department, role, and reporting line grouped together */}
-                <p className="text-sm text-foreground font-medium mt-0.5">
+                <p className="text-xs sm:text-sm text-foreground font-medium mt-0.5">
                   {me.role} · <span className="text-muted-foreground">{me.department}</span>
                 </p>
-                <div className="flex flex-wrap items-center gap-2 mt-1 text-[13px] text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-2 mt-1 text-xs sm:text-[13px] text-muted-foreground">
                   <span>
                     Reports to{" "}
                     <strong className="text-foreground font-semibold">{reportsTo}</strong>
@@ -105,73 +140,20 @@ export function ProfilePage() {
           </div>
         </div>
 
-        {/* Secondary Navigation Tabs (Account Settings Pattern using Button component) */}
-        <div className="flex items-center gap-1 border-b border-border pb-px text-xs sm:text-[13px] overflow-x-auto scrollbar-none whitespace-nowrap">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("profile")}
-            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
-              activeTab === "profile"
-                ? "border-primary text-primary font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <User className="size-3.5" />
-            Profile & contact
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("security")}
-            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
-              activeTab === "security"
-                ? "border-primary text-primary font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <KeyRound className="size-3.5" />
-            Security & login
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("notifications")}
-            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
-              activeTab === "notifications"
-                ? "border-primary text-primary font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Bell className="size-3.5" />
-            Notifications
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("language")}
-            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
-              activeTab === "language"
-                ? "border-primary text-primary font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Globe className="size-3.5" />
-            Language & region
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("accounts")}
-            className={`flex items-center gap-1.5 rounded-none border-b-2 transition-colors shrink-0 ${
-              activeTab === "accounts"
-                ? "border-primary text-primary font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Link2 className="size-3.5" />
-            Connected accounts
-          </Button>
+        {/* Secondary Navigation Tabs with ScrollableTabs */}
+        <div className="border-b border-border/60 pb-2">
+          <ScrollableTabs
+            tabs={[
+              { id: "profile", label: "Profile & contact", icon: User },
+              { id: "security", label: "Security & login", icon: KeyRound },
+              { id: "notifications", label: "Notifications", icon: Bell },
+              { id: "language", label: "Language & region", icon: Globe },
+              { id: "accounts", label: "Connected accounts", icon: Link2 },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(id) => setActiveTab(id as TabType)}
+            ariaLabel="Profile sections"
+          />
         </div>
 
         {/* Tab 1: Profile & Contact with Explicit Sentence Case & Connection States */}
@@ -197,7 +179,8 @@ export function ProfilePage() {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold text-muted-foreground">Full name</Label>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-medium">
+                      <Lock className="size-3" />
                       Organization controlled
                     </span>
                   </div>
@@ -344,6 +327,31 @@ export function ProfilePage() {
           </div>
         )}
       </div>
+
+      {/* Mobile Sticky Action Bar for Unsaved Changes (< sm) */}
+      {hasUnsavedChanges ? (
+        <div className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-between gap-3">
+          <span className="text-xs font-semibold text-warning">Unsaved changes</span>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleDiscard}
+              className="h-10 min-h-[40px] px-3.5 text-xs font-semibold border-border text-muted-foreground hover:text-foreground"
+            >
+              Discard
+            </Button>
+            <Button
+              form="profile-form"
+              type="submit"
+              className="h-10 min-h-[40px] px-4 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs gap-1.5"
+            >
+              <Check className="size-3.5" />
+              Save changes
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </AppShell>
   );
 }

@@ -132,25 +132,56 @@ export function AppTopbar({
             {breadcrumbs && breadcrumbs.length > 0 ? (
               <nav
                 aria-label="Topbar Breadcrumb"
-                className="flex items-center gap-1.5 text-xs text-muted-foreground overflow-hidden"
+                className="min-w-0"
               >
-                {breadcrumbs.map((b, i) => (
-                  <span
-                    key={i}
-                    className="flex items-center gap-1.5 shrink-0 last:shrink last:truncate min-w-0"
-                  >
-                    {b.to ? (
-                      <Link to={b.to} className="hover:text-foreground font-medium truncate">
-                        {b.label}
-                      </Link>
-                    ) : (
-                      <span className="font-semibold text-foreground truncate">{b.label}</span>
-                    )}
-                    {i < breadcrumbs.length - 1 ? (
+                {/* Mobile compact breadcrumb (1 parent + current page) */}
+                <div className="flex sm:hidden items-center gap-1.5 text-xs text-muted-foreground min-w-0 truncate">
+                  {breadcrumbs.length > 1 ? (
+                    <>
+                      {breadcrumbs[breadcrumbs.length - 2].to ? (
+                        <Link
+                          to={breadcrumbs[breadcrumbs.length - 2].to}
+                          className="hover:text-foreground font-medium truncate max-w-[80px]"
+                        >
+                          {breadcrumbs[breadcrumbs.length - 2].label}
+                        </Link>
+                      ) : (
+                        <span className="truncate max-w-[80px]">
+                          {breadcrumbs[breadcrumbs.length - 2].label}
+                        </span>
+                      )}
                       <span className="text-muted-foreground/60 select-none">/</span>
-                    ) : null}
-                  </span>
-                ))}
+                      <span className="font-semibold text-foreground truncate max-w-[130px]">
+                        {breadcrumbs[breadcrumbs.length - 1].label}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="font-semibold text-foreground truncate">
+                      {breadcrumbs[0]?.label}
+                    </span>
+                  )}
+                </div>
+
+                {/* Desktop full trail */}
+                <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground overflow-hidden">
+                  {breadcrumbs.map((b, i) => (
+                    <span
+                      key={i}
+                      className="flex items-center gap-1.5 shrink-0 last:shrink last:truncate min-w-0"
+                    >
+                      {b.to ? (
+                        <Link to={b.to} className="hover:text-foreground font-medium truncate">
+                          {b.label}
+                        </Link>
+                      ) : (
+                        <span className="font-semibold text-foreground truncate">{b.label}</span>
+                      )}
+                      {i < breadcrumbs.length - 1 ? (
+                        <span className="text-muted-foreground/60 select-none">/</span>
+                      ) : null}
+                    </span>
+                  ))}
+                </div>
               </nav>
             ) : (
               <div className="min-w-0">

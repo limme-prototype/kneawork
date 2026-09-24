@@ -192,6 +192,7 @@ export function NewRequestPage() {
 
   return (
     <AppShell
+      hideMobileNav
       breadcrumbs={[
         { label: "Workspace", to: "/" },
         { label: "Requests", to: "/requests" },
@@ -447,14 +448,19 @@ export function NewRequestPage() {
                     </p>
                   </div>
                 )}
+
+                {/* Mobile Collapsible Route Preview (< lg) */}
+                <div className="lg:hidden pt-2">
+                  <RoutePreview type={type} collapsible initiallyExpanded={false} />
+                </div>
               </div>
 
             </form>
           </div>
 
-          {/* RIGHT: Compact Read-Only Approval Route Preview (Not an editable form block) */}
-          <div className="lg:col-span-5 xl:col-span-4 space-y-4 min-w-0">
-            <RoutePreview type={type} collapsible={false} />
+          {/* Desktop Right: Compact Read-Only Approval Route Preview */}
+          <div className="hidden lg:block lg:col-span-5 xl:col-span-4 space-y-4 min-w-0">
+            <RoutePreview type={type} collapsible={false} initiallyExpanded={true} />
 
             <div className="rounded-lg border border-border bg-card p-4 text-xs text-muted-foreground space-y-2">
               <span className="font-semibold text-foreground block">Workflow integrity</span>
@@ -469,7 +475,7 @@ export function NewRequestPage() {
           </div>
         </div>
 
-        {/* Sticky Workflow Action Bar */}
+        {/* Sticky Workflow Action Bar (44px min-height touch targets) */}
         <ActionBar
           status={
             isDraftSaved
@@ -482,14 +488,14 @@ export function NewRequestPage() {
               variant="outline"
               size="sm"
               onClick={handleSaveDraft}
-              className="gap-1.5 font-semibold text-xs sm:text-[13px]"
+              className="h-11 min-h-[44px] px-3.5 gap-1.5 font-semibold text-xs sm:text-[13px] border-border text-foreground"
             >
-              <Save className="size-3.5" />
+              <Save className="size-4" />
               Save draft
             </Button>
           }
           destructive={
-            <Button asChild variant="outline" size="sm" className="text-xs sm:text-[13px]">
+            <Button asChild variant="outline" size="sm" className="h-11 min-h-[44px] px-3.5 text-xs sm:text-[13px] border-border text-foreground">
               <Link to="/requests">Cancel</Link>
             </Button>
           }
@@ -498,9 +504,9 @@ export function NewRequestPage() {
               form="request-form"
               type="submit"
               size="default"
-              className="bg-primary text-primary-foreground hover:bg-primary-hover font-semibold gap-1.5 shadow-2xs"
+              className="h-11 min-h-[44px] px-4 bg-primary text-primary-foreground hover:bg-primary-hover font-semibold gap-1.5 shadow-2xs text-sm"
             >
-              <Send className="size-3.5" />
+              <Send className="size-4" />
               Submit request
             </Button>
           }

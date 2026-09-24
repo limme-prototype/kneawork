@@ -1,5 +1,11 @@
-import { CheckCircle2, Layers, Save, X } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Layers, MoreVertical, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { ExtendedTemplate } from "@/lib/kneawork/template-types";
 
 interface TemplateBuilderHeaderProps {
@@ -22,8 +28,57 @@ export function TemplateBuilderHeader({
   canPublish,
 }: TemplateBuilderHeaderProps) {
   return (
-    <div className="border-b border-border bg-card px-4 py-4 sm:px-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="border-b border-border bg-card px-3.5 py-3 sm:px-6 sm:py-4">
+      {/* Mobile Top Header Bar (< sm) */}
+      <div className="flex sm:hidden items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onCancel}
+            className="size-8 text-muted-foreground hover:text-foreground shrink-0"
+            aria-label="Back to templates"
+          >
+            <ArrowLeft className="size-4" />
+          </Button>
+          <div className="min-w-0">
+            <h1 className="text-sm font-bold text-foreground truncate">
+              {template.label.trim() ? template.label : "Create template"}
+            </h1>
+            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <span className="font-semibold text-attention">{template.versionStatus}</span>
+              <span>·</span>
+              <span>v{template.version}</span>
+            </div>
+          </div>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8 text-muted-foreground hover:text-foreground shrink-0"
+              aria-label="More template options"
+            >
+              <MoreVertical className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem onClick={onSaveDraft} disabled={isSavingDraft}>
+              <Save className="size-3.5 mr-2" />
+              {isSavingDraft ? "Saving..." : "Save draft"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onCancel} className="text-danger">
+              <X className="size-3.5 mr-2" />
+              Cancel & exit
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Desktop Header Content (hidden on mobile) */}
+      <div className="hidden sm:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 flex-wrap">
             <span>Manage</span>
