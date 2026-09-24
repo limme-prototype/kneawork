@@ -23,7 +23,7 @@ export function ActionBar({
       className={cn(
         "w-full border-t border-border bg-card/95 backdrop-blur shadow-2xs transition-all",
         sticky
-          ? "sticky bottom-0 z-30 -mx-3.5 sm:-mx-6 lg:-mx-8 px-3.5 sm:px-6 lg:px-8 py-3 mt-8 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+          ? "sticky bottom-14 lg:bottom-0 z-20 -mx-3.5 sm:-mx-6 lg:-mx-8 px-3.5 sm:px-6 lg:px-8 py-3 mt-8 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
           : "py-3 mt-6",
         className,
       )}

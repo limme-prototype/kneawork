@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Archive,
   ArrowRight,
+  Bot,
   CheckCircle2,
   Clock,
   Copy,
@@ -13,7 +14,6 @@ import {
   Lock,
   Plus,
   ShieldCheck,
-  Sparkles,
   Users,
   X,
 } from "lucide-react";
@@ -162,16 +162,16 @@ export function TemplatesPage() {
                 variant="outline"
                 size="default"
                 onClick={() => setIsAiDialogOpen(true)}
-                className="gap-1.5 font-semibold border-primary/40 text-primary hover:bg-primary/10 shrink-0"
+                className="gap-1.5 font-semibold border-border text-foreground hover:bg-muted shrink-0 text-xs sm:text-sm"
               >
-                <Sparkles className="size-4" />
-                Generate with AI
+                <Bot className="size-4 text-primary" aria-hidden="true" />
+                Generate workflow with AI
               </Button>
 
               <Button
                 size="default"
                 onClick={handleStartNewTemplate}
-                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs"
+                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs text-xs sm:text-sm"
               >
                 <Plus className="size-4" />
                 New template
@@ -233,7 +233,7 @@ export function TemplatesPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {filtered.map((t) => {
               const routeSteps = t.routeSteps;
               const isDraft = t.versionStatus === "Draft";

@@ -5,12 +5,14 @@ import {
   Bot,
   CheckCircle2,
   Clock,
+  FileCheck,
   HelpCircle,
   Layers,
+  Receipt,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
-  Wand2,
+  ShoppingCart,
+  WandSparkles,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -191,14 +193,14 @@ export function AiWorkflowGeneratorDialog({
         <DialogHeader className="border-b border-border pb-3">
           <div className="flex items-center gap-2">
             <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <Sparkles className="size-4" />
+              <Bot className="size-4" aria-hidden="true" />
             </span>
             <div>
               <DialogTitle className="text-base sm:text-lg font-bold text-foreground">
-                AI Workflow Draft Generator
+                Generate workflow with AI
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Describe company policies in plain English or Khmer · AI generates a governed draft for human review
+                Describe your approval process and KneaWork will prepare a draft for review.
               </DialogDescription>
             </div>
           </div>
@@ -206,11 +208,10 @@ export function AiWorkflowGeneratorDialog({
 
         {/* AI Guardrails Callout */}
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-foreground flex items-start gap-2.5">
-          <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" />
+          <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
           <div className="leading-relaxed">
-            <strong>Governed AI Architecture:</strong> AI generates structured drafts only. It can{" "}
-            <strong>never</strong> automatically publish, modify in-flight requests, or approve
-            requests. A human administrator must inspect and test all rules before activating.
+            <strong>Human review required:</strong> AI creates a structured draft only. It cannot
+            publish, approve requests, or change active requests automatically.
           </div>
         </div>
 
@@ -218,14 +219,14 @@ export function AiWorkflowGeneratorDialog({
         <div className="space-y-3">
           <div className="space-y-1.5">
             <Label htmlFor="ai-prompt" className="text-xs font-semibold text-foreground">
-              Describe your workflow policy or approval process:
+              Describe the request and approval rules:
             </Label>
             <Textarea
               id="ai-prompt"
               rows={3}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="e.g. When an employee requests equipment above $200, Finance reviews first, then department manager approves..."
+              placeholder="Example: Purchases above USD 100 require a quotation and Finance Review. Purchases above USD 10,000 also require Director Confirmation."
               className="text-xs sm:text-sm bg-card resize-none"
             />
           </div>
@@ -239,13 +240,14 @@ export function AiWorkflowGeneratorDialog({
               size="sm"
               onClick={() => {
                 setPrompt(
-                  "Create a purchase request for purchases above USD 100. Finance checks quotation first, then manager approves, and director confirms purchases above USD 10,000.",
+                  "Purchases above USD 100 require a supplier quotation and Finance Review. Department manager validates need, and Managing Director confirms purchases above USD 10,000.",
                 );
                 setHasGenerated(false);
               }}
               className="text-[11px] h-6 px-2 text-muted-foreground hover:text-foreground"
             >
-              Purchase ($100+ quotation)
+              <ShoppingCart className="size-3 mr-1" aria-hidden="true" />
+              Purchase
             </Button>
             <Button
               type="button"
@@ -253,13 +255,14 @@ export function AiWorkflowGeneratorDialog({
               size="sm"
               onClick={() => {
                 setPrompt(
-                  "Create an employee travel expense claim requiring tax receipts. Department lead signs off, then finance verifies payment within 2 days.",
+                  "Employee travel expense claim requiring tax receipts. Department lead signs off, then finance verifies payment within 2 days.",
                 );
                 setHasGenerated(false);
               }}
               className="text-[11px] h-6 px-2 text-muted-foreground hover:text-foreground"
             >
-              Expense (Receipt required)
+              <Receipt className="size-3 mr-1" aria-hidden="true" />
+              Expense
             </Button>
             <Button
               type="button"
@@ -267,13 +270,14 @@ export function AiWorkflowGeneratorDialog({
               size="sm"
               onClick={() => {
                 setPrompt(
-                  "Create a vendor commercial contract approval. Legal reviews draft first, Finance verifies commercial value, Managing Director provides final signature.",
+                  "Vendor commercial agreement approval. Legal reviews draft first, Finance verifies commercial value, Managing Director provides final signature.",
                 );
                 setHasGenerated(false);
               }}
               className="text-[11px] h-6 px-2 text-muted-foreground hover:text-foreground"
             >
-              Contract (3-stage legal)
+              <FileCheck className="size-3 mr-1" aria-hidden="true" />
+              Contract
             </Button>
           </div>
 
@@ -283,8 +287,8 @@ export function AiWorkflowGeneratorDialog({
             disabled={isGenerating || !prompt.trim()}
             className="w-full bg-primary text-primary-foreground hover:bg-primary-hover font-semibold text-xs h-9 gap-1.5 shadow-2xs"
           >
-            <Wand2 className="size-3.5" />
-            {isGenerating ? "Analyzing policies & generating draft..." : "Generate structured draft"}
+            <WandSparkles className="size-3.5" aria-hidden="true" />
+            {isGenerating ? "Analyzing policies & generating draft..." : "Generate draft"}
           </Button>
         </div>
 
@@ -293,8 +297,10 @@ export function AiWorkflowGeneratorDialog({
           <div className="space-y-4 pt-3 border-t border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success" />
-                <h4 className="text-sm font-bold text-foreground">Draft Workflow Proposal Ready</h4>
+                <Bot className="size-4 text-primary" aria-hidden="true" />
+                <h4 className="text-sm font-bold text-foreground">
+                  AI-generated draft · Human review required
+                </h4>
               </div>
               <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.5 text-xs font-semibold text-attention">
                 v1.0 Draft (Unpublished)

@@ -165,19 +165,21 @@ function RequestDetailPage() {
             />
           }
           actions={
-            <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Telegram Preview: On desktop visible in header, on mobile available in metadata panel */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsTelegramModalOpen(true)}
-                className="gap-1.5 text-xs h-8 border-border text-muted-foreground hover:text-foreground"
+                className="hidden sm:inline-flex gap-1.5 text-xs h-8 border-border text-muted-foreground hover:text-foreground"
               >
                 <Smartphone className="size-3.5" />
                 Telegram preview
               </Button>
 
+              {/* Desktop Decision Actions (Hidden on mobile to eliminate duplicated action bar & overflow) */}
               {isMe ? (
-                <>
+                <div className="hidden sm:flex items-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -204,7 +206,7 @@ function RequestDetailPage() {
                     <CheckCircle2 className="mr-1.5 size-3.5" />
                     Approve request
                   </Button>
-                </>
+                </div>
               ) : (
                 <div className="text-xs text-muted-foreground">
                   {request.status === "approved" ? (
@@ -507,6 +509,19 @@ function RequestDetailPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Telegram Preview Trigger (Desktop & Mobile accessible) */}
+              <div className="pt-2 border-t border-border">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsTelegramModalOpen(true)}
+                  className="w-full h-9 text-xs font-semibold gap-1.5 border-border text-muted-foreground hover:text-foreground"
+                >
+                  <Smartphone className="size-3.5" aria-hidden="true" />
+                  Simulate Telegram notification
+                </Button>
+              </div>
             </div>
 
             {/* 3. Activity Log (Event titles 14px, timestamps 12px) */}
@@ -530,41 +545,34 @@ function RequestDetailPage() {
         </div>
       </div>
 
-      {/* Mobile Sticky Action Bar */}
+      {/* Mobile Sticky Action Bar (44px min touch target, no duplication) */}
       {isMe ? (
-        <div className="sm:hidden fixed bottom-14 left-0 right-0 z-30">
-          <ActionBar
-            sticky={false}
-            destructive={
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-border text-danger hover:bg-danger-soft text-xs font-semibold"
-                onClick={() => setActiveDecision("reject")}
-              >
-                Reject
-              </Button>
-            }
-            secondary={
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-border text-warning hover:bg-warning-soft text-xs font-semibold"
-                onClick={() => setActiveDecision("changes")}
-              >
-                Changes
-              </Button>
-            }
-            primary={
-              <Button
-                size="sm"
-                className="bg-success text-white hover:bg-success/90 text-xs font-semibold shadow-2xs"
-                onClick={() => setActiveDecision("approve")}
-              >
-                Approve
-              </Button>
-            }
-          />
+        <div className="sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-card/95 backdrop-blur border-t border-border px-3.5 py-2.5 shadow-lg">
+          <div className="flex items-center gap-2 max-w-lg mx-auto">
+            <Button
+              variant="outline"
+              className="h-11 min-h-[44px] px-3.5 border-border text-danger hover:bg-danger-soft text-xs font-semibold"
+              onClick={() => setActiveDecision("reject")}
+            >
+              <XCircle className="size-4 mr-1 shrink-0" aria-hidden="true" />
+              Reject
+            </Button>
+            <Button
+              variant="outline"
+              className="h-11 min-h-[44px] px-3.5 border-border text-warning hover:bg-warning-soft text-xs font-semibold"
+              onClick={() => setActiveDecision("changes")}
+            >
+              <RotateCcw className="size-4 mr-1 shrink-0" aria-hidden="true" />
+              Changes
+            </Button>
+            <Button
+              className="h-11 min-h-[44px] flex-1 bg-success text-white hover:bg-success/90 text-sm font-semibold shadow-2xs gap-1.5"
+              onClick={() => setActiveDecision("approve")}
+            >
+              <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
+              Approve
+            </Button>
+          </div>
         </div>
       ) : null}
 

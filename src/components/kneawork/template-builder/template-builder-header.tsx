@@ -1,4 +1,4 @@
-import { Layers, Save, Sparkles, X } from "lucide-react";
+import { CheckCircle2, Layers, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ExtendedTemplate } from "@/lib/kneawork/template-types";
 
@@ -38,11 +38,10 @@ export function TemplateBuilderHeader({
             </span>
           </div>
           <h1 className="text-base sm:text-lg font-bold text-foreground break-words">
-            {template.label.trim() ? `Edit ${template.label}` : "Create new request template"}
+            {template.label.trim() ? `Edit ${template.label}` : "Create request template"}
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Guided workflow designer for governed request forms, sequential reviewers, and evidence
-            rules
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Set up the form, reviewers, and rules your team will use.
           </p>
         </div>
 
@@ -51,7 +50,7 @@ export function TemplateBuilderHeader({
             variant="outline"
             size="sm"
             onClick={onCancel}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground text-xs h-8"
           >
             <X className="size-3.5 mr-1" />
             Cancel
@@ -62,7 +61,7 @@ export function TemplateBuilderHeader({
             size="sm"
             onClick={onSaveDraft}
             disabled={isSavingDraft}
-            className="border-attention-border text-attention hover:bg-attention-soft"
+            className="border-attention-border text-attention hover:bg-attention-soft text-xs h-8"
           >
             <Save className="size-3.5 mr-1" />
             {isSavingDraft ? "Saving draft..." : "Save draft"}
@@ -71,12 +70,12 @@ export function TemplateBuilderHeader({
           <Button
             size="sm"
             onClick={onContinue}
-            className="font-semibold gap-1.5"
+            className="font-semibold gap-1.5 text-xs h-8"
             disabled={isLastStep && !canPublish}
           >
             {isLastStep ? (
               <>
-                <Sparkles className="size-3.5" />
+                <CheckCircle2 className="size-3.5" />
                 Publish template
               </>
             ) : (
