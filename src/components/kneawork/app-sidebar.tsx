@@ -13,7 +13,6 @@ import {
   Users,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,24 +27,16 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuButton,
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { PEOPLE, personById } from "@/lib/kneawork/data";
 import { needsActionFrom, setCurrentUser, useKneaState } from "@/lib/kneawork/store";
 import { cn } from "@/lib/utils";
-
-function isNavItemActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { requests, currentUserId } = useKneaState();
@@ -68,257 +59,164 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   };
 
+  const navItem = (
+    label: string,
+    to: string,
+    Icon: React.ElementType,
+    badgeCount?: number,
+    exact = false,
+  ) => {
+    const isActive = exact
+      ? pathname === to
+      : pathname === to || (to !== "/" && pathname.startsWith(to));
+
+    return (
+      <SidebarMenuItem key={to}>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive}
+          tooltip={label}
+          className={cn(
+            "flex min-h-10 h-10 w-full items-center justify-between gap-3 rounded-md px-3 text-sm font-medium transition-colors select-none",
+            "group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-auto",
+            isActive
+              ? "!bg-accent !text-accent-foreground font-semibold shadow-2xs hover:!bg-accent hover:!text-accent-foreground"
+              : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+          )}
+        >
+          <Link
+            to={to}
+            onClick={handleLinkClick}
+            aria-current={isActive ? "page" : undefined}
+            className="flex w-full items-center justify-between gap-3 min-w-0"
+          >
+            <div className="flex items-center gap-3 min-w-0 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-full">
+              <Icon
+                className={cn(
+                  "size-4.5 shrink-0 transition-colors",
+                  isActive ? "text-primary" : "text-muted-foreground",
+                )}
+              />
+              <span className="truncate group-data-[collapsible=icon]:hidden">{label}</span>
+            </div>
+            {!isMobile && badgeCount && badgeCount > 0 ? (
+              <span
+                className="flex size-5 items-center justify-center rounded-full bg-attention text-xs font-bold text-attention-foreground shadow-2xs shrink-0 group-data-[collapsible=icon]:hidden"
+                aria-label={`${badgeCount} requests requiring your decision`}
+              >
+                {badgeCount}
+              </span>
+            ) : null}
+            {isMobile && badgeCount && badgeCount > 0 ? (
+              <span
+                className="flex size-5 items-center justify-center rounded-full bg-attention text-xs font-bold text-attention-foreground shadow-2xs shrink-0"
+                aria-label={`${badgeCount} requests requiring your decision`}
+              >
+                {badgeCount}
+              </span>
+            ) : null}
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      {/* 1. Header: Workspace Identity */}
-      <SidebarHeader className="border-b border-sidebar-border px-3 py-3">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="cursor-default select-none data-[state=open]:bg-sidebar-accent hover:bg-transparent"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-xs">
-                K
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-bold text-foreground">KneaWork</span>
-                <span className="truncate text-xs text-muted-foreground font-normal">
-                  Operations
-                </span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      {/* 1. Header: Workspace Identity matching the exact original design */}
+      <SidebarHeader className="border-b border-border p-0">
+        <div className="flex h-14 items-center px-4 justify-between group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold text-sm shadow-2xs">
+              K
+            </div>
+            <div className="min-w-0 group-data-[collapsible=icon]:hidden">
+              <span className="font-bold text-foreground text-sm tracking-tight block truncate">
+                KneaWork
+              </span>
+              <span className="text-[11px] text-muted-foreground block truncate">
+                Operations
+              </span>
+            </div>
+          </div>
+        </div>
       </SidebarHeader>
 
-      {/* 2. Content: Nav Groups */}
-      <SidebarContent className="px-2 py-3 space-y-4">
+      {/* 2. Content: Nav Groups matching exact spacing, typography, and buttons */}
+      <SidebarContent className="px-2.5 py-4 space-y-6 overflow-y-auto overflow-x-hidden">
         {/* Workspace Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+        <SidebarGroup className="p-0 space-y-1">
+          <p className="px-3 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider group-data-[collapsible=icon]:hidden">
             Workspace
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {/* Home */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isNavItemActive(pathname, "/")}
-                  tooltip="Home"
-                >
-                  <Link
-                    to="/"
-                    onClick={handleLinkClick}
-                    aria-current={isNavItemActive(pathname, "/") ? "page" : undefined}
-                  >
-                    <Home className="size-4" />
-                    <span>Home</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* My Action (Approvers/Managers) */}
-              {!isStaff && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavItemActive(pathname, "/action")}
-                    tooltip="My Action"
-                  >
-                    <Link
-                      to="/action"
-                      onClick={handleLinkClick}
-                      aria-current={isNavItemActive(pathname, "/action") ? "page" : undefined}
-                    >
-                      <Inbox className="size-4" />
-                      <span>My Action</span>
-                      {actionCount > 0 ? (
-                        <SidebarMenuBadge className="ml-auto bg-attention text-attention-foreground font-bold">
-                          {actionCount}
-                        </SidebarMenuBadge>
-                      ) : null}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-
-              {/* Requests */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isNavItemActive(pathname, "/requests")}
-                  tooltip={isStaff ? "My Requests" : "All Requests"}
-                >
-                  <Link
-                    to="/requests"
-                    onClick={handleLinkClick}
-                    aria-current={isNavItemActive(pathname, "/requests") ? "page" : undefined}
-                  >
-                    <FileText className="size-4" />
-                    <span>{isStaff ? "My Requests" : "All Requests"}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+          </p>
+          <SidebarMenu className="space-y-1">
+            {navItem("Home", "/", Home, undefined, true)}
+            {!isStaff && navItem("My Action", "/action", Inbox, actionCount)}
+            {navItem(isStaff ? "My Requests" : "All Requests", "/requests", FileText)}
+          </SidebarMenu>
         </SidebarGroup>
 
-        {/* Manage Navigation (Hide for staff without access) */}
+        {/* Manage Navigation */}
         {!isStaff && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <SidebarGroup className="p-0 space-y-1">
+            <p className="px-3 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider group-data-[collapsible=icon]:hidden">
               Manage
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {/* Operations Overview */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavItemActive(pathname, "/admin")}
-                    tooltip="Operations Overview"
-                  >
-                    <Link
-                      to="/admin"
-                      onClick={handleLinkClick}
-                      aria-current={isNavItemActive(pathname, "/admin") ? "page" : undefined}
-                    >
-                      <LayoutDashboard className="size-4" />
-                      <span>Operations Overview</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                {/* Templates */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavItemActive(pathname, "/templates")}
-                    tooltip="Templates"
-                  >
-                    <Link
-                      to="/templates"
-                      onClick={handleLinkClick}
-                      aria-current={isNavItemActive(pathname, "/templates") ? "page" : undefined}
-                    >
-                      <Layers className="size-4" />
-                      <span>Templates</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                {/* Team & Roles */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavItemActive(pathname, "/team")}
-                    tooltip="Team & Roles"
-                  >
-                    <Link
-                      to="/team"
-                      onClick={handleLinkClick}
-                      aria-current={isNavItemActive(pathname, "/team") ? "page" : undefined}
-                    >
-                      <Users className="size-4" />
-                      <span>Team & Roles</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
+            </p>
+            <SidebarMenu className="space-y-1">
+              {navItem("Operations Overview", "/admin", LayoutDashboard, undefined, true)}
+              {navItem("Templates", "/templates", Layers)}
+              {navItem("Team & Roles", "/team", Users)}
+            </SidebarMenu>
           </SidebarGroup>
         )}
 
         {/* Settings Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+        <SidebarGroup className="p-0 space-y-1">
+          <p className="px-3 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider group-data-[collapsible=icon]:hidden">
             Settings
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {isAdmin && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavItemActive(pathname, "/settings")}
-                    tooltip="Workspace Settings"
-                  >
-                    <Link
-                      to="/settings"
-                      onClick={handleLinkClick}
-                      aria-current={isNavItemActive(pathname, "/settings") ? "page" : undefined}
-                    >
-                      <Settings className="size-4" />
-                      <span>Workspace Settings</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isNavItemActive(pathname, "/profile")}
-                  tooltip="My Profile"
-                >
-                  <Link
-                    to="/profile"
-                    onClick={handleLinkClick}
-                    aria-current={isNavItemActive(pathname, "/profile") ? "page" : undefined}
-                  >
-                    <Shield className="size-4" />
-                    <span>My Profile</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+          </p>
+          <SidebarMenu className="space-y-1">
+            {isAdmin && navItem("Workspace Settings", "/settings", Settings)}
+            {navItem("My Profile", "/profile", Shield)}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
 
-      {/* 3. Footer: User Menu Dropdown */}
-      <SidebarFooter className="border-t border-sidebar-border p-2">
+      {/* 3. Footer: User Menu matching exact original design */}
+      <SidebarFooter className="border-t border-border p-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2.5 rounded-md p-2 hover:bg-accent transition-colors text-left outline-none cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1"
                 >
-                  <Avatar className="size-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg bg-muted text-foreground font-bold text-xs">
-                      {me.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-xs leading-tight">
-                    <span className="truncate font-semibold text-foreground">{me.name}</span>
-                    <span className="truncate text-[11px] text-muted-foreground">
-                      {me.role}
-                    </span>
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-xs text-foreground">
+                    {me.initials}
+                  </span>
+                  <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+                    <p className="truncate text-xs font-semibold text-foreground">{me.name}</p>
+                    <p className="truncate text-[13px] text-muted-foreground">{me.role}</p>
                   </div>
-                  <ChevronsUpDown className="ml-auto size-4" />
-                </SidebarMenuButton>
+                  <ChevronsUpDown className="size-4 text-muted-foreground shrink-0 group-data-[collapsible=icon]:hidden" />
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg p-1"
-                side="bottom"
-                align="end"
-                sideOffset={4}
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg p-1 shadow-lg"
+                side="top"
+                align="start"
+                sideOffset={8}
               >
                 <div className="flex items-center gap-2.5 px-2.5 py-2">
-                  <Avatar className="size-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground font-bold text-xs">
-                      {me.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-xs leading-tight">
-                    <span className="truncate font-semibold text-foreground">{me.name}</span>
-                    <span className="truncate text-[11px] text-muted-foreground">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-bold text-xs text-primary-foreground">
+                    {me.initials}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-bold text-foreground">{me.name}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">
                       {me.department} · {me.role}
-                    </span>
+                    </p>
                   </div>
                 </div>
 
