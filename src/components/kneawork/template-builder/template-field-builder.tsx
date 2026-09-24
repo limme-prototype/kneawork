@@ -1,5 +1,33 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUp, Edit2, Eye, FileText, GripVertical, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Edit2,
+  Eye,
+  GripVertical,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+  DragOverlay,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +52,7 @@ import type {
   TemplateField,
   TemplateFieldType,
 } from "@/lib/kneawork/template-types";
+import { cn } from "@/lib/utils";
 
 interface TemplateFieldBuilderProps {
   template: ExtendedTemplate;
@@ -51,6 +80,7 @@ export function TemplateFieldBuilder({
 }: TemplateFieldBuilderProps) {
   const [editingField, setEditingField] = useState<TemplateField | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   // Form state for dialog
   const [label, setLabel] = useState("");
@@ -58,6 +88,16 @@ export function TemplateFieldBuilder({
   const [helpText, setHelpText] = useState("");
   const [required, setRequired] = useState(true);
   const [section, setSection] = useState<"required" | "supporting">("required");
+
+  // Sensors with 8px pointer activation distance for safe mobile scrolling
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   const openAddDialog = (targetSection: "required" | "supporting") => {
     setEditingField(null);
@@ -125,8 +165,26 @@ export function TemplateFieldBuilder({
     onChange(copy);
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = template.fields.findIndex((f) => f.id === active.id);
+    const newIndex = template.fields.findIndex((f) => f.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      onChange(arrayMove(template.fields, oldIndex, newIndex));
+    }
+  };
+
   const requiredFields = template.fields.filter((f) => f.section === "required" || f.required);
   const supportingFields = template.fields.filter((f) => f.section === "supporting" && !f.required);
+  const activeField = activeId ? template.fields.find((f) => f.id === activeId) : null;
 
   return (
     <div className="space-y-6">
@@ -149,95 +207,153 @@ export function TemplateFieldBuilder({
         </Button>
       </div>
 
-      {/* Required Information Section */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between border-b border-border pb-2">
-          <div>
-            <h3 className="text-sm sm:text-base font-bold text-foreground">Required information</h3>
-            <p className="text-xs sm:text-[13px] text-muted-foreground">
-              Essential business details needed for reviewers to evaluate the request.
-            </p>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        accessibility={{
+          announcements: {
+            onDragStart({ active }) {
+              const f = template.fields.find((field) => field.id === active.id);
+              return `Lifted field ${f?.label || active.id}. Use arrow keys to reorder.`;
+            },
+            onDragOver({ active, over }) {
+              if (over) {
+                const fromIdx = template.fields.findIndex((f) => f.id === active.id) + 1;
+                const toIdx = template.fields.findIndex((f) => f.id === over.id) + 1;
+                return `Field moved from position ${fromIdx} to ${toIdx}.`;
+              }
+              return "Field is no longer over a droppable target.";
+            },
+            onDragEnd({ active, over }) {
+              if (over) {
+                const toIdx = template.fields.findIndex((f) => f.id === over.id) + 1;
+                return `Dropped field at position ${toIdx}.`;
+              }
+              return "Drag cancelled.";
+            },
+            onDragCancel() {
+              return "Dragging was cancelled.";
+            },
+          },
+        }}
+      >
+        {/* Required Information Section */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">Required information</h3>
+              <p className="text-xs sm:text-[13px] text-muted-foreground">
+                Essential business details needed for reviewers to evaluate the request.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openAddDialog("required")}
+              className="gap-1 font-semibold"
+            >
+              <Plus className="size-3.5" />
+              Add field
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => openAddDialog("required")}
-            className="gap-1 font-semibold"
-          >
-            <Plus className="size-3.5" />
-            Add field
-          </Button>
+
+          {requiredFields.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+              No required fields configured yet. Add at least one required field.
+            </div>
+          ) : (
+            <div className="divide-y divide-border rounded-lg border border-border bg-card">
+              <SortableContext
+                items={requiredFields.map((f) => f.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {requiredFields.map((field) => {
+                  const globalIdx = template.fields.findIndex((f) => f.id === field.id);
+                  return (
+                    <SortableFieldRow
+                      key={field.id}
+                      field={field}
+                      isFirst={globalIdx === 0}
+                      isLast={globalIdx === template.fields.length - 1}
+                      onMoveUp={() => handleMove(globalIdx, "up")}
+                      onMoveDown={() => handleMove(globalIdx, "down")}
+                      onEdit={() => openEditDialog(field)}
+                      onRemove={() => handleRemoveField(field.id)}
+                    />
+                  );
+                })}
+              </SortableContext>
+            </div>
+          )}
         </div>
 
-        {requiredFields.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-            No required fields configured yet. Add at least one required field.
+        {/* Supporting Information Section */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">Supporting information</h3>
+              <p className="text-xs sm:text-[13px] text-muted-foreground">
+                Optional context, references, or vendor data that assist the approval decision.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openAddDialog("supporting")}
+              className="gap-1 font-semibold"
+            >
+              <Plus className="size-3.5" />
+              Add field
+            </Button>
           </div>
-        ) : (
-          <div className="divide-y divide-border rounded-lg border border-border bg-card">
-            {requiredFields.map((field) => {
-              const globalIdx = template.fields.findIndex((f) => f.id === field.id);
-              return (
-                <FieldRow
-                  key={field.id}
-                  field={field}
-                  isFirst={globalIdx === 0}
-                  isLast={globalIdx === template.fields.length - 1}
-                  onMoveUp={() => handleMove(globalIdx, "up")}
-                  onMoveDown={() => handleMove(globalIdx, "down")}
-                  onEdit={() => openEditDialog(field)}
-                  onRemove={() => handleRemoveField(field.id)}
-                />
-              );
-            })}
-          </div>
-        )}
-      </div>
 
-      {/* Supporting Information Section */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between border-b border-border pb-2">
-          <div>
-            <h3 className="text-sm sm:text-base font-bold text-foreground">Supporting information</h3>
-            <p className="text-xs sm:text-[13px] text-muted-foreground">
-              Optional context, references, or vendor data that assist the approval decision.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => openAddDialog("supporting")}
-            className="gap-1 font-semibold"
-          >
-            <Plus className="size-3.5" />
-            Add field
-          </Button>
+          {supportingFields.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
+              No optional supporting fields. You can add vendor, cost center, or notes.
+            </div>
+          ) : (
+            <div className="divide-y divide-border rounded-lg border border-border bg-card">
+              <SortableContext
+                items={supportingFields.map((f) => f.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {supportingFields.map((field) => {
+                  const globalIdx = template.fields.findIndex((f) => f.id === field.id);
+                  return (
+                    <SortableFieldRow
+                      key={field.id}
+                      field={field}
+                      isFirst={globalIdx === 0}
+                      isLast={globalIdx === template.fields.length - 1}
+                      onMoveUp={() => handleMove(globalIdx, "up")}
+                      onMoveDown={() => handleMove(globalIdx, "down")}
+                      onEdit={() => openEditDialog(field)}
+                      onRemove={() => handleRemoveField(field.id)}
+                    />
+                  );
+                })}
+              </SortableContext>
+            </div>
+          )}
         </div>
 
-        {supportingFields.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
-            No optional supporting fields. You can add vendor, cost center, or notes.
-          </div>
-        ) : (
-          <div className="divide-y divide-border rounded-lg border border-border bg-card">
-            {supportingFields.map((field) => {
-              const globalIdx = template.fields.findIndex((f) => f.id === field.id);
-              return (
-                <FieldRow
-                  key={field.id}
-                  field={field}
-                  isFirst={globalIdx === 0}
-                  isLast={globalIdx === template.fields.length - 1}
-                  onMoveUp={() => handleMove(globalIdx, "up")}
-                  onMoveDown={() => handleMove(globalIdx, "down")}
-                  onEdit={() => openEditDialog(field)}
-                  onRemove={() => handleRemoveField(field.id)}
-                />
-              );
-            })}
-          </div>
-        )}
-      </div>
+        {/* Drag Overlay Preview */}
+        <DragOverlay>
+          {activeField ? (
+            <div className="flex items-center justify-between p-3 rounded-lg border-2 border-primary bg-card shadow-lg opacity-95">
+              <div className="flex items-center gap-3">
+                <GripVertical className="size-4 text-primary shrink-0" />
+                <span className="text-sm font-semibold text-foreground">{activeField.label}</span>
+                <span className="rounded bg-muted border border-border px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
+                  {FIELD_TYPE_LABELS[activeField.type]}
+                </span>
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       {/* Add / Edit Field Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -253,50 +369,65 @@ export function TemplateFieldBuilder({
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label htmlFor="field-label" className="text-sm font-semibold">
-                Field label <span className="text-danger">*</span>
+              <Label htmlFor="field-label" className="text-xs font-bold">
+                Field label *
               </Label>
               <Input
                 id="field-label"
+                placeholder="e.g. Total Estimated Amount, Target Delivery Date"
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
-                placeholder="e.g. Vendor name or Item count"
                 className="bg-card"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="field-type" className="text-sm font-semibold">
-                Field type
-              </Label>
-              <Select value={type} onValueChange={(val: TemplateFieldType) => setType(val)}>
-                <SelectTrigger id="field-type" className="bg-card min-h-10 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="text">Short text</SelectItem>
-                  <SelectItem value="textarea">Long text (multi-line)</SelectItem>
-                  <SelectItem value="amount">Amount (numeric value)</SelectItem>
-                  <SelectItem value="currency">Currency code</SelectItem>
-                  <SelectItem value="date">Date</SelectItem>
-                  <SelectItem value="daterange">Date range</SelectItem>
-                  <SelectItem value="number">Number</SelectItem>
-                  <SelectItem value="select">Dropdown select</SelectItem>
-                  <SelectItem value="file">File upload</SelectItem>
-                  <SelectItem value="person">Person selector</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="field-type" className="text-xs font-bold">
+                  Data type
+                </Label>
+                <Select value={type} onValueChange={(val) => setType(val as TemplateFieldType)}>
+                  <SelectTrigger id="field-type" className="bg-card">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(FIELD_TYPE_LABELS).map(([k, v]) => (
+                      <SelectItem key={k} value={k}>
+                        {v}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="field-sec" className="text-xs font-bold">
+                  Section
+                </Label>
+                <Select
+                  value={section}
+                  onValueChange={(val) => setSection(val as "required" | "supporting")}
+                >
+                  <SelectTrigger id="field-sec" className="bg-card">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="required">Required information</SelectItem>
+                    <SelectItem value="supporting">Supporting information</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="field-help" className="text-sm font-semibold">
-                Help text
+              <Label htmlFor="field-help" className="text-xs font-bold">
+                Help text / guidance
               </Label>
               <Input
                 id="field-help"
+                placeholder="e.g. Include VAT if vendor quoted with tax"
                 value={helpText}
                 onChange={(e) => setHelpText(e.target.value)}
-                placeholder="Guidance shown beneath the input"
                 className="bg-card"
               />
             </div>
@@ -344,7 +475,7 @@ export function TemplateFieldBuilder({
   );
 }
 
-function FieldRow({
+function SortableFieldRow({
   field,
   isFirst,
   isLast,
@@ -361,13 +492,45 @@ function FieldRow({
   onEdit: () => void;
   onRemove: () => void;
 }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: field.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.35 : 1,
+  };
+
   return (
-    <div className="flex items-center justify-between p-3 transition-colors hover:bg-muted/20">
-      <div className="flex items-center gap-3">
-        <GripVertical className="size-4 text-muted-foreground/50 shrink-0" />
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-foreground">{field.label}</span>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "flex items-center justify-between p-3 transition-colors hover:bg-muted/20",
+        isDragging && "bg-muted/40 ring-1 ring-primary",
+      )}
+    >
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+        {/* Dedicated Drag Handle */}
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          aria-label={`Reorder field ${field.label}`}
+          className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted cursor-grab active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring touch-none"
+        >
+          <GripVertical className="size-4" />
+        </button>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-semibold text-foreground truncate">{field.label}</span>
             <span className="rounded bg-muted border border-border px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
               {FIELD_TYPE_LABELS[field.type]}
             </span>
@@ -382,18 +545,20 @@ function FieldRow({
             )}
           </div>
           {field.helpText ? (
-            <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5">{field.helpText}</p>
+            <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5 truncate">{field.helpText}</p>
           ) : null}
         </div>
       </div>
 
-      <div className="flex items-center gap-1">
+      {/* Accessible fallback buttons */}
+      <div className="flex items-center gap-1 shrink-0 ml-2">
         <Button
           variant="ghost"
           size="sm"
           onClick={onMoveUp}
           disabled={isFirst}
           title="Move up"
+          aria-label={`Move ${field.label} up`}
           className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
         >
           <ArrowUp className="size-3.5" />
@@ -404,6 +569,7 @@ function FieldRow({
           onClick={onMoveDown}
           disabled={isLast}
           title="Move down"
+          aria-label={`Move ${field.label} down`}
           className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
         >
           <ArrowDown className="size-3.5" />
@@ -413,6 +579,7 @@ function FieldRow({
           size="sm"
           onClick={onEdit}
           title="Edit field"
+          aria-label={`Edit ${field.label}`}
           className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
         >
           <Edit2 className="size-3.5" />
@@ -422,6 +589,7 @@ function FieldRow({
           size="sm"
           onClick={onRemove}
           title="Remove field"
+          aria-label={`Remove ${field.label}`}
           className="h-7 w-7 p-0 text-danger hover:bg-danger-soft hover:text-danger"
         >
           <Trash2 className="size-3.5" />

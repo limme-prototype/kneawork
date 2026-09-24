@@ -1,45 +1,57 @@
+import * as React from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  Check,
+  ChevronsUpDown,
   FileText,
   Home,
   Inbox,
   LayoutDashboard,
   Layers,
   Settings,
-  Users,
   Shield,
-  PanelLeftClose,
-  PanelLeft,
+  Users,
 } from "lucide-react";
-import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { personById } from "@/lib/kneawork/data";
-import { needsActionFrom, useKneaState } from "@/lib/kneawork/store";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { PEOPLE, personById } from "@/lib/kneawork/data";
+import { needsActionFrom, setCurrentUser, useKneaState } from "@/lib/kneawork/store";
 import { cn } from "@/lib/utils";
 
-export interface AppSidebarProps {
-  collapsed?: boolean;
-  onToggleCollapse?: () => void;
-  isMobileDrawer?: boolean;
-  onItemClick?: () => void;
+function isNavItemActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AppSidebar({
-  collapsed = false,
-  onToggleCollapse,
-  isMobileDrawer = false,
-  onItemClick,
-}: AppSidebarProps) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { requests, currentUserId } = useKneaState();
   const routerState = useRouterState();
-  const currentPath = routerState.location.pathname;
+  const pathname = routerState.location.pathname;
+  const { isMobile, setOpenMobile } = useSidebar();
 
   const me = personById(currentUserId);
   const actionCount = needsActionFrom(requests, currentUserId).length;
@@ -50,213 +62,320 @@ export function AppSidebar({
     currentUserId === "u_director" ||
     currentUserId === "u_finance";
 
-  const isCollapsed = collapsed && !isMobileDrawer;
-
-  const navItem = (
-    label: string,
-    to: string,
-    Icon: React.ElementType,
-    badgeCount?: number,
-    exact = false,
-  ) => {
-    const isActive = exact
-      ? currentPath === to
-      : currentPath === to || (to !== "/" && currentPath.startsWith(to));
-
-    const content = (
-      <Link
-        to={to}
-        onClick={onItemClick}
-        aria-current={isActive ? "page" : undefined}
-        className={cn(
-          "flex min-h-10 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors select-none",
-          isCollapsed ? "justify-center px-0 w-10 mx-auto" : "w-full justify-between",
-          isActive
-            ? "bg-accent text-accent-foreground font-semibold shadow-2xs"
-            : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
-        )}
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          <Icon className={cn("size-4.5 shrink-0", isActive ? "text-primary" : "")} />
-          {!isCollapsed && <span className="truncate">{label}</span>}
-        </div>
-        {!isCollapsed && badgeCount && badgeCount > 0 ? (
-          <span
-            className="flex size-5 items-center justify-center rounded-full bg-attention text-xs font-bold text-attention-foreground shadow-2xs shrink-0"
-            aria-label={`${badgeCount} requests requiring your decision`}
-          >
-            {badgeCount}
-          </span>
-        ) : null}
-      </Link>
-    );
-
-    if (isCollapsed) {
-      return (
-        <Tooltip key={to}>
-          <TooltipTrigger asChild>{content}</TooltipTrigger>
-          <TooltipContent side="right" className="font-semibold text-xs flex items-center gap-2">
-            <span>{label}</span>
-            {badgeCount && badgeCount > 0 ? (
-              <span className="flex size-4.5 items-center justify-center rounded-full bg-attention text-[10px] font-bold text-attention-foreground">
-                {badgeCount}
-              </span>
-            ) : null}
-          </TooltipContent>
-        </Tooltip>
-      );
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
     }
-
-    return <div key={to}>{content}</div>;
   };
 
   return (
-    <TooltipProvider delayDuration={150}>
-      <aside
-        className={cn(
-          "flex flex-col border-r border-border bg-card transition-all duration-200 select-none",
-          isMobileDrawer
-            ? "w-full h-full border-r-0"
-            : isCollapsed
-              ? "w-16 shrink-0"
-              : "w-64 shrink-0",
-        )}
-      >
-        {/* Workspace Identity Block */}
-        <div
-          className={cn(
-            "flex h-14 items-center border-b border-border px-4",
-            isCollapsed ? "justify-center px-2" : "justify-between",
-          )}
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold text-sm shadow-2xs">
-              K
-            </div>
-            {!isCollapsed && (
-              <div className="min-w-0">
-                <span className="font-bold text-foreground text-sm tracking-tight block truncate">
-                  KneaWork
-                </span>
-                <span className="text-[11px] text-muted-foreground block truncate">
+    <Sidebar collapsible="icon" {...props}>
+      {/* 1. Header: Workspace Identity */}
+      <SidebarHeader className="border-b border-sidebar-border px-3 py-3">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="cursor-default select-none data-[state=open]:bg-sidebar-accent hover:bg-transparent"
+            >
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shadow-xs">
+                K
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-bold text-foreground">KneaWork</span>
+                <span className="truncate text-xs text-muted-foreground font-normal">
                   Operations
                 </span>
               </div>
-            )}
-          </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
 
-          {!isCollapsed && onToggleCollapse && !isMobileDrawer ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onToggleCollapse}
-              className="size-7 text-muted-foreground hover:text-foreground shrink-0"
-              aria-label="Collapse sidebar (Ctrl+B)"
-            >
-              <PanelLeftClose className="size-4" />
-            </Button>
-          ) : null}
-        </div>
+      {/* 2. Content: Nav Groups */}
+      <SidebarContent className="px-2 py-3 space-y-4">
+        {/* Workspace Navigation */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+            Workspace
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {/* Home */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isNavItemActive(pathname, "/")}
+                  tooltip="Home"
+                >
+                  <Link
+                    to="/"
+                    onClick={handleLinkClick}
+                    aria-current={isNavItemActive(pathname, "/") ? "page" : undefined}
+                  >
+                    <Home className="size-4" />
+                    <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-        {/* Navigation Sections */}
-        <div className="flex-1 px-2.5 py-4 space-y-6 overflow-y-auto overflow-x-hidden">
-          {/* Group 1: WORKSPACE */}
-          <div className="space-y-1">
-            {!isCollapsed && (
-              <p className="px-3 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Workspace
-              </p>
-            )}
-            <nav className="space-y-1" aria-label="Workspace navigation">
-              {navItem("Home", "/", Home, undefined, true)}
-              {!isStaff && navItem("My Action", "/action", Inbox, actionCount)}
-              {navItem(
-                isStaff ? "My Requests" : "All Requests",
-                "/requests",
-                FileText,
+              {/* My Action (Approvers/Managers) */}
+              {!isStaff && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavItemActive(pathname, "/action")}
+                    tooltip="My Action"
+                  >
+                    <Link
+                      to="/action"
+                      onClick={handleLinkClick}
+                      aria-current={isNavItemActive(pathname, "/action") ? "page" : undefined}
+                    >
+                      <Inbox className="size-4" />
+                      <span>My Action</span>
+                      {actionCount > 0 ? (
+                        <SidebarMenuBadge className="ml-auto bg-attention text-attention-foreground font-bold">
+                          {actionCount}
+                        </SidebarMenuBadge>
+                      ) : null}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               )}
-            </nav>
-          </div>
 
-          {/* Group 2: MANAGE (Admins & Managers) */}
-          {!isStaff && (
-            <div className="space-y-1">
-              {!isCollapsed && (
-                <p className="px-3 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Manage
-                </p>
+              {/* Requests */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isNavItemActive(pathname, "/requests")}
+                  tooltip={isStaff ? "My Requests" : "All Requests"}
+                >
+                  <Link
+                    to="/requests"
+                    onClick={handleLinkClick}
+                    aria-current={isNavItemActive(pathname, "/requests") ? "page" : undefined}
+                  >
+                    <FileText className="size-4" />
+                    <span>{isStaff ? "My Requests" : "All Requests"}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Manage Navigation (Hide for staff without access) */}
+        {!isStaff && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+              Manage
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* Operations Overview */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavItemActive(pathname, "/admin")}
+                    tooltip="Operations Overview"
+                  >
+                    <Link
+                      to="/admin"
+                      onClick={handleLinkClick}
+                      aria-current={isNavItemActive(pathname, "/admin") ? "page" : undefined}
+                    >
+                      <LayoutDashboard className="size-4" />
+                      <span>Operations Overview</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                {/* Templates */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavItemActive(pathname, "/templates")}
+                    tooltip="Templates"
+                  >
+                    <Link
+                      to="/templates"
+                      onClick={handleLinkClick}
+                      aria-current={isNavItemActive(pathname, "/templates") ? "page" : undefined}
+                    >
+                      <Layers className="size-4" />
+                      <span>Templates</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                {/* Team & Roles */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavItemActive(pathname, "/team")}
+                    tooltip="Team & Roles"
+                  >
+                    <Link
+                      to="/team"
+                      onClick={handleLinkClick}
+                      aria-current={isNavItemActive(pathname, "/team") ? "page" : undefined}
+                    >
+                      <Users className="size-4" />
+                      <span>Team & Roles</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {/* Settings Navigation */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+            Settings
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavItemActive(pathname, "/settings")}
+                    tooltip="Workspace Settings"
+                  >
+                    <Link
+                      to="/settings"
+                      onClick={handleLinkClick}
+                      aria-current={isNavItemActive(pathname, "/settings") ? "page" : undefined}
+                    >
+                      <Settings className="size-4" />
+                      <span>Workspace Settings</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               )}
-              <nav className="space-y-1" aria-label="Management navigation">
-                {navItem("Operations Overview", "/admin", LayoutDashboard, undefined, true)}
-                {navItem("Templates", "/templates", Layers)}
-                {navItem("Team & Roles", "/team", Users)}
-              </nav>
-            </div>
-          )}
 
-          {/* Group 3: SETTINGS */}
-          <div className="space-y-1">
-            {!isCollapsed && (
-              <p className="px-3 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Settings
-              </p>
-            )}
-            <nav className="space-y-1" aria-label="Settings navigation">
-              {isAdmin && navItem("Workspace Settings", "/settings", Settings)}
-              {navItem("My Profile", "/profile", Shield)}
-            </nav>
-          </div>
-        </div>
-
-        {/* Footer: User Account / Expand button */}
-        <div className="border-t border-border p-2">
-          {isCollapsed ? (
-            <div className="flex flex-col items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isNavItemActive(pathname, "/profile")}
+                  tooltip="My Profile"
+                >
                   <Link
                     to="/profile"
-                    className="flex size-9 items-center justify-center rounded-md hover:bg-accent text-foreground transition-colors"
+                    onClick={handleLinkClick}
+                    aria-current={isNavItemActive(pathname, "/profile") ? "page" : undefined}
                   >
-                    <span className="flex size-7 items-center justify-center rounded-full bg-muted font-bold text-xs text-foreground">
-                      {me.initials}
-                    </span>
+                    <Shield className="size-4" />
+                    <span>My Profile</span>
                   </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p className="font-semibold text-xs">{me.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{me.role}</p>
-                </TooltipContent>
-              </Tooltip>
-              {onToggleCollapse && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onToggleCollapse}
-                  className="size-8 text-muted-foreground hover:text-foreground"
-                  aria-label="Expand sidebar (Ctrl+B)"
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      {/* 3. Footer: User Menu Dropdown */}
+      <SidebarFooter className="border-t border-sidebar-border p-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <PanelLeft className="size-4" />
-                </Button>
-              )}
-            </div>
-          ) : (
-            <Link
-              to="/profile"
-              onClick={onItemClick}
-              className="flex items-center gap-2.5 rounded-md p-2 hover:bg-accent transition-colors"
-            >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-xs text-foreground">
-                {me.initials}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-semibold text-foreground">{me.name}</p>
-                <p className="truncate text-[13px] text-muted-foreground">{me.role}</p>
-              </div>
-            </Link>
-          )}
-        </div>
-      </aside>
-    </TooltipProvider>
+                  <Avatar className="size-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg bg-muted text-foreground font-bold text-xs">
+                      {me.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-xs leading-tight">
+                    <span className="truncate font-semibold text-foreground">{me.name}</span>
+                    <span className="truncate text-[11px] text-muted-foreground">
+                      {me.role}
+                    </span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg p-1"
+                side="bottom"
+                align="end"
+                sideOffset={4}
+              >
+                <div className="flex items-center gap-2.5 px-2.5 py-2">
+                  <Avatar className="size-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground font-bold text-xs">
+                      {me.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-xs leading-tight">
+                    <span className="truncate font-semibold text-foreground">{me.name}</span>
+                    <span className="truncate text-[11px] text-muted-foreground">
+                      {me.department} · {me.role}
+                    </span>
+                  </div>
+                </div>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuLabel className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+                  Switch Test Persona
+                </DropdownMenuLabel>
+                <DropdownMenuGroup>
+                  {PEOPLE.map((p) => {
+                    const isCurrent = p.id === currentUserId;
+                    return (
+                      <DropdownMenuItem
+                        key={p.id}
+                        onClick={() => setCurrentUser(p.id)}
+                        className="flex items-center justify-between text-xs py-1.5 cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="flex size-5 items-center justify-center rounded-full bg-muted text-[10px] font-bold">
+                            {p.initials}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="font-medium text-foreground truncate">{p.name}</p>
+                            <p className="text-[10px] text-muted-foreground truncate">{p.role}</p>
+                          </div>
+                        </div>
+                        {isCurrent ? <Check className="size-3.5 text-primary shrink-0" /> : null}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem asChild className="cursor-pointer text-xs">
+                  <Link to="/profile" onClick={handleLinkClick} className="flex items-center gap-2">
+                    <Shield className="size-3.5 text-muted-foreground" />
+                    <span>My Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+
+                {isAdmin && (
+                  <DropdownMenuItem asChild className="cursor-pointer text-xs">
+                    <Link to="/settings" onClick={handleLinkClick} className="flex items-center gap-2">
+                      <Settings className="size-3.5 text-muted-foreground" />
+                      <span>Workspace Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
+      {/* 4. Rail for hovering/toggling */}
+      <SidebarRail />
+    </Sidebar>
   );
 }

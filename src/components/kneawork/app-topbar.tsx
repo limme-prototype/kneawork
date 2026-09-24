@@ -1,26 +1,21 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import * as React from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Bell,
   Check,
-  Command as CommandIcon,
   FileText,
   Home,
   Inbox,
   LayoutDashboard,
   Layers,
-  LogOut,
-  Menu,
-  PanelLeft,
-  PanelLeftClose,
   Plus,
   Search,
   Settings,
   Shield,
-  User,
   Users,
 } from "lucide-react";
-import * as React from "react";
 
+import { RouteBreadcrumbs } from "@/components/kneawork/route-breadcrumbs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,27 +36,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { PEOPLE, personById } from "@/lib/kneawork/data";
+import { resolveBreadcrumbs } from "@/lib/kneawork/route-meta";
 import { needsActionFrom, setCurrentUser, useKneaState } from "@/lib/kneawork/store";
 
 export interface AppTopbarProps {
   breadcrumbs?: { label: string; to?: string }[] | undefined;
   contextTitle?: string | undefined;
   contextSubtitle?: string | undefined;
-  isSidebarCollapsed: boolean;
-  onToggleSidebarCollapse: () => void;
-  onOpenMobileMenu: () => void;
+  isSidebarCollapsed?: boolean;
+  onToggleSidebarCollapse?: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
 export function AppTopbar({
   breadcrumbs,
   contextTitle,
-  contextSubtitle,
-  isSidebarCollapsed,
-  onToggleSidebarCollapse,
-  onOpenMobileMenu,
 }: AppTopbarProps) {
   const { requests, currentUserId } = useKneaState();
+  const routerState = useRouterState();
+  const pathname = routerState.location.pathname;
   const navigate = useNavigate();
   const [commandOpen, setCommandOpen] = React.useState(false);
 
@@ -75,7 +71,7 @@ export function AppTopbar({
     currentUserId === "u_director" ||
     currentUserId === "u_finance";
 
-  // Cmd+K listener
+  // Cmd+K / Ctrl+K listener
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
@@ -92,115 +88,24 @@ export function AppTopbar({
     navigate({ to });
   };
 
+  const breadcrumbSegments = resolveBreadcrumbs(pathname, breadcrumbs, contextTitle);
+
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-card/95 px-3 sm:px-6 lg:px-8 backdrop-blur gap-2 sm:gap-4 select-none">
-        {/* Left: Mobile trigger, Desktop collapse toggle & Breadcrumb/Context */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-          {/* Mobile Drawer Trigger */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onOpenMobileMenu}
-            className="size-8 lg:hidden text-foreground hover:bg-muted shrink-0"
-            aria-label="Open navigation menu"
-          >
-            <Menu className="size-4.5" />
-          </Button>
+      <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-border bg-card/95 px-3 sm:px-4 lg:px-6 backdrop-blur gap-2 select-none">
+        {/* Left: Sidebar trigger, separator, and centralized breadcrumb */}
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <SidebarTrigger className="-ml-1 text-muted-foreground hover:text-foreground" />
+          <Separator orientation="vertical" className="mr-2 h-4 hidden sm:block" />
 
-          {/* Desktop Sidebar Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleSidebarCollapse}
-            className="hidden lg:flex size-8 text-muted-foreground hover:text-foreground shrink-0"
-            aria-label={
-              isSidebarCollapsed
-                ? "Expand sidebar (Ctrl+B)"
-                : "Collapse sidebar (Ctrl+B)"
-            }
-          >
-            {isSidebarCollapsed ? (
-              <PanelLeft className="size-4" />
-            ) : (
-              <PanelLeftClose className="size-4" />
-            )}
-          </Button>
-
-          {/* Breadcrumb or Context */}
           <div className="min-w-0 flex-1">
-            {breadcrumbs && breadcrumbs.length > 0 ? (
-              <nav
-                aria-label="Topbar Breadcrumb"
-                className="min-w-0"
-              >
-                {/* Mobile compact breadcrumb (1 parent + current page) */}
-                <div className="flex sm:hidden items-center gap-1.5 text-xs text-muted-foreground min-w-0 truncate">
-                  {breadcrumbs.length > 1 ? (
-                    <>
-                      {breadcrumbs[breadcrumbs.length - 2].to ? (
-                        <Link
-                          to={breadcrumbs[breadcrumbs.length - 2].to}
-                          className="hover:text-foreground font-medium truncate max-w-[80px]"
-                        >
-                          {breadcrumbs[breadcrumbs.length - 2].label}
-                        </Link>
-                      ) : (
-                        <span className="truncate max-w-[80px]">
-                          {breadcrumbs[breadcrumbs.length - 2].label}
-                        </span>
-                      )}
-                      <span className="text-muted-foreground/60 select-none">/</span>
-                      <span className="font-semibold text-foreground truncate max-w-[130px]">
-                        {breadcrumbs[breadcrumbs.length - 1].label}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="font-semibold text-foreground truncate">
-                      {breadcrumbs[0]?.label}
-                    </span>
-                  )}
-                </div>
-
-                {/* Desktop full trail */}
-                <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground overflow-hidden">
-                  {breadcrumbs.map((b, i) => (
-                    <span
-                      key={i}
-                      className="flex items-center gap-1.5 shrink-0 last:shrink last:truncate min-w-0"
-                    >
-                      {b.to ? (
-                        <Link to={b.to} className="hover:text-foreground font-medium truncate">
-                          {b.label}
-                        </Link>
-                      ) : (
-                        <span className="font-semibold text-foreground truncate">{b.label}</span>
-                      )}
-                      {i < breadcrumbs.length - 1 ? (
-                        <span className="text-muted-foreground/60 select-none">/</span>
-                      ) : null}
-                    </span>
-                  ))}
-                </div>
-              </nav>
-            ) : (
-              <div className="min-w-0">
-                <span className="text-sm font-bold text-foreground truncate block">
-                  {contextTitle || "KneaWork"}
-                </span>
-                {contextSubtitle ? (
-                  <span className="text-xs text-muted-foreground truncate hidden sm:block">
-                    {contextSubtitle}
-                  </span>
-                ) : null}
-              </div>
-            )}
+            <RouteBreadcrumbs segments={breadcrumbSegments} />
           </div>
         </div>
 
         {/* Right: Global Utilities (Search/⌘K, Notifications, User Menu) */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          {/* Global Command / Quick Search button */}
+          {/* Global Search Button */}
           <button
             type="button"
             onClick={() => setCommandOpen(true)}
@@ -214,12 +119,12 @@ export function AppTopbar({
             </kbd>
           </button>
 
-          {/* Notifications Dropdown */}
+          {/* Action Notifications Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="relative flex size-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="relative flex size-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer"
                 aria-label={
                   actionCount > 0
                     ? `Notifications: ${actionCount} actionable requests`
@@ -301,7 +206,6 @@ export function AppTopbar({
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64 p-1 shadow-lg">
-              {/* Account Identity */}
               <div className="flex items-center gap-2.5 px-2.5 py-2.5">
                 <Avatar className="size-9 shrink-0">
                   <AvatarFallback className="bg-primary text-primary-foreground font-bold text-xs">
@@ -322,7 +226,6 @@ export function AppTopbar({
 
               <DropdownMenuSeparator />
 
-              {/* Persona Switcher for SME Testing */}
               <DropdownMenuLabel className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
                 Switch Test Role
               </DropdownMenuLabel>
@@ -352,7 +255,6 @@ export function AppTopbar({
 
               <DropdownMenuSeparator />
 
-              {/* Account Links */}
               <DropdownMenuItem asChild className="cursor-pointer text-xs">
                 <Link to="/profile" className="flex items-center gap-2">
                   <Shield className="size-3.5 text-muted-foreground" />
@@ -360,14 +262,14 @@ export function AppTopbar({
                 </Link>
               </DropdownMenuItem>
 
-              {isAdmin ? (
+              {isAdmin && (
                 <DropdownMenuItem asChild className="cursor-pointer text-xs">
                   <Link to="/settings" className="flex items-center gap-2">
                     <Settings className="size-3.5 text-muted-foreground" />
                     <span>Workspace Settings</span>
                   </Link>
                 </DropdownMenuItem>
-              ) : null}
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
