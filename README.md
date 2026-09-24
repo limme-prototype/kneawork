@@ -2,6 +2,11 @@
 
 KneaWork UX/UI PRD
 
+### Core Specifications
+- [Business Requirements & Strategy Specification](../kneawork-business-requirements.md)
+- [System Architecture & Technical Design Specification](../kneawork-system-architecture.md)
+
+
 I created the complete PRD covering:
 
 Trust-focused UX principles
