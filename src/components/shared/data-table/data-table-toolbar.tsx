@@ -43,6 +43,12 @@ export function DataTableToolbar<TData>({
 
   const pillColumn = filterPills ? table.getColumn(filterPills.columnId) : undefined;
 
+  // Exclude columns that are already rendered as primary filter pills above to prevent duplication
+  const facetColumns = React.useMemo(
+    () => filterableColumns.filter((col) => !filterPills || col.id !== filterPills.columnId),
+    [filterableColumns, filterPills],
+  );
+
   return (
     <div className={cn("space-y-2.5 py-1", className)}>
       {/* Primary Category / Status Pills Row if configured */}
@@ -83,21 +89,23 @@ export function DataTableToolbar<TData>({
           </div>
 
           {/* Desktop Faceted Filters (popover with command search & checkboxes) */}
-          <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
-            {filterableColumns.map((col) => {
-              const column = table.getColumn(col.id);
-              if (!column) return null;
-              return (
-                <DataTableFacetedFilter
-                  key={col.id}
-                  column={column}
-                  title={col.title}
-                  options={col.options}
-                  singleSelect={col.singleSelect}
-                />
-              );
-            })}
-          </div>
+          {facetColumns.length > 0 && (
+            <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
+              {facetColumns.map((col) => {
+                const column = table.getColumn(col.id);
+                if (!column) return null;
+                return (
+                  <DataTableFacetedFilter
+                    key={col.id}
+                    column={column}
+                    title={col.title}
+                    options={col.options}
+                    singleSelect={col.singleSelect}
+                  />
+                );
+              })}
+            </div>
+          )}
 
           {/* Mobile Filter Sheet (drawer with all facet sections) */}
           {filterableColumns.length > 0 && (

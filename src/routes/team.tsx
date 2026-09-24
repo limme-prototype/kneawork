@@ -35,7 +35,6 @@ import {
   DataTableColumnHeader,
   DataTableMobileCard,
   type DataTableFilterableColumn,
-  type DataTableFilterPillsConfig,
 } from "@/components/shared/data-table";
 import { cn } from "@/lib/utils";
 
@@ -275,20 +274,6 @@ export function TeamAndRolesPage() {
     [],
   );
 
-  const filterPills = React.useMemo<DataTableFilterPillsConfig>(
-    () => ({
-      columnId: "department",
-      allLabel: "All",
-      allCount: PEOPLE.length,
-      items: Array.from(new Set(PEOPLE.map((p) => p.department))).map((dept) => ({
-        value: dept,
-        label: dept,
-        count: PEOPLE.filter((p) => p.department === dept).length,
-      })),
-    }),
-    [],
-  );
-
   const renderMobileCard = React.useCallback(
     (p: Person) => {
       const workload = getWorkload(p.id);
@@ -429,7 +414,6 @@ export function TeamAndRolesPage() {
           mode="auto"
           searchPlaceholder="Search member, department, role..."
           filterableColumns={filterableColumns}
-          filterPills={filterPills}
           renderMobileCard={renderMobileCard}
           onRowClick={(p) => setSelectedMember(p)}
           emptyTitle="No team members found"
