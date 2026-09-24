@@ -14,6 +14,7 @@ KneaWork UX/UI PRD
 - [4. End-to-End Business Flows Spec (Bus Flow)](../../spces/end-to-end-business-flows-spec.md)
 - [5. Database Architecture & Schema Spec (DB)](../../spces/database-design-and-schema-spec.md)
 - [6. XState v5 Workflow Engine Spec (State Machine)](../../spces/xstate-workflow-machine-spec.md)
+- [7. API-First Implementation Plan (Next.js 16 + Auth.js v5)](../../apps/kneawork/IMPLEMENTATION_PLAN.md)
 
 
 I created the complete PRD covering:
