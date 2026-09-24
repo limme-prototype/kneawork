@@ -18,23 +18,26 @@ import { SearchInput } from "@/components/kneawork/search-input";
 import { StatusBadge, UrgencyBadge } from "@/components/kneawork/status-badge";
 import { Button } from "@/components/ui/button";
 import { personById } from "@/lib/kneawork/data";
-import { currentStep, needsActionFrom, useKneaState } from "@/lib/kneawork/store";
+import { currentStep, needsActionFrom, recentlyCompletedBy, useKneaState } from "@/lib/kneawork/store";
 
 export const Route = createFileRoute("/action")({
   component: ActionInboxPage,
 });
 
-type FilterTab = "all" | "overdue" | "due_today";
+type FilterTab = "all" | "due_today" | "overdue" | "completed";
 
 export function ActionInboxPage() {
   const { requests, currentUserId } = useKneaState();
   const me = personById(currentUserId);
   const myActions = needsActionFrom(requests, currentUserId);
+  const completedActions = recentlyCompletedBy(requests, currentUserId);
   const [filter, setFilter] = useState<FilterTab>("all");
   const [search, setSearch] = useState("");
   const [actionDoneBanner, setActionDoneBanner] = useState<string | null>(null);
 
-  const filtered = myActions.filter((r) => {
+  const baseList = filter === "completed" ? completedActions : myActions;
+
+  const filtered = baseList.filter((r) => {
     if (filter === "overdue" && r.urgency !== "overdue") return false;
     if (filter === "due_today" && r.urgency !== "due_today") return false;
     if (search.trim()) {
@@ -96,7 +99,7 @@ export function ActionInboxPage() {
             onClick={() => setFilter("all")}
             className="shrink-0"
           >
-            All open ({myActions.length})
+            Needs decision ({myActions.length})
           </Button>
           <Button
             size="sm"
@@ -117,6 +120,14 @@ export function ActionInboxPage() {
             }`}
           >
             Overdue ({overdueCount})
+          </Button>
+          <Button
+            size="sm"
+            variant={filter === "completed" ? "default" : "outline"}
+            onClick={() => setFilter("completed")}
+            className="shrink-0"
+          >
+            Recently completed ({completedActions.length})
           </Button>
         </div>
 
@@ -193,6 +204,17 @@ export function ActionInboxPage() {
             /* Multi-Record: Table on Desktop, Cards on Mobile */
             <RequestTable requests={filtered} currentUserId={currentUserId} />
           )
+        ) : filter === "completed" ? (
+          /* Empty Completed Actions */
+          <div className="rounded-lg border border-dashed border-border bg-card p-12 text-center shadow-2xs">
+            <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <CheckCircle2 className="size-5" />
+            </div>
+            <h3 className="mt-3 text-sm font-semibold text-foreground">No completed decisions found</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Requests you have approved, rejected, or sent changes for will appear here for audit reference.
+            </p>
+          </div>
         ) : (
           /* Clean Empty State */
           <div className="rounded-lg border border-dashed border-border bg-card p-12 text-center shadow-2xs">

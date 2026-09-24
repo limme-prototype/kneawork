@@ -10,6 +10,7 @@ import {
   Layers,
   Lock,
   ShieldCheck,
+  SlidersHorizontal,
   UserCheck,
   Users,
 } from "lucide-react";
@@ -26,6 +27,7 @@ interface TemplateReviewSummaryProps {
   onGoToStep: (step: BuilderStepId) => void;
   onOpenPublishDialog: () => void;
   onSaveDraft: () => void;
+  onOpenSimulation?: () => void;
 }
 
 export function TemplateReviewSummary({
@@ -301,6 +303,19 @@ export function TemplateReviewSummary({
         </Button>
 
         <div className="flex items-center gap-2">
+          {onOpenSimulation ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onOpenSimulation}
+              className="border-primary/40 text-primary hover:bg-primary/10 gap-1.5 font-semibold text-xs"
+            >
+              <SlidersHorizontal className="size-3.5" />
+              Simulate route
+            </Button>
+          ) : null}
+
           <Button
             variant="outline"
             size="sm"

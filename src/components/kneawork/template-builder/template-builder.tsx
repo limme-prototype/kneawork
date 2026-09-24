@@ -10,6 +10,7 @@ import {
   Layers,
   Save,
   ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   UserCheck,
   X,
@@ -47,6 +48,7 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
 
   // Dialogs
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewTab, setPreviewTab] = useState<"form" | "simulator">("form");
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
 
   // Dynamic Validation
@@ -163,6 +165,10 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
                 onGoToStep={(step) => setCurrentStep(step)}
                 onOpenPublishDialog={() => setIsPublishDialogOpen(true)}
                 onSaveDraft={handleSaveDraft}
+                onOpenSimulation={() => {
+                  setPreviewTab("simulator");
+                  setIsPreviewOpen(true);
+                }}
               />
             )}
 
@@ -294,16 +300,34 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
                 </div>
               </div>
 
-              {/* Preview Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsPreviewOpen(true)}
-                className="w-full text-xs font-semibold gap-1.5 h-8"
-              >
-                <Eye className="size-3.5" />
-                Preview request form
-              </Button>
+              {/* Preview and Simulator Buttons */}
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setPreviewTab("form");
+                    setIsPreviewOpen(true);
+                  }}
+                  className="w-full text-xs font-semibold gap-1.5 h-8"
+                >
+                  <Eye className="size-3.5" />
+                  Preview request form
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setPreviewTab("simulator");
+                    setIsPreviewOpen(true);
+                  }}
+                  className="w-full text-xs font-semibold gap-1.5 h-8 border-primary/30 text-primary hover:bg-primary/5"
+                >
+                  <SlidersHorizontal className="size-3.5" />
+                  Simulate approval route
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -314,6 +338,7 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
         open={isPreviewOpen}
         onOpenChange={setIsPreviewOpen}
         template={template}
+        initialTab={previewTab}
       />
 
       <PublishTemplateDialog

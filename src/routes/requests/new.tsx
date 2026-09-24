@@ -8,8 +8,10 @@ import {
   FileCheck,
   FileText,
   Paperclip,
+  Receipt,
   Save,
   Send,
+  ShoppingBag,
   Upload,
   X,
 } from "lucide-react";
@@ -26,6 +28,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { ROUTES_BY_TYPE, TEMPLATES, personById, templateByType } from "@/lib/kneawork/data";
 import { submitRequest, useKneaState } from "@/lib/kneawork/store";
 import type { RequestType, WorkRequest } from "@/lib/kneawork/types";
+
+const REQUEST_TYPE_META: Record<
+  RequestType,
+  { icon: typeof ShoppingBag; subtitle: string }
+> = {
+  purchase: {
+    icon: ShoppingBag,
+    subtitle: "Buy goods or services · Quotation required > $100",
+  },
+  expense: {
+    icon: Receipt,
+    subtitle: "Claim money already spent · Tax receipt required",
+  },
+  leave: {
+    icon: Calendar,
+    subtitle: "Request time off · Dates and reason required",
+  },
+  contract: {
+    icon: FileText,
+    subtitle: "Approve agreement · Contract PDF required",
+  },
+};
 
 export const Route = createFileRoute("/requests/new")({
   validateSearch: (search: Record<string, unknown>): { type?: RequestType } => {
@@ -189,28 +213,48 @@ export function NewRequestPage() {
           }
         />
 
-        {/* 1. Request Type Selector Pills */}
-        <div className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-2">
-          <Label className="text-xs font-semibold text-foreground">Select request type</Label>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {TEMPLATES.map((t) => (
-              <Button
-                type="button"
-                variant="outline"
-                key={t.type}
-                onClick={() => setType(t.type)}
-                className={`h-auto flex-col items-start p-3 text-left transition-all justify-start whitespace-normal ${
-                  type === t.type
-                    ? "border-primary bg-primary/10 text-primary shadow-xs font-bold"
-                    : "border-border bg-card text-foreground hover:bg-muted font-medium"
-                }`}
-              >
-                <span className="block text-sm font-bold">{t.label}</span>
-                <span className="block text-xs text-muted-foreground mt-0.5">
-                  {t.fieldsCount} fields
-                </span>
-              </Button>
-            ))}
+        {/* 1. Purpose-Based Request Type Selector */}
+        <div className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-2.5">
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-semibold text-foreground">Select request type</Label>
+            <span className="text-[11px] text-muted-foreground">Select by business purpose</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            {TEMPLATES.map((t) => {
+              const meta = REQUEST_TYPE_META[t.type];
+              const Icon = meta.icon;
+              const isSelected = type === t.type;
+              return (
+                <button
+                  type="button"
+                  key={t.type}
+                  onClick={() => setType(t.type)}
+                  className={`flex flex-col items-start p-3 text-left rounded-lg border transition-all duration-150 text-left cursor-pointer ${
+                    isSelected
+                      ? "border-primary bg-primary/10 text-primary shadow-xs ring-1 ring-primary/30"
+                      : "border-border bg-card text-foreground hover:bg-muted/60 hover:border-muted-foreground/30"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1 w-full">
+                    <div
+                      className={`flex size-6 items-center justify-center rounded-md shrink-0 ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      <Icon className="size-3.5" />
+                    </div>
+                    <span className="text-sm font-bold text-foreground truncate">
+                      {t.label}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-snug line-clamp-2">
+                    {meta.subtitle}
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
 

@@ -61,6 +61,25 @@ export function needsActionFrom(requests: WorkRequest[], userId: string) {
   });
 }
 
+export function recentlyCompletedBy(requests: WorkRequest[], userId: string) {
+  return requests.filter((r) => {
+    return (
+      r.steps.some(
+        (s) =>
+          s.assigneeId === userId &&
+          (s.status === "approved" || s.status === "changes_requested" || s.status === "rejected"),
+      ) ||
+      r.audit.some(
+        (a) =>
+          a.actorId === userId &&
+          (a.action.includes("Approved") ||
+            a.action.includes("Rejected") ||
+            a.action.includes("Requested changes")),
+      )
+    );
+  });
+}
+
 export function submitRequest(input: {
   type: RequestType;
   title: string;

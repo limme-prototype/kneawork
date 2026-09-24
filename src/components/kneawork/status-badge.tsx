@@ -83,6 +83,13 @@ export function getPreciseStatus(
         className: "bg-secondary text-secondary-foreground border-border whitespace-nowrap",
       };
     }
+    if (currentStepName) {
+      return {
+        label: `Waiting for ${currentStepName}`,
+        icon: Clock,
+        className: "bg-secondary text-secondary-foreground border-border whitespace-nowrap",
+      };
+    }
     return {
       label: "Waiting on approval",
       icon: Clock,
