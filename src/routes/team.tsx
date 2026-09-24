@@ -11,11 +11,11 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import * as React from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 
 import { AppShell } from "@/components/kneawork/app-shell";
 import { PageHeader } from "@/components/kneawork/page-header";
-import { SearchInput } from "@/components/kneawork/search-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,6 +30,14 @@ import { Label } from "@/components/ui/label";
 import { PEOPLE, personById } from "@/lib/kneawork/data";
 import { needsActionFrom, useKneaState } from "@/lib/kneawork/store";
 import type { Person } from "@/lib/kneawork/types";
+import {
+  DataTable,
+  DataTableColumnHeader,
+  DataTableMobileCard,
+  type DataTableFilterableColumn,
+  type DataTableFilterPillsConfig,
+} from "@/components/shared/data-table";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/team")({
   component: TeamAndRolesPage,
@@ -73,47 +81,42 @@ const REPORTS_TO: Record<string, string> = {
 
 export function TeamAndRolesPage() {
   const { requests, currentUserId } = useKneaState();
-  const [search, setSearch] = useState("");
-  const [selectedMember, setSelectedMember] = useState<Person | null>(null);
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
-  const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = React.useState<Person | null>(null);
+  const [isInviteOpen, setIsInviteOpen] = React.useState(false);
+  const [inviteSuccess, setInviteSuccess] = React.useState<string | null>(null);
 
   // Deactivation confirmation flow
-  const [deactivatingMember, setDeactivatingMember] = useState<Person | null>(null);
-  const [reassignOption, setReassignOption] = useState<"reassign" | "notify">("reassign");
-  const [deactivateNotice, setDeactivateNotice] = useState<string | null>(null);
+  const [deactivatingMember, setDeactivatingMember] = React.useState<Person | null>(null);
+  const [reassignOption, setReassignOption] = React.useState<"reassign" | "notify">("reassign");
+  const [deactivateNotice, setDeactivateNotice] = React.useState<string | null>(null);
 
   // Invite Form State
-  const [inviteName, setInviteName] = useState("");
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteDept, setInviteDept] = useState("Operations");
-  const [inviteRole, setInviteRole] = useState("Staff");
+  const [inviteName, setInviteName] = React.useState("");
+  const [inviteEmail, setInviteEmail] = React.useState("");
+  const [inviteDept, setInviteDept] = React.useState("Operations");
+  const [inviteRole, setInviteRole] = React.useState("Staff");
 
-  const filtered = PEOPLE.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.department.toLowerCase().includes(search.toLowerCase()) ||
-      p.role.toLowerCase().includes(search.toLowerCase()),
+  const getWorkload = React.useCallback(
+    (memberId: string) => {
+      const assigned = needsActionFrom(requests, memberId);
+      const overdueCount = assigned.filter((r) => r.urgency === "overdue").length;
+      const dueCount = assigned.filter((r) => r.urgency === "due_today").length;
+
+      if (assigned.length === 0) return { label: "0 open", urgent: false, count: 0 };
+      if (overdueCount > 0) {
+        return { label: `${assigned.length} open · overdue`, urgent: true, count: assigned.length };
+      }
+      if (dueCount > 0) {
+        return {
+          label: `${assigned.length} open · ${dueCount} due`,
+          urgent: true,
+          count: assigned.length,
+        };
+      }
+      return { label: `${assigned.length} open`, urgent: false, count: assigned.length };
+    },
+    [requests],
   );
-
-  const getWorkload = (memberId: string) => {
-    const assigned = needsActionFrom(requests, memberId);
-    const overdueCount = assigned.filter((r) => r.urgency === "overdue").length;
-    const dueCount = assigned.filter((r) => r.urgency === "due_today").length;
-
-    if (assigned.length === 0) return { label: "0 open", urgent: false, count: 0 };
-    if (overdueCount > 0) {
-      return { label: `${assigned.length} open · overdue`, urgent: true, count: assigned.length };
-    }
-    if (dueCount > 0) {
-      return {
-        label: `${assigned.length} open · ${dueCount} due`,
-        urgent: true,
-        count: assigned.length,
-      };
-    }
-    return { label: `${assigned.length} open`, urgent: false, count: assigned.length };
-  };
 
   const handleSendInvite = (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,6 +142,223 @@ export function TeamAndRolesPage() {
     setSelectedMember(null);
     setTimeout(() => setDeactivateNotice(null), 6000);
   };
+
+  // DataTable column definitions
+  const columns = React.useMemo<ColumnDef<Person>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Member" />,
+        cell: ({ row }) => {
+          const p = row.original;
+          const isCurrent = p.id === currentUserId;
+          return (
+            <div className="flex items-center gap-2.5 py-1">
+              <span className="flex size-8 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs shrink-0">
+                {p.initials}
+              </span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm">
+                    {p.name}
+                  </span>
+                  {isCurrent ? (
+                    <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
+                      You
+                    </span>
+                  ) : null}
+                </div>
+                <span className="block text-[12px] text-muted-foreground truncate">
+                  {p.name.toLowerCase().replace(/\s+/g, ".")}@kneawork.com
+                </span>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "department",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Department" />,
+        cell: ({ row }) => (
+          <span className="font-medium text-foreground text-xs sm:text-sm">
+            {row.original.department}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "role",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
+        cell: ({ row }) => {
+          const p = row.original;
+          return (
+            <div className="text-xs">
+              <span className="font-semibold text-foreground text-xs sm:text-sm block">
+                {p.role}
+              </span>
+              <span className="block text-[11px] text-muted-foreground">{p.title ?? p.role}</span>
+            </div>
+          );
+        },
+      },
+      {
+        id: "workload",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Workload" />,
+        accessorFn: (row) => getWorkload(row.id).count,
+        cell: ({ row }) => {
+          const workload = getWorkload(row.original.id);
+          return (
+            <span
+              className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${
+                workload.urgent
+                  ? "bg-warning-soft text-warning border border-warning-border"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {workload.label}
+            </span>
+          );
+        },
+      },
+      {
+        id: "status",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        cell: () => (
+          <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
+            Active
+          </span>
+        ),
+      },
+      {
+        id: "actions",
+        header: () => <span className="sr-only">Actions</span>,
+        cell: ({ row }) => {
+          const p = row.original;
+          return (
+            <div className="flex justify-end" data-no-row-click>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedMember(p)}
+                className="font-medium text-xs h-8 px-2.5"
+              >
+                View details
+              </Button>
+            </div>
+          );
+        },
+      },
+    ],
+    [currentUserId, getWorkload],
+  );
+
+  const filterableColumns = React.useMemo<DataTableFilterableColumn[]>(
+    () => [
+      {
+        id: "department",
+        title: "Department",
+        options: Array.from(new Set(PEOPLE.map((p) => p.department))).map((dept) => ({
+          value: dept,
+          label: dept,
+          count: PEOPLE.filter((p) => p.department === dept).length,
+        })),
+      },
+      {
+        id: "role",
+        title: "Role",
+        options: Array.from(new Set(PEOPLE.map((p) => p.role))).map((role) => ({
+          value: role,
+          label: role,
+          count: PEOPLE.filter((p) => p.role === role).length,
+        })),
+      },
+    ],
+    [],
+  );
+
+  const filterPills = React.useMemo<DataTableFilterPillsConfig>(
+    () => ({
+      columnId: "department",
+      allLabel: "All",
+      allCount: PEOPLE.length,
+      items: Array.from(new Set(PEOPLE.map((p) => p.department))).map((dept) => ({
+        value: dept,
+        label: dept,
+        count: PEOPLE.filter((p) => p.department === dept).length,
+      })),
+    }),
+    [],
+  );
+
+  const renderMobileCard = React.useCallback(
+    (p: Person) => {
+      const workload = getWorkload(p.id);
+      const isCurrent = p.id === currentUserId;
+
+      return (
+        <DataTableMobileCard
+          key={p.id}
+          onClick={() => setSelectedMember(p)}
+          title={
+            <div className="flex items-center gap-2">
+              <span className="flex size-7 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs shrink-0">
+                {p.initials}
+              </span>
+              <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                <span className="font-semibold text-foreground text-sm truncate">{p.name}</span>
+                {isCurrent && (
+                  <span className="rounded bg-muted px-1.5 py-0.2 text-[10px] font-semibold text-muted-foreground">
+                    You
+                  </span>
+                )}
+              </div>
+            </div>
+          }
+          subtitle={`${p.role} · ${p.department}`}
+          status={
+            <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
+              Active
+            </span>
+          }
+          attributes={[
+            {
+              label: "Workload",
+              value: (
+                <span
+                  className={cn(
+                    "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium",
+                    workload.urgent
+                      ? "bg-warning-soft text-warning border border-warning-border"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  {workload.label}
+                </span>
+              ),
+            },
+            {
+              label: "Contact",
+              value: (
+                <span className="text-muted-foreground text-xs truncate">
+                  {p.name.toLowerCase().replace(/\s+/g, ".")}@kneawork.com
+                </span>
+              ),
+            },
+          ]}
+          actions={
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedMember(p)}
+              className="font-medium text-xs h-8 px-3"
+            >
+              Details
+            </Button>
+          }
+        />
+      );
+    },
+    [currentUserId, getWorkload],
+  );
 
   return (
     <AppShell
@@ -187,219 +407,37 @@ export function TeamAndRolesPage() {
         {/* Standard PageHeader */}
         <PageHeader
           eyebrow="Manage"
-          title="Team & Roles"
+          title={`Team & Roles (${PEOPLE.length})`}
           description="Review team workload, approval roles, and designated signing authorities across departments."
           actions={
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
-              <div className="flex-1 sm:w-64">
-                <SearchInput
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search member, department..."
-                />
-              </div>
-              <Button
-                size="default"
-                onClick={() => setIsInviteOpen(true)}
-                className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs"
-              >
-                <UserPlus className="size-4" />
-                Invite member
-              </Button>
-            </div>
+            <Button
+              size="default"
+              onClick={() => setIsInviteOpen(true)}
+              className="gap-1.5 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shrink-0 shadow-2xs"
+            >
+              <UserPlus className="size-4" />
+              Invite member
+            </Button>
           }
         />
 
-        {/* Desktop Table View */}
-        <div className="hidden sm:block overflow-hidden rounded-lg border border-border bg-card shadow-2xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-foreground">
-              <thead className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                <tr>
-                  <th scope="col" className="py-3.5 pl-4 pr-3">
-                    Member
-                  </th>
-                  <th scope="col" className="py-3.5 px-3">
-                    Department
-                  </th>
-                  <th scope="col" className="py-3.5 px-3">
-                    Role
-                  </th>
-                  <th scope="col" className="py-3.5 px-3">
-                    Workload
-                  </th>
-                  <th scope="col" className="py-3.5 px-3">
-                    Status
-                  </th>
-                  <th scope="col" className="py-3.5 pr-4 pl-3 text-right">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/60">
-                {filtered.map((p) => {
-                  const workload = getWorkload(p.id);
-                  const isCurrent = p.id === currentUserId;
-
-                  return (
-                    <tr
-                      key={p.id}
-                      onClick={() => setSelectedMember(p)}
-                      className="group cursor-pointer hover:bg-muted/30 transition-colors"
-                    >
-                      {/* Member */}
-                      <td className="py-4 pl-4 pr-3">
-                        <div className="flex items-center gap-2.5">
-                          <span className="flex size-8 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs">
-                            {p.initials}
-                          </span>
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm">
-                                {p.name}
-                              </span>
-                              {isCurrent ? (
-                                <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
-                                  You
-                                </span>
-                              ) : null}
-                            </div>
-                            <span className="block text-[13px] text-muted-foreground">
-                              {p.name.toLowerCase().replace(" ", ".")}@kneawork.com
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Department */}
-                      <td className="py-4 px-3 font-medium text-foreground text-sm">
-                        {p.department}
-                      </td>
-
-                      {/* Role */}
-                      <td className="py-4 px-3">
-                        <div>
-                          <span className="font-semibold text-foreground text-sm">{p.role}</span>
-                          <span className="block text-[13px] text-muted-foreground">
-                            {p.title ?? p.role}
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Workload */}
-                      <td className="py-4 px-3">
-                        <span
-                          className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${
-                            workload.urgent
-                              ? "bg-warning-soft text-warning border border-warning-border"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {workload.label}
-                        </span>
-                      </td>
-
-                      {/* Status */}
-                      <td className="py-4 px-3">
-                        <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
-                          Active
-                        </span>
-                      </td>
-
-                      {/* Action */}
-                      <td className="py-4 pr-4 pl-3 text-right">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedMember(p);
-                          }}
-                          className="font-medium"
-                        >
-                          View details
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Mobile Member Cards */}
-        <div className="sm:hidden space-y-3">
-          {filtered.map((p) => {
-            const workload = getWorkload(p.id);
-            const isCurrent = p.id === currentUserId;
-
-            return (
-              <div
-                key={p.id}
-                onClick={() => setSelectedMember(p)}
-                className="rounded-lg border border-border bg-card p-4 shadow-2xs space-y-3 cursor-pointer hover:bg-muted/30 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <span className="flex size-9 items-center justify-center rounded-full bg-foreground font-bold text-background text-xs shrink-0">
-                      {p.initials}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-semibold text-foreground text-sm">{p.name}</span>
-                        {isCurrent ? (
-                          <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
-                            You
-                          </span>
-                        ) : null}
-                      </div>
-                      <span className="block text-[13px] text-muted-foreground truncate">
-                        {p.role} · {p.department}
-                      </span>
-                    </div>
-                  </div>
-                  <span className="inline-flex items-center gap-1 rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success shrink-0">
-                    Active
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between text-[13px] border-t border-border pt-2.5">
-                  <span className="text-muted-foreground">Workload</span>
-                  <span
-                    className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${
-                      workload.urgent
-                        ? "bg-warning-soft text-warning border border-warning-border"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {workload.label}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between border-t border-border pt-2.5">
-                  <span className="text-[13px] text-muted-foreground truncate">
-                    {p.name.toLowerCase().replace(" ", ".")}@kneawork.com
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedMember(p);
-                    }}
-                    className="font-medium shrink-0 ml-2"
-                  >
-                    Details
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {/* Generic DataTable for Team Members */}
+        <DataTable<Person>
+          data={PEOPLE}
+          columns={columns}
+          getRowId={(p) => p.id}
+          mode="auto"
+          searchPlaceholder="Search member, department, role..."
+          filterableColumns={filterableColumns}
+          filterPills={filterPills}
+          renderMobileCard={renderMobileCard}
+          onRowClick={(p) => setSelectedMember(p)}
+          emptyTitle="No team members found"
+          emptyDescription="No members match the specified search or filter criteria."
+        />
       </div>
 
-      {/* Member Detail Drawer / Modal (Sentence case, clean, no test harness) */}
+      {/* Member Detail Drawer / Modal */}
       {selectedMember ? (
         <Dialog open onOpenChange={(open) => !open && setSelectedMember(null)}>
           <DialogContent className="sm:max-w-lg">
