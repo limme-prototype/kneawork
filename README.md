@@ -13,6 +13,7 @@ KneaWork UX/UI PRD
 - [3. Request Submission & Intake Spec (Submit)](../../spces/request-submission-and-intake-spec.md)
 - [4. End-to-End Business Flows Spec (Bus Flow)](../../spces/end-to-end-business-flows-spec.md)
 - [5. Database Architecture & Schema Spec (DB)](../../spces/database-design-and-schema-spec.md)
+- [6. XState v5 Workflow Engine Spec (State Machine)](../../spces/xstate-workflow-machine-spec.md)
 
 
 I created the complete PRD covering:
