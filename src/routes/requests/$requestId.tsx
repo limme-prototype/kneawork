@@ -149,11 +149,6 @@ function RequestDetailPage() {
 
         {/* Standard PageHeader */}
         <PageHeader
-          breadcrumbs={[
-            { label: "Workspace", to: "/" },
-            { label: "Requests", to: "/requests" },
-            { label: request.code },
-          ]}
           eyebrow={`${request.code} · ${request.type} request`}
           title={request.title}
           description={`Submitted by ${requester.name} (${request.department}) · ${request.submittedLabel}`}
@@ -585,83 +580,94 @@ function RequestDetailPage() {
         onConfirm={handleDecision}
       />
 
-      {/* Telegram Deep-Link Notification Simulation Modal (P1 Pilot Requirement) */}
+      {/* Telegram Notification Simulation Modal */}
       <Dialog open={isTelegramModalOpen} onOpenChange={setIsTelegramModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md p-5 sm:p-6">
+          <DialogHeader className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="flex size-7 items-center justify-center rounded-full bg-[#229ED9] text-white">
+              <span className="flex size-7 items-center justify-center rounded-full bg-[#229ED9] text-white shrink-0">
                 <Send className="size-3.5" />
               </span>
               <div>
                 <DialogTitle className="text-base font-bold text-foreground">
-                  Telegram Bot Notification
+                  Telegram notification preview
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground">
-                  Simulated dispatch to Cambodian approver's Telegram client
+                  Mobile notification delivered to the assigned reviewer
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
 
-          {/* Telegram Bubble Mockup */}
-          <div className="rounded-lg bg-[#0F1E2B] text-white p-4 space-y-3 font-sans text-xs border border-white/10 shadow-lg">
+          {/* Telegram Chat Bubble Preview */}
+          <div className="rounded-lg bg-[#0F1E2B] text-white p-4 space-y-3 font-sans text-xs border border-white/10 shadow-md">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
-              <span className="font-bold text-[#56B3F5] flex items-center gap-1.5">
-                KneaWork Official Bot <span className="text-[10px] text-white/60">BOT</span>
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-[#56B3F5]">KneaWork Bot</span>
+                <span className="rounded bg-[#56B3F5]/20 px-1 py-0.2 text-[9px] font-semibold text-[#56B3F5]">
+                  BOT
+                </span>
+              </div>
               <span className="text-[10px] text-white/50">Today 10:04 AM</span>
             </div>
 
             <div className="space-y-1.5 leading-relaxed">
-              <p className="font-semibold text-white">🔔 New Request Needs Your Sign-Off</p>
-              <p>
-                <strong className="text-white/70">Request:</strong> {request.code} — {request.title}
+              <p className="font-semibold text-white">Approval requested</p>
+              <p className="text-white/90">
+                <span className="text-white/60">Request:</span> {request.code} — {request.title}
               </p>
-              <p>
-                <strong className="text-white/70">Amount:</strong> {request.valueLabel}
+              <p className="text-white/90">
+                <span className="text-white/60">Amount:</span> {request.valueLabel}
               </p>
-              <p>
-                <strong className="text-white/70">Requester:</strong> {requester.name} ({request.department})
+              <p className="text-white/90">
+                <span className="text-white/60">Requester:</span> {requester.name} ({request.department})
               </p>
-              <p>
-                <strong className="text-white/70">Current Step:</strong> {step?.name ?? "Approval"}
+              <p className="text-white/90">
+                <span className="text-white/60">Step:</span> {step?.name ?? "Approval"}
               </p>
-              <p>
-                <strong className="text-white/70">Due:</strong> {step?.dueLabel ?? "Today"}
+              <p className="text-white/90">
+                <span className="text-white/60">Due:</span> {step?.dueLabel ?? "Today"}
               </p>
-              <div className="mt-2 rounded bg-white/5 p-2 text-white/80 border border-white/10 italic">
+              <div className="mt-2 rounded bg-white/5 p-2.5 text-white/80 border border-white/10 text-xs">
                 "{request.reason}"
               </div>
             </div>
 
-            {/* Telegram Inline Buttons */}
-            <div className="space-y-1.5 pt-2">
+            {/* Telegram Webhook Inline Button */}
+            <div className="space-y-2 pt-1">
               <Button
                 type="button"
                 onClick={() => setIsTelegramModalOpen(false)}
-                className="w-full bg-[#229ED9] hover:bg-[#229ED9]/90 text-white font-semibold text-xs h-8 gap-1.5 shadow-xs"
+                className="w-full bg-[#229ED9] hover:bg-[#229ED9]/90 text-white font-semibold text-xs h-8.5 gap-1.5 shadow-xs"
               >
-                <ExternalLink className="size-3" />
-                ⚡ Review & Decide in KneaWork
+                <ExternalLink className="size-3.5" />
+                Review request in KneaWork
               </Button>
               {request.attachments.length > 0 && (
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setIsTelegramModalOpen(false)}
-                  className="w-full bg-white/5 hover:bg-white/10 text-white border-white/20 text-xs h-7 gap-1"
+                  className="w-full bg-white/5 hover:bg-white/10 text-white/90 border-white/15 text-xs h-7.5 gap-1"
                 >
                   <Paperclip className="size-3" />
-                  View {request.attachments[0]?.filename}
+                  Attachment ({request.attachments[0]?.filename})
                 </Button>
               )}
             </div>
           </div>
 
-          <div className="text-[11px] text-muted-foreground leading-relaxed">
-            💡 <strong>Why Telegram?</strong> Telegram is the dominant workplace communication channel for Cambodian SMEs. KneaWork webhooks deliver one-click deep links so managers never miss approval deadlines.
-          </div>
+          <DialogFooter className="sm:justify-end pt-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsTelegramModalOpen(false)}
+              className="text-xs h-8"
+            >
+              Close preview
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </AppShell>

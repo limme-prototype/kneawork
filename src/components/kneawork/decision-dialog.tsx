@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, RotateCcw, XCircle, AlertCircle } from "lucide-react";
+import { CheckCircle2, RotateCcw, XCircle, AlertCircle, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,17 +16,40 @@ import { personById } from "@/lib/kneawork/data";
 import { currentStep } from "@/lib/kneawork/store";
 import type { Decision, WorkRequest } from "@/lib/kneawork/types";
 
-const COPY: Record<Decision, { title: string; cta: string; icon: typeof CheckCircle2 }> = {
-  approve: { title: "Approve this request?", cta: "Confirm approval", icon: CheckCircle2 },
-  changes: { title: "Request changes", cta: "Send back to requester", icon: RotateCcw },
-  reject: { title: "Reject request?", cta: "Reject request", icon: XCircle },
+const COPY: Record<
+  Decision,
+  {
+    title: string;
+    description: string;
+    cta: string;
+    icon: typeof CheckCircle2;
+  }
+> = {
+  approve: {
+    title: "Approve request",
+    description: "Confirm sign-off and advance this workflow.",
+    cta: "Approve request",
+    icon: CheckCircle2,
+  },
+  changes: {
+    title: "Request changes",
+    description: "Return this request to the requester for correction.",
+    cta: "Request changes",
+    icon: RotateCcw,
+  },
+  reject: {
+    title: "Reject request",
+    description: "Decline this request and end the approval process.",
+    cta: "Reject request",
+    icon: XCircle,
+  },
 };
 
 const CHANGE_REASONS = [
   "Missing quotation",
+  "Clarification on purpose",
   "Incorrect amount",
-  "Clarification needed on purpose",
-  "Need alternative vendor option",
+  "Alternative vendor needed",
 ];
 
 export function DecisionDialog({
@@ -52,15 +75,6 @@ export function DecisionDialog({
   const copy = COPY[decision];
   const noteRequired = decision !== "approve";
 
-  const consequence =
-    decision === "approve"
-      ? next
-        ? `This request will be sent to ${personById(next.assigneeId).name} for ${next.name}.`
-        : "The request will be fully approved, recorded, and closed."
-      : decision === "changes"
-        ? `The request will return to ${requester.name} for correction. Once re-submitted, it will return to your queue.`
-        : `This ends the approval process immediately and notifies ${requester.name}. Remaining steps will be cancelled. This action cannot be undone.`;
-
   const handleChipClick = (reason: string) => {
     setNote((prev) => (prev ? `${prev}; ${reason}` : reason));
     if (error) setError("");
@@ -77,11 +91,11 @@ export function DecisionDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-base font-bold">
+      <DialogContent className="sm:max-w-md p-5 sm:p-6">
+        <DialogHeader className="space-y-1">
+          <div className="flex items-center gap-2">
             <copy.icon
-              className={`size-5 ${
+              className={`size-5 shrink-0 ${
                 decision === "approve"
                   ? "text-success"
                   : decision === "changes"
@@ -90,58 +104,72 @@ export function DecisionDialog({
               }`}
               aria-hidden="true"
             />
-            {copy.title}
-          </DialogTitle>
-          <DialogDescription className="text-xs text-muted-foreground">
-            {request.code} · <strong className="text-foreground">{request.title}</strong> ·{" "}
-            {request.valueLabel}
+            <DialogTitle className="text-base sm:text-lg font-bold text-foreground">
+              {copy.title}
+            </DialogTitle>
+          </div>
+          <DialogDescription className="text-xs sm:text-[13px] text-muted-foreground">
+            {request.title} <span className="font-mono">({request.code})</span> · {request.valueLabel}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Action Consequence Banner */}
-        <div
-          className={`rounded-md p-3 text-xs leading-relaxed border ${
-            decision === "approve"
-              ? "border-success-border bg-success-soft text-success"
-              : decision === "changes"
-                ? "border-warning-border bg-warning-soft text-warning"
-                : "border-danger-border bg-danger-soft text-danger"
-          }`}
-        >
-          <div className="font-semibold mb-0.5">
-            {decision === "approve"
-              ? "After approval:"
-              : decision === "changes"
-                ? "Next step:"
-                : "Finality notice:"}
+        {/* Workflow Impact Summary Card */}
+        <div className="rounded-lg border border-border/80 bg-muted/30 p-3.5 space-y-2 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Requester</span>
+            <span className="font-medium text-foreground">
+              {requester.name} ({request.department})
+            </span>
           </div>
-          <p>{consequence}</p>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">
+              {decision === "approve"
+                ? "Next step"
+                : decision === "changes"
+                  ? "Action"
+                  : "Outcome"}
+            </span>
+            <span className="font-semibold text-foreground text-right max-w-[220px] truncate">
+              {decision === "approve"
+                ? next
+                  ? `${personById(next.assigneeId).name} (${next.name})`
+                  : "Final sign-off · Request completed"
+                : decision === "changes"
+                  ? `Returned to ${requester.name} for revision`
+                  : "Declined · Workflow ends immediately"}
+            </span>
+          </div>
         </div>
 
-        {/* Change Reasons Quick Chips */}
+        {/* Quick Reasons for Request Changes */}
         {decision === "changes" ? (
           <div className="space-y-1.5">
-            <span className="text-xs font-semibold text-muted-foreground">Quick reasons:</span>
+            <Label className="text-xs font-semibold text-muted-foreground">
+              Common reasons:
+            </Label>
             <div className="flex flex-wrap gap-1.5">
               {CHANGE_REASONS.map((r) => (
-                <Button
+                <button
                   key={r}
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={() => handleChipClick(r)}
-                  className="h-7 rounded-md px-2.5 py-0 text-xs font-medium bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border"
+                  className="rounded-md border border-border bg-card hover:bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
-                  + {r}
-                </Button>
+                  {r}
+                </button>
               ))}
             </div>
           </div>
         ) : null}
 
-        <div className="space-y-2">
-          <Label htmlFor="decision-note" className="text-sm font-semibold text-foreground">
-            {noteRequired ? "Reason (required)" : "Comment (optional)"}
+        {/* Reason / Comment Field */}
+        <div className="space-y-1.5">
+          <Label htmlFor="decision-note" className="text-xs font-semibold text-foreground">
+            {decision === "changes"
+              ? "Instructions for requester (required)"
+              : decision === "reject"
+                ? "Reason for rejection (required)"
+                : "Comment (optional)"}
           </Label>
           <Textarea
             id="decision-note"
@@ -152,38 +180,46 @@ export function DecisionDialog({
             }}
             placeholder={
               decision === "changes"
-                ? "Tell the requester exactly what needs to be fixed before re-submitting..."
+                ? "Specify what the requester needs to update before resubmitting..."
                 : decision === "reject"
-                  ? "Explain why this expenditure or request is declined..."
+                  ? "Explain why this request is declined for compliance audit..."
                   : "Add an optional remark for the permanent audit trail..."
             }
             rows={3}
-            className="bg-card"
+            className="bg-card text-xs sm:text-sm resize-none"
           />
           {error ? (
             <p role="alert" className="text-xs font-medium text-danger flex items-center gap-1">
-              <AlertCircle className="size-3.5" />
+              <AlertCircle className="size-3.5 shrink-0" />
               {error}
             </p>
           ) : null}
         </div>
 
-        <DialogFooter className="gap-2 sm:justify-end">
-          <Button variant="outline" size="sm" onClick={onClose} className="text-xs">
+        <DialogFooter className="gap-2 sm:justify-end pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            className="text-xs h-9 sm:h-8"
+          >
             Cancel
           </Button>
           <Button
             size="sm"
-            variant={decision === "reject" ? "destructive" : "default"}
-            className={`text-xs font-semibold ${
-              decision === "approve" ? "bg-success hover:bg-success/90 text-white" : ""
+            className={`text-xs font-semibold gap-1.5 h-9 sm:h-8 text-white ${
+              decision === "approve"
+                ? "bg-success hover:bg-success/90"
+                : decision === "changes"
+                  ? "bg-warning hover:bg-warning/90"
+                  : "bg-danger hover:bg-danger/90"
             }`}
             onClick={() => {
               if (noteRequired && note.trim().length < 3) {
                 setError(
                   decision === "changes"
-                    ? "Please provide a reason so the requester knows what to correct."
-                    : "A rejection reason is required for compliance audit.",
+                    ? "Please enter instructions for the requester."
+                    : "Please provide a reason for declining this request.",
                 );
                 return;
               }
@@ -191,6 +227,7 @@ export function DecisionDialog({
               setNote("");
             }}
           >
+            <copy.icon className="size-3.5 shrink-0" />
             {copy.cta}
           </Button>
         </DialogFooter>
