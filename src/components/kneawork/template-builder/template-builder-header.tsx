@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, Layers, MoreVertical, Save, X } from "lucide-react";
+import { ArrowLeft, Layers, MoreVertical, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,10 +12,10 @@ interface TemplateBuilderHeaderProps {
   template: ExtendedTemplate;
   isSavingDraft: boolean;
   onCancel: () => void;
-  onSaveDraft: () => void;
-  onContinue: () => void;
-  isLastStep: boolean;
-  canPublish: boolean;
+  onSaveDraft?: () => void;
+  onContinue?: () => void;
+  isLastStep?: boolean;
+  canPublish?: boolean;
 }
 
 export function TemplateBuilderHeader({
@@ -23,9 +23,6 @@ export function TemplateBuilderHeader({
   isSavingDraft,
   onCancel,
   onSaveDraft,
-  onContinue,
-  isLastStep,
-  canPublish,
 }: TemplateBuilderHeaderProps) {
   return (
     <div className="border-b border-border bg-card px-3.5 py-3 sm:px-6 sm:py-4">
@@ -65,10 +62,12 @@ export function TemplateBuilderHeader({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem onClick={onSaveDraft} disabled={isSavingDraft}>
-              <Save className="size-3.5 mr-2" />
-              {isSavingDraft ? "Saving..." : "Save draft"}
-            </DropdownMenuItem>
+            {onSaveDraft && (
+              <DropdownMenuItem onClick={onSaveDraft} disabled={isSavingDraft}>
+                <Save className="size-3.5 mr-2" />
+                {isSavingDraft ? "Saving..." : "Save draft"}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={onCancel} className="text-danger">
               <X className="size-3.5 mr-2" />
               Cancel & exit
@@ -77,7 +76,7 @@ export function TemplateBuilderHeader({
         </DropdownMenu>
       </div>
 
-      {/* Desktop Header Content (hidden on mobile) */}
+      {/* Desktop Header Content (No duplicated Save draft / Continue buttons; primary actions live in the form footer) */}
       <div className="hidden sm:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 flex-wrap">
@@ -100,7 +99,11 @@ export function TemplateBuilderHeader({
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        {/* Global Exit Action (Cancel) only — prevents duplicated decision buttons */}
+        <div className="flex items-center gap-2">
+          {isSavingDraft ? (
+            <span className="text-xs text-muted-foreground animate-pulse mr-1">Saving draft...</span>
+          ) : null}
           <Button
             variant="outline"
             size="sm"
@@ -109,33 +112,6 @@ export function TemplateBuilderHeader({
           >
             <X className="size-3.5 mr-1" />
             Cancel
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSaveDraft}
-            disabled={isSavingDraft}
-            className="border-attention-border text-attention hover:bg-attention-soft text-xs h-8"
-          >
-            <Save className="size-3.5 mr-1" />
-            {isSavingDraft ? "Saving draft..." : "Save draft"}
-          </Button>
-
-          <Button
-            size="sm"
-            onClick={onContinue}
-            className="font-semibold gap-1.5 text-xs h-8"
-            disabled={isLastStep && !canPublish}
-          >
-            {isLastStep ? (
-              <>
-                <CheckCircle2 className="size-3.5" />
-                Publish template
-              </>
-            ) : (
-              "Continue"
-            )}
           </Button>
         </div>
       </div>
