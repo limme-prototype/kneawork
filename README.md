@@ -7,6 +7,12 @@ KneaWork UX/UI PRD
 - [System Architecture & Technical Design Specification](../kneawork-system-architecture.md)
 - [WSA 2027 Submission Requirements & Preparation Plan](../kneawork-wsa-2027-submission-requirements-and-plan.md)
 
+### Detailed System Specs (`/spces`)
+- [1. Workspace & Organization Spec (Space)](../../spces/workspace-and-organization-spec.md)
+- [2. Workflow Engine & Routing Spec (Flow)](../../spces/workflow-engine-and-routing-spec.md)
+- [3. Request Submission & Intake Spec (Submit)](../../spces/request-submission-and-intake-spec.md)
+- [4. End-to-End Business Flows Spec (Bus Flow)](../../spces/end-to-end-business-flows-spec.md)
+
 
 I created the complete PRD covering:
 
