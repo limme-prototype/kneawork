@@ -226,18 +226,22 @@ export function resubmitRequest(requestId: string, note: string) {
     if (request.id !== requestId) return request;
     const steps = request.steps.map((s) => ({ ...s }));
     const index = steps.findIndex((s) => s.status === "changes_requested");
-    if (index >= 0) steps[index]!.status = "pending";
+    if (index >= 0) {
+      steps[index]!.status = "pending";
+      steps[index]!.dueLabel = "Resubmitted for review";
+    }
     return {
       ...request,
       status: "in_review" as const,
-      updatedLabel: "Updated just now",
+      urgency: "due_today" as const,
+      updatedLabel: "Resubmitted just now",
       steps,
       audit: [
         ...request.audit,
         {
           id: nextId("e"),
           actorId: state.currentUserId,
-          action: "Resubmitted after changes",
+          action: "Resubmitted request after revisions",
           timestampLabel: nowLabel(),
           comment: note || undefined,
           channel: "Mobile" as const,

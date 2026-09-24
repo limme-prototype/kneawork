@@ -11,6 +11,8 @@ import {
   XCircle,
   AlertTriangle,
   ExternalLink,
+  MessageSquare,
+  Smartphone,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -21,9 +23,18 @@ import { DecisionDialog } from "@/components/kneawork/decision-dialog";
 import { PageHeader } from "@/components/kneawork/page-header";
 import { StatusBadge, UrgencyBadge, formatDueStatus } from "@/components/kneawork/status-badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { personById } from "@/lib/kneawork/data";
-import { addComment, currentStep, decide, useKneaState } from "@/lib/kneawork/store";
+import { addComment, currentStep, decide, resubmitRequest, useKneaState } from "@/lib/kneawork/store";
 import type { Decision } from "@/lib/kneawork/types";
 
 export const Route = createFileRoute("/requests/$requestId")({
@@ -39,6 +50,8 @@ function RequestDetailPage() {
   const [activeDecision, setActiveDecision] = useState<Decision | null>(null);
   const [newComment, setNewComment] = useState("");
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  const [resubmitNote, setResubmitNote] = useState("");
+  const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
 
   if (!request) {
     return (
@@ -58,6 +71,8 @@ function RequestDetailPage() {
   const owner = step ? personById(step.assigneeId) : null;
   const isMe = step && step.assigneeId === currentUserId && request.status === "in_review";
   const nextStep = step ? request.steps[request.steps.indexOf(step) + 1] : null;
+  const changeStep = request.steps.find((s) => s.status === "changes_requested");
+  const isRequester = request.requesterId === currentUserId;
 
   const handleDecision = (decision: Decision, note: string) => {
     decide(request.id, decision, note);
@@ -75,6 +90,16 @@ function RequestDetailPage() {
         `Request rejected. The workflow is concluded and ${requester.name} has been notified.`,
       );
     }
+  };
+
+  const handleResubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resubmitNote.trim()) return;
+    resubmitRequest(request.id, resubmitNote.trim());
+    setActionFeedback(
+      `Revisions submitted successfully. Request returned to ${changeStep?.name ?? "reviewer"} for review.`,
+    );
+    setResubmitNote("");
   };
 
   const handleAddComment = (e: React.FormEvent) => {
@@ -140,52 +165,64 @@ function RequestDetailPage() {
             />
           }
           actions={
-            isMe ? (
-              <div className="hidden sm:flex items-center gap-2 shrink-0">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-border text-danger hover:bg-danger-soft hover:border-danger-border font-semibold"
-                  onClick={() => setActiveDecision("reject")}
-                >
-                  <XCircle className="mr-1.5 size-4 text-danger" />
-                  Reject
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-border text-warning hover:bg-warning-soft hover:border-warning-border font-semibold"
-                  onClick={() => setActiveDecision("changes")}
-                >
-                  <RotateCcw className="mr-1.5 size-4 text-warning" />
-                  Request changes
-                </Button>
-                <Button
-                  size="default"
-                  className="bg-success text-white hover:bg-success/90 font-semibold shadow-2xs"
-                  onClick={() => setActiveDecision("approve")}
-                >
-                  <CheckCircle2 className="mr-1.5 size-4" />
-                  Approve request
-                </Button>
-              </div>
-            ) : (
-              <div className="text-xs text-muted-foreground shrink-0">
-                {request.status === "approved" ? (
-                  <span className="inline-flex items-center gap-1 font-semibold text-success">
-                    <CheckCircle2 className="size-4 text-success" /> Fully approved & closed
-                  </span>
-                ) : request.status === "rejected" ? (
-                  <span className="inline-flex items-center gap-1 font-semibold text-danger">
-                    <XCircle className="size-4 text-danger" /> Closed as rejected
-                  </span>
-                ) : (
-                  <span>
-                    Assigned to <strong className="text-foreground">{owner?.name}</strong>
-                  </span>
-                )}
-              </div>
-            )
+            <div className="flex items-center gap-2 shrink-0 flex-wrap">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsTelegramModalOpen(true)}
+                className="gap-1.5 text-xs h-8 border-border text-muted-foreground hover:text-foreground"
+              >
+                <Smartphone className="size-3.5" />
+                Telegram preview
+              </Button>
+
+              {isMe ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-border text-danger hover:bg-danger-soft hover:border-danger-border font-semibold text-xs h-8"
+                    onClick={() => setActiveDecision("reject")}
+                  >
+                    <XCircle className="mr-1.5 size-3.5 text-danger" />
+                    Reject
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-border text-warning hover:bg-warning-soft hover:border-warning-border font-semibold text-xs h-8"
+                    onClick={() => setActiveDecision("changes")}
+                  >
+                    <RotateCcw className="mr-1.5 size-3.5 text-warning" />
+                    Request changes
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-success text-white hover:bg-success/90 font-semibold shadow-2xs text-xs h-8"
+                    onClick={() => setActiveDecision("approve")}
+                  >
+                    <CheckCircle2 className="mr-1.5 size-3.5" />
+                    Approve request
+                  </Button>
+                </>
+              ) : (
+                <div className="text-xs text-muted-foreground">
+                  {request.status === "approved" ? (
+                    <span className="inline-flex items-center gap-1 font-semibold text-success">
+                      <CheckCircle2 className="size-3.5 text-success" /> Fully approved & closed
+                    </span>
+                  ) : request.status === "rejected" ? (
+                    <span className="inline-flex items-center gap-1 font-semibold text-danger">
+                      <XCircle className="size-3.5 text-danger" /> Closed as rejected
+                    </span>
+                  ) : (
+                    <span>
+                      Assigned to <strong className="text-foreground">{owner?.name}</strong>
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
           }
         />
 
@@ -193,6 +230,75 @@ function RequestDetailPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 min-w-0">
           {/* LEFT COLUMN: Summary, Attachments, Timeline, Comments */}
           <div className="space-y-6 lg:col-span-8 min-w-0">
+            {/* Revision Callout if Changes Requested */}
+            {request.status === "changes_requested" && (
+              <div className="rounded-lg border border-warning-border bg-warning-soft/30 p-5 shadow-2xs space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <RotateCcw className="size-5 text-warning shrink-0" />
+                    <div>
+                      <h3 className="text-base font-bold text-foreground">
+                        Action required: Changes requested
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        The reviewer requested changes or additional context before this request can proceed.
+                      </p>
+                    </div>
+                  </div>
+                  <span className="rounded bg-warning-soft border border-warning-border px-2.5 py-0.5 text-xs font-semibold text-warning shrink-0">
+                    Waiting for revision
+                  </span>
+                </div>
+
+                {changeStep?.note && (
+                  <div className="rounded-md border border-warning-border/60 bg-card p-3.5 text-xs sm:text-[13px] text-foreground">
+                    <span className="font-semibold text-warning block mb-1">
+                      Reviewer feedback ({personById(changeStep.assigneeId).name} · {changeStep.name}):
+                    </span>
+                    <p className="italic leading-relaxed">"{changeStep.note}"</p>
+                  </div>
+                )}
+
+                {isRequester ? (
+                  <form onSubmit={handleResubmit} className="space-y-3 pt-1">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="resubmit-notes" className="text-xs font-semibold text-foreground">
+                        Your revision notes / response to reviewer *
+                      </Label>
+                      <Textarea
+                        id="resubmit-notes"
+                        required
+                        rows={3}
+                        value={resubmitNote}
+                        onChange={(e) => setResubmitNote(e.target.value)}
+                        placeholder="Explain the changes made or provide clarification requested by the reviewer..."
+                        className="text-xs sm:text-[13px] bg-card"
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
+                      <span className="text-xs text-muted-foreground">
+                        Resubmitting will return this request to <strong>Waiting for {changeStep?.name}</strong>.
+                      </span>
+                      <Button
+                        type="submit"
+                        size="sm"
+                        disabled={!resubmitNote.trim()}
+                        className="bg-primary text-primary-foreground hover:bg-primary-hover font-semibold gap-1.5 text-xs h-8 shrink-0"
+                      >
+                        <Send className="size-3.5" />
+                        Resubmit request
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Currently waiting for requester (<strong className="text-foreground">{requester.name}</strong>) to provide revisions.
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Request Summary Box */}
             <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
               <h2 className="text-base font-semibold text-foreground">Request summary</h2>
@@ -469,6 +575,86 @@ function RequestDetailPage() {
         onClose={() => setActiveDecision(null)}
         onConfirm={handleDecision}
       />
+
+      {/* Telegram Deep-Link Notification Simulation Modal (P1 Pilot Requirement) */}
+      <Dialog open={isTelegramModalOpen} onOpenChange={setIsTelegramModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <span className="flex size-7 items-center justify-center rounded-full bg-[#229ED9] text-white">
+                <Send className="size-3.5" />
+              </span>
+              <div>
+                <DialogTitle className="text-base font-bold text-foreground">
+                  Telegram Bot Notification
+                </DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground">
+                  Simulated dispatch to Cambodian approver's Telegram client
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {/* Telegram Bubble Mockup */}
+          <div className="rounded-lg bg-[#0F1E2B] text-white p-4 space-y-3 font-sans text-xs border border-white/10 shadow-lg">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <span className="font-bold text-[#56B3F5] flex items-center gap-1.5">
+                KneaWork Official Bot <span className="text-[10px] text-white/60">BOT</span>
+              </span>
+              <span className="text-[10px] text-white/50">Today 10:04 AM</span>
+            </div>
+
+            <div className="space-y-1.5 leading-relaxed">
+              <p className="font-semibold text-white">🔔 New Request Needs Your Sign-Off</p>
+              <p>
+                <strong className="text-white/70">Request:</strong> {request.code} — {request.title}
+              </p>
+              <p>
+                <strong className="text-white/70">Amount:</strong> {request.valueLabel}
+              </p>
+              <p>
+                <strong className="text-white/70">Requester:</strong> {requester.name} ({request.department})
+              </p>
+              <p>
+                <strong className="text-white/70">Current Step:</strong> {step?.name ?? "Approval"}
+              </p>
+              <p>
+                <strong className="text-white/70">Due:</strong> {step?.dueLabel ?? "Today"}
+              </p>
+              <div className="mt-2 rounded bg-white/5 p-2 text-white/80 border border-white/10 italic">
+                "{request.reason}"
+              </div>
+            </div>
+
+            {/* Telegram Inline Buttons */}
+            <div className="space-y-1.5 pt-2">
+              <Button
+                type="button"
+                onClick={() => setIsTelegramModalOpen(false)}
+                className="w-full bg-[#229ED9] hover:bg-[#229ED9]/90 text-white font-semibold text-xs h-8 gap-1.5 shadow-xs"
+              >
+                <ExternalLink className="size-3" />
+                ⚡ Review & Decide in KneaWork
+              </Button>
+              {request.attachments.length > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsTelegramModalOpen(false)}
+                  className="w-full bg-white/5 hover:bg-white/10 text-white border-white/20 text-xs h-7 gap-1"
+                >
+                  <Paperclip className="size-3" />
+                  View {request.attachments[0]?.filename}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <div className="text-[11px] text-muted-foreground leading-relaxed">
+            💡 <strong>Why Telegram?</strong> Telegram is the dominant workplace communication channel for Cambodian SMEs. KneaWork webhooks deliver one-click deep links so managers never miss approval deadlines.
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }

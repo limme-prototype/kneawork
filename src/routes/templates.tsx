@@ -21,6 +21,7 @@ import { useState } from "react";
 
 import { AppShell } from "@/components/kneawork/app-shell";
 import { PageHeader } from "@/components/kneawork/page-header";
+import { AiWorkflowGeneratorDialog } from "@/components/kneawork/template-builder/ai-workflow-generator-dialog";
 import { TemplateBuilder } from "@/components/kneawork/template-builder/template-builder";
 import { TemplatePreviewDialog } from "@/components/kneawork/template-builder/template-preview-dialog";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ export function TemplatesPage() {
   const [editingTemplate, setEditingTemplate] = useState<ExtendedTemplate | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<ExtendedTemplate | null>(null);
   const [versionActionNotice, setVersionActionNotice] = useState<string | null>(null);
+  const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 
   const filtered = templates.filter((t) => {
     const matchesSearch =
@@ -155,6 +157,16 @@ export function TemplatesPage() {
                   placeholder="Search templates or policies..."
                 />
               </div>
+
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => setIsAiDialogOpen(true)}
+                className="gap-1.5 font-semibold border-primary/40 text-primary hover:bg-primary/10 shrink-0"
+              >
+                <Sparkles className="size-4" />
+                Generate with AI
+              </Button>
 
               <Button
                 size="default"
@@ -496,6 +508,13 @@ export function TemplatesPage() {
           template={previewTemplate}
         />
       ) : null}
+
+      {/* AI Workflow Draft Generator Modal */}
+      <AiWorkflowGeneratorDialog
+        open={isAiDialogOpen}
+        onOpenChange={setIsAiDialogOpen}
+        onReviewDraft={(draft) => setEditingTemplate(draft)}
+      />
     </AppShell>
   );
 }
