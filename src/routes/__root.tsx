@@ -71,16 +71,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "KneaWork — Approval Workflow System" },
+      { title: "Anumat — Enterprise Approval Workflow System" },
       {
         name: "description",
-        content: "Lightweight Request & Multi-Step Approval System for Cambodian SMEs",
+        content: "Enterprise Workflow & Approvals for Modern Teams",
       },
-      { name: "author", content: "KneaWork" },
-      { property: "og:title", content: "KneaWork — Request & Approval Platform" },
+      { name: "author", content: "Anumat" },
+      { property: "og:title", content: "Anumat — Request & Approval Platform" },
       {
         property: "og:description",
-        content: "Fast, clear, accountable approval workflows for Cambodian teams.",
+        content: "Know what needs your action. Know where your request is. Structured approval hub.",
       },
       { property: "og:type", content: "website" },
     ],

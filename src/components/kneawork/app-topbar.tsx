@@ -186,6 +186,18 @@ export function AppTopbar({ breadcrumbs, contextTitle }: AppTopbarProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* + New Request Action Button */}
+          <Button
+            asChild
+            size="sm"
+            className="hidden sm:inline-flex gap-1.5 h-8 px-3 font-semibold bg-primary text-primary-foreground hover:bg-primary-hover shadow-2xs text-xs rounded-md"
+          >
+            <Link to="/requests/new">
+              <Plus className="size-3.5" />
+              <span>New Request</span>
+            </Link>
+          </Button>
+
           {/* User & Workspace Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -220,7 +232,7 @@ export function AppTopbar({ breadcrumbs, contextTitle }: AppTopbarProps) {
                   <div className="mt-0.5 flex items-center gap-1.5">
                     <span className="size-1.5 rounded-full bg-success" />
                     <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                      {me.department} · KneaWork
+                      {me.department} · Anumat
                     </span>
                   </div>
                 </div>
@@ -340,21 +352,12 @@ export function AppTopbar({ breadcrumbs, contextTitle }: AppTopbarProps) {
                 </CommandItem>
               </>
             )}
-            {isAdmin && (
-              <CommandItem
-                onSelect={() => handleSelectCommand("/settings")}
-                className="cursor-pointer"
-              >
-                <Settings className="mr-2 size-4 text-muted-foreground" />
-                <span>Workspace Settings</span>
-              </CommandItem>
-            )}
             <CommandItem
-              onSelect={() => handleSelectCommand("/profile")}
+              onSelect={() => handleSelectCommand("/settings")}
               className="cursor-pointer"
             >
-              <Shield className="mr-2 size-4 text-muted-foreground" />
-              <span>My Profile</span>
+              <Settings className="mr-2 size-4 text-muted-foreground" />
+              <span>Settings & Profile</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>

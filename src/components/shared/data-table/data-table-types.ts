@@ -51,6 +51,7 @@ export interface DataTableFilterPillsConfig {
     count?: number | undefined;
     activeClassName?: string | undefined;
   }>;
+  trailing?: React.ReactNode | undefined;
 }
 
 export interface DataTableProps<TData, TValue = unknown> {

@@ -49,21 +49,23 @@ export function DataTableFilterPills<TData, TValue>({
         variant={isAll ? "default" : "outline"}
         onClick={() => column?.setFilterValue(undefined)}
         className={cn(
-          "h-7 min-h-[28px] px-2.5 text-xs font-semibold rounded-md shrink-0 transition-colors",
+          "h-8 min-h-[32px] px-3 text-xs font-semibold rounded-full shrink-0 transition-all gap-1.5",
           isAll
-            ? "bg-primary text-primary-foreground shadow-2xs"
-            : "text-muted-foreground hover:text-foreground hover:bg-muted",
+            ? "bg-[#003D96] text-white hover:bg-[#002D70] shadow-2xs"
+            : "text-muted-foreground hover:text-foreground hover:bg-muted border border-border/80",
         )}
       >
         <span>{allLabel}</span>
         {allCount !== undefined && (
           <span
             className={cn(
-              "ml-1 text-[11px] font-mono",
-              isAll ? "text-primary-foreground/90" : "text-muted-foreground",
+              "inline-flex items-center justify-center min-w-[20px] h-4.5 px-1.5 rounded-full text-[11px] font-mono font-bold transition-colors",
+              isAll
+                ? "bg-white/20 text-white"
+                : "bg-muted text-muted-foreground",
             )}
           >
-            ({allCount})
+            {allCount}
           </span>
         )}
       </Button>
@@ -84,21 +86,23 @@ export function DataTableFilterPills<TData, TValue>({
               }
             }}
             className={cn(
-              "h-7 min-h-[28px] px-2.5 text-xs font-semibold rounded-md shrink-0 transition-colors",
+              "h-8 min-h-[32px] px-3 text-xs font-semibold rounded-full shrink-0 transition-all gap-1.5",
               isActive
-                ? (item.activeClassName ?? "bg-primary text-primary-foreground shadow-2xs")
-                : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                ? (item.activeClassName ?? "bg-[#003D96] text-white hover:bg-[#002D70] shadow-2xs")
+                : "text-muted-foreground hover:text-foreground hover:bg-muted border border-border/80",
             )}
           >
             <span>{item.label}</span>
             {item.count !== undefined && (
               <span
                 className={cn(
-                  "ml-1 text-[11px] font-mono",
-                  isActive ? "opacity-90" : "text-muted-foreground",
+                  "inline-flex items-center justify-center min-w-[20px] h-4.5 px-1.5 rounded-full text-[11px] font-mono font-bold transition-colors",
+                  isActive
+                    ? "bg-white/25 text-white"
+                    : "bg-muted text-muted-foreground",
                 )}
               >
-                ({item.count})
+                {item.count}
               </span>
             )}
           </Button>

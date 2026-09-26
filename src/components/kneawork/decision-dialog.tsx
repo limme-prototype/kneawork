@@ -46,10 +46,18 @@ const COPY: Record<
 };
 
 const CHANGE_REASONS = [
-  "Missing quotation",
-  "Clarification on purpose",
-  "Incorrect amount",
-  "Alternative vendor needed",
+  "+ Missing supplier quotation",
+  "+ Need departmental manager sign-off",
+  "+ Incorrect amount or currency",
+  "+ Alternative vendor quotation required",
+  "+ Please clarify business justification",
+];
+
+const REJECT_REASONS = [
+  "+ Exceeds department quarterly budget",
+  "+ Duplicate request already submitted",
+  "+ Policy violation (non-standard vendor)",
+  "+ Outside fiscal year procurement window",
 ];
 
 export function DecisionDialog({
@@ -76,9 +84,13 @@ export function DecisionDialog({
   const noteRequired = decision !== "approve";
 
   const handleChipClick = (reason: string) => {
-    setNote((prev) => (prev ? `${prev}; ${reason}` : reason));
+    // Strip leading '+ ' if appending to note
+    const cleanReason = reason.startsWith("+ ") ? reason.slice(2) : reason;
+    setNote((prev) => (prev ? `${prev}; ${cleanReason}` : cleanReason));
     if (error) setError("");
   };
+
+  const activeChips = decision === "changes" ? CHANGE_REASONS : decision === "reject" ? REJECT_REASONS : [];
 
   return (
     <Dialog
@@ -91,7 +103,7 @@ export function DecisionDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-md p-5 sm:p-6">
+      <DialogContent className="sm:max-w-md p-5 sm:p-6 bg-card rounded-xl">
         <DialogHeader className="space-y-1">
           <div className="flex items-center gap-2">
             <copy.icon
@@ -105,12 +117,19 @@ export function DecisionDialog({
               aria-hidden="true"
             />
             <DialogTitle className="text-base sm:text-lg font-bold text-foreground">
-              {copy.title}
+              {decision === "changes"
+                ? `Request changes for ${request.code}`
+                : decision === "reject"
+                  ? `Reject request ${request.code}`
+                  : copy.title}
             </DialogTitle>
           </div>
           <DialogDescription className="text-xs sm:text-[13px] text-muted-foreground">
-            {request.title} <span className="font-mono">({request.code})</span> ·{" "}
-            {request.valueLabel}
+            {decision === "changes"
+              ? `Return this request to ${requester.name} for clarification or updated attachments.`
+              : decision === "reject"
+                ? `Decline this request and conclude the approval process.`
+                : `${request.title} (${request.code}) · ${request.valueLabel}`}
           </DialogDescription>
         </DialogHeader>
 
@@ -138,17 +157,19 @@ export function DecisionDialog({
           </div>
         </div>
 
-        {/* Quick Reasons for Request Changes */}
-        {decision === "changes" ? (
+        {/* Quick Reasons Chips */}
+        {activeChips.length > 0 ? (
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-muted-foreground">Common reasons:</Label>
+            <Label className="text-xs font-medium text-muted-foreground">
+              Quick reasons (click to add):
+            </Label>
             <div className="flex flex-wrap gap-1.5">
-              {CHANGE_REASONS.map((r) => (
+              {activeChips.map((r) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => handleChipClick(r)}
-                  className="rounded-md border border-border bg-card hover:bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  className="rounded-full border border-border bg-card hover:bg-accent hover:border-primary/40 px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
                   {r}
                 </button>

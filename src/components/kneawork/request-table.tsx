@@ -1,13 +1,15 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { Calendar, ChevronRight, FileCheck, Receipt, ShoppingBag } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, UrgencyBadge } from "./status-badge";
 import { personById } from "@/lib/kneawork/data";
 import { currentStep } from "@/lib/kneawork/store";
 import type { WorkRequest } from "@/lib/kneawork/types";
+import { cn } from "@/lib/utils";
 import {
   DataTable,
   DataTableColumnHeader,
@@ -15,6 +17,20 @@ import {
   type DataTableFilterableColumn,
   type DataTableFilterPillsConfig,
 } from "@/components/shared/data-table";
+
+function getCategoryIcon(type: string) {
+  const cat = type.toLowerCase();
+  if (cat.includes("equipment") || cat.includes("it") || cat.includes("purchase")) {
+    return <ShoppingBag className="size-4 text-[#003D96]" />;
+  }
+  if (cat.includes("expense") || cat.includes("claim") || cat.includes("reimburse")) {
+    return <Receipt className="size-4 text-[#003D96]" />;
+  }
+  if (cat.includes("leave") || cat.includes("vacation")) {
+    return <Calendar className="size-4 text-[#003D96]" />;
+  }
+  return <FileCheck className="size-4 text-[#003D96]" />;
+}
 
 export interface RequestTableProps {
   requests: WorkRequest[];
@@ -26,6 +42,7 @@ export interface RequestTableProps {
   searchPlaceholder?: string | undefined;
   enableFilters?: boolean | undefined;
   toolbar?: React.ReactNode | undefined;
+  filterPillsTrailing?: React.ReactNode | undefined;
 }
 
 export function RequestTable({
@@ -38,6 +55,7 @@ export function RequestTable({
   searchPlaceholder = "Search ID, title, requester, reason...",
   enableFilters = false,
   toolbar,
+  filterPillsTrailing,
 }: RequestTableProps) {
   const shouldHideToolbar = hideToolbar !== undefined ? hideToolbar : !enableFilters;
 
@@ -47,38 +65,44 @@ export function RequestTable({
         accessorKey: "code",
         header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
         cell: ({ row }) => (
-          <span className="font-mono text-xs font-semibold text-muted-foreground">
+          <Link
+            to="/requests/$requestId"
+            params={{ requestId: row.original.id }}
+            className="whitespace-nowrap font-mono text-xs font-semibold text-[#003D96] hover:underline"
+          >
             {row.original.code}
-          </span>
+          </Link>
         ),
+        size: 90,
+        minSize: 85,
       },
       {
         accessorKey: "title",
         header: ({ column }) => <DataTableColumnHeader column={column} title="Request" />,
         cell: ({ row }) => {
           const req = row.original;
-          const requester = personById(req.requesterId);
           return (
-            <div className="min-w-0 py-1">
-              <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate max-w-[220px] sm:max-w-xs md:max-w-sm">
-                {req.title}
+            <div className="flex items-center gap-3 py-1 min-w-0">
+              <div className="size-8.5 rounded-lg bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
+                {getCategoryIcon(req.type)}
               </div>
-              <div className="text-[12px] font-medium text-muted-foreground mt-0.5">
-                {req.valueLabel} · <span className="capitalize">{req.type}</span>
-                <span className="lg:hidden text-muted-foreground/80"> · {requester.name}</span>
+              <div className="min-w-0">
+                <Link
+                  to="/requests/$requestId"
+                  params={{ requestId: req.id }}
+                  className="text-sm font-semibold text-foreground hover:text-[#003D96] hover:underline transition-colors truncate block max-w-[200px] sm:max-w-xs md:max-w-sm"
+                >
+                  {req.title}
+                </Link>
+                <div className="text-[11px] font-medium text-muted-foreground mt-0.5 flex items-center gap-1.5 flex-wrap">
+                  <span className="capitalize">{req.type}</span>
+                  <span>·</span>
+                  <span>{req.submittedDate}</span>
+                </div>
               </div>
             </div>
           );
         },
-      },
-      {
-        accessorKey: "type",
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
-        cell: ({ row }) => (
-          <span className="text-xs font-medium capitalize text-muted-foreground">
-            {row.original.type}
-          </span>
-        ),
       },
       {
         id: "requester",
@@ -87,49 +111,62 @@ export function RequestTable({
         cell: ({ row }) => {
           const requester = personById(row.original.requesterId);
           return (
-            <div className="text-xs">
-              <span className="block font-medium text-foreground">{requester.name}</span>
-              <span className="block text-[11px] text-muted-foreground">
-                {row.original.department}
-              </span>
+            <div className="flex items-center gap-2 min-w-0">
+              <Avatar className="size-6.5 shrink-0 border border-border">
+                <AvatarFallback className="bg-muted text-foreground text-[10px] font-bold">
+                  {requester.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="text-xs min-w-0">
+                <span className="block font-medium text-foreground truncate">{requester.name}</span>
+                <span className="block text-[11px] text-muted-foreground truncate">
+                  {row.original.department}
+                </span>
+              </div>
             </div>
           );
         },
       },
       {
-        id: "step",
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Current Step" />,
-        accessorFn: (row) => currentStep(row)?.name ?? "Completed",
-        cell: ({ row }) => {
-          const step = currentStep(row.original);
-          return step ? (
-            <span className="text-xs font-medium text-foreground">{step.name}</span>
-          ) : (
-            <span className="text-xs text-muted-foreground">—</span>
-          );
-        },
+        accessorKey: "valueLabel",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Value" />,
+        cell: ({ row }) => (
+          <span className="font-mono text-xs font-semibold text-foreground whitespace-nowrap">
+            {row.original.valueLabel || "—"}
+          </span>
+        ),
       },
       {
-        id: "owner",
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Owner" />,
+        id: "stageTurn",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Stage / Turn" />,
         accessorFn: (row) => {
           const step = currentStep(row);
-          return step ? personById(step.assigneeId).name : "None";
+          if (!step) return "Completed";
+          return `${step.name} (${personById(step.assigneeId).name})`;
         },
         cell: ({ row }) => {
-          const step = currentStep(row.original);
-          const owner = step ? personById(step.assigneeId) : null;
-          const isMe =
-            step && step.assigneeId === currentUserId && row.original.status === "in_review";
+          const req = row.original;
+          const step = currentStep(req);
+          if (!step) {
+            return <span className="text-xs text-muted-foreground">—</span>;
+          }
+          const owner = personById(step.assigneeId);
+          const isMe = step.assigneeId === currentUserId && req.status === "in_review";
 
-          return owner ? (
-            <span
-              className={`text-xs font-semibold ${isMe ? "text-attention" : "text-foreground"}`}
-            >
-              {isMe ? "You" : owner.name}
-            </span>
-          ) : (
-            <span className="text-xs text-muted-foreground">—</span>
+          if (isMe) {
+            return (
+              <span className="inline-flex items-center gap-1.5 font-bold text-[#003D96] bg-[#F2F7FF] px-2.5 py-1 rounded-full border border-[#003D96]/30 text-xs shadow-2xs whitespace-nowrap">
+                <span className="size-1.5 rounded-full bg-[#003D96] animate-pulse" />
+                Your Turn
+              </span>
+            );
+          }
+
+          return (
+            <div className="text-xs min-w-0">
+              <span className="font-medium text-foreground block truncate">{step.name}</span>
+              <span className="text-[11px] text-muted-foreground block truncate">With {owner.name}</span>
+            </div>
           );
         },
       },
@@ -181,9 +218,12 @@ export function RequestTable({
             <div className="flex justify-end" data-no-row-click>
               <Button
                 asChild
-                variant="outline"
+                variant={isMe ? "default" : "outline"}
                 size="sm"
-                className="font-semibold text-xs h-8 px-2.5"
+                className={cn(
+                  "font-semibold text-xs h-8 px-2.5",
+                  isMe && "bg-[#003D96] hover:bg-[#002D70] text-white"
+                )}
               >
                 <Link to="/requests/$requestId" params={{ requestId: req.id }}>
                   {isMe ? "Review" : "View"}
@@ -234,34 +274,35 @@ export function RequestTable({
       columnId: "status",
       allLabel: "All",
       allCount: requests.length,
+      trailing: filterPillsTrailing,
       items: [
         {
           value: "in_review",
           label: "Waiting on approval",
           count: countsByStatus.in_review,
-          activeClassName: "bg-attention text-attention-foreground shadow-2xs",
+          activeClassName: "bg-[#003D96] text-white hover:bg-[#002D70] shadow-2xs",
         },
         {
           value: "approved",
           label: "Completed",
           count: countsByStatus.approved,
-          activeClassName: "bg-success text-white shadow-2xs",
+          activeClassName: "bg-emerald-600 text-white hover:bg-emerald-700 shadow-2xs",
         },
         {
           value: "changes_requested",
           label: "Changes requested",
           count: countsByStatus.changes_requested,
-          activeClassName: "bg-warning text-white shadow-2xs",
+          activeClassName: "bg-amber-600 text-white hover:bg-amber-700 shadow-2xs",
         },
         {
           value: "rejected",
           label: "Rejected",
           count: countsByStatus.rejected,
-          activeClassName: "bg-danger text-white shadow-2xs",
+          activeClassName: "bg-rose-600 text-white hover:bg-rose-700 shadow-2xs",
         },
       ],
     }),
-    [requests.length, countsByStatus],
+    [requests.length, countsByStatus, filterPillsTrailing],
   );
 
   const renderMobileCard = React.useCallback(
@@ -277,12 +318,15 @@ export function RequestTable({
           selected={req.id === selectedRequestId}
           onClick={onSelectRequest ? () => onSelectRequest(req.id) : undefined}
           title={
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-mono text-xs text-muted-foreground">{req.code}</span>
-              <span className="text-sm font-bold text-foreground">{req.title}</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="size-7 rounded-lg bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
+                {getCategoryIcon(req.type)}
+              </span>
+              <span className="font-mono text-xs font-semibold text-[#003D96]">{req.code}</span>
+              <span className="text-sm font-bold text-foreground truncate">{req.title}</span>
             </div>
           }
-          subtitle={`${req.valueLabel} · ${req.type} · By ${requester.name}`}
+          subtitle={`${req.valueLabel ? `${req.valueLabel} · ` : ""}${req.type} · By ${requester.name}`}
           status={
             <StatusBadge
               status={req.status}
@@ -293,14 +337,18 @@ export function RequestTable({
           }
           attributes={[
             {
-              label: "Current Step",
-              value: (
+              label: "Stage / Turn",
+              value: isMe ? (
+                <span className="inline-flex items-center gap-1 font-bold text-[#003D96] bg-[#F2F7FF] px-2 py-0.5 rounded-full border border-[#003D96]/30 text-xs">
+                  <span className="size-1.5 rounded-full bg-[#003D96] animate-pulse" />
+                  Your Turn ({step?.name})
+                </span>
+              ) : (
                 <span>
                   {step?.name ?? "Completed"}
                   {owner && (
                     <span className="text-muted-foreground font-normal">
-                      {" "}
-                      · {isMe ? "You" : owner.name}
+                      {" "}· With {owner.name}
                     </span>
                   )}
                 </span>
@@ -316,7 +364,15 @@ export function RequestTable({
             },
           ]}
           actions={
-            <Button asChild variant="outline" size="sm" className="font-semibold text-xs h-8 px-3">
+            <Button
+              asChild
+              variant={isMe ? "default" : "outline"}
+              size="sm"
+              className={cn(
+                "font-semibold text-xs h-8 px-3",
+                isMe && "bg-[#003D96] hover:bg-[#002D70] text-white"
+              )}
+            >
               <Link to="/requests/$requestId" params={{ requestId: req.id }}>
                 {isMe ? "Review" : "View"}
                 <ChevronRight className="size-3.5 ml-1" />

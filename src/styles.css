@@ -21,77 +21,77 @@
 
   --font-kneawork-mono: "JetBrains Mono", "Noto Sans Mono", monospace;
 
-  /* Core Surfaces & Neutrals */
-  --background: #f7f8fa;
-  --foreground: #111827;
+  /* Core Surfaces & Neutrals (Anumat Palette) */
+  --background: #f3f6fb;
+  --foreground: #242424;
 
   --card: #ffffff;
-  --card-foreground: #111827;
+  --card-foreground: #242424;
 
   --popover: #ffffff;
-  --popover-foreground: #111827;
+  --popover-foreground: #242424;
 
-  --border: #e4e7ec;
-  --input: #cfd4dc;
-  --ring: #2563eb;
+  --border: #e0e0e0;
+  --input: #d1d1d1;
+  --ring: #003d96;
 
-  /* Primary Interactive Blue */
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  /* Primary Interactive Brand Blue (#003D96 - 9.96:1 contrast) */
+  --primary: #003d96;
+  --primary-hover: #003583;
   --primary-foreground: #ffffff;
 
   /* Secondary & Muted */
-  --secondary: #f1f3f5;
-  --secondary-foreground: #1f2937;
-  --muted: #f4f5f7;
-  --muted-foreground: #667085;
+  --secondary: #fafafa;
+  --secondary-foreground: #242424;
+  --muted: #f0f4f8;
+  --muted-foreground: #616161;
 
-  /* Accent */
-  --accent: #eef2ff;
-  --accent-foreground: #3730a3;
+  /* Accent Highlight */
+  --accent: #f2f7ff;
+  --accent-foreground: #003d96;
 
   /* Destructive / Danger */
-  --destructive: #b42318;
+  --destructive: #c50f1f;
   --destructive-foreground: #ffffff;
-  --danger: #b42318;
+  --danger: #c50f1f;
   --danger-foreground: #ffffff;
-  --danger-soft: #fef3f2;
-  --danger-border: #fecdca;
+  --danger-soft: #fdf3f4;
+  --danger-border: #eeacb2;
 
-  /* KneaWork Workflow Tokens */
-  /* 1. Attention (Indigo) - Strictly reserved for assigned to user / needs your action */
-  --attention: #6251c8;
+  /* Anumat Workflow Status Tokens */
+  /* 1. Attention (Brand Blue) - Strictly reserved for assigned to user / needs your action */
+  --attention: #003d96;
   --attention-foreground: #ffffff;
-  --attention-soft: #f4f3ff;
-  --attention-border: #dcd6fe;
+  --attention-soft: #f2f7ff;
+  --attention-border: #bdceea;
 
-  /* 2. Success (Green) - Approved, completed, on track */
-  --success: #16803c;
+  /* 2. Success (Emerald Green) - Approved, completed, on track */
+  --success: #0e700e;
   --success-foreground: #ffffff;
-  --success-soft: #effaf3;
-  --success-border: #b7ebc6;
+  --success-soft: #f1faf1;
+  --success-border: #9fd89f;
 
-  /* 3. Warning (Amber) - Waiting, changes requested, due soon */
-  --warning: #9a6700;
+  /* 3. Warning (Warm Amber) - Waiting, changes requested, due soon */
+  --warning: #bc4b09;
   --warning-foreground: #1f2937;
-  --warning-soft: #fff8e6;
-  --warning-border: #f3d58a;
+  --warning-soft: #fff9f5;
+  --warning-border: #fdcfb4;
 
-  /* 4. Info (Blue) - Operational notices and guides */
-  --info: #1d4ed8;
+  /* 4. Info (Brand Blue) - Operational notices and guides */
+  --info: #003d96;
   --info-foreground: #ffffff;
-  --info-soft: #eff6ff;
-  --info-border: #bfdbfe;
+  --info-soft: #f2f7ff;
+  --info-border: #bdceea;
 
   /* Sidebar Tokens */
   --sidebar: #ffffff;
-  --sidebar-foreground: #374151;
-  --sidebar-primary: #2563eb;
+  --sidebar-foreground: #242424;
+  --sidebar-primary: #003d96;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #e4e7ec;
-  --sidebar-ring: #2563eb;
+  --sidebar-accent: #f2f7ff;
+  --sidebar-accent-foreground: #003d96;
+  --sidebar-border: #e0e0e0;
+  --sidebar-ring: #003d96;
 
   /*
    * Typography Scale Tokens (WCAG 2.2 AA & Material Design Baseline)

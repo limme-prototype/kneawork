@@ -3,6 +3,7 @@ import {
   Archive,
   ArrowRight,
   Bot,
+  Calendar,
   CheckCircle2,
   Clock,
   Copy,
@@ -11,10 +12,14 @@ import {
   FileCheck,
   FileText,
   Layers,
+  LayoutGrid,
+  List,
   Lock,
   MoreVertical,
   Plus,
+  Receipt,
   ShieldCheck,
+  ShoppingBag,
   Users,
   WandSparkles,
   X,
@@ -38,6 +43,14 @@ import {
 } from "@/components/ui/dialog";
 import { SearchInput } from "@/components/kneawork/search-input";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   archiveTemplate,
   createBlankTemplate,
   createNewVersionFromPublished,
@@ -45,15 +58,27 @@ import {
   useTemplates,
 } from "@/lib/kneawork/template-store";
 import type { ExtendedTemplate } from "@/lib/kneawork/template-types";
+import { cn } from "@/lib/utils";
+
+function getCategoryIcon(category?: string, id?: string) {
+  const cat = (category || "").toLowerCase();
+  const templateId = (id || "").toLowerCase();
+  if (cat.includes("purchase") || templateId.includes("purchase")) return <ShoppingBag className="size-5 text-[#003D96]" />;
+  if (cat.includes("expense") || templateId.includes("expense")) return <Receipt className="size-5 text-[#003D96]" />;
+  if (cat.includes("leave") || templateId.includes("leave")) return <Calendar className="size-5 text-[#003D96]" />;
+  if (cat.includes("contract") || templateId.includes("contract")) return <FileCheck className="size-5 text-[#003D96]" />;
+  return <FileText className="size-5 text-[#003D96]" />;
+}
 
 export const Route = createFileRoute("/templates")({
   component: TemplatesPage,
 });
 
-export function TemplatesPage() {
+function TemplatesPage() {
   const { templates } = useTemplates();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedTemplate, setSelectedTemplate] = useState<ExtendedTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<ExtendedTemplate | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<ExtendedTemplate | null>(null);
@@ -239,8 +264,8 @@ export function TemplatesPage() {
           </div>
         </div>
 
-        {/* Category Filters with ScrollableTabs */}
-        <div className="border-b border-border/60 pb-2">
+        {/* Category Filters with ScrollableTabs & View Switcher */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-2">
           <ScrollableTabs
             tabs={[
               { id: "all", label: "All templates", count: templates.length },
@@ -254,9 +279,41 @@ export function TemplatesPage() {
             onTabChange={(id) => setCategoryFilter(id)}
             ariaLabel="Template categories"
           />
+          <div className="flex items-center gap-1 self-end sm:self-auto shrink-0 bg-muted/60 p-0.5 rounded-lg border border-border/50">
+            <button
+              type="button"
+              onClick={() => setViewMode("cards")}
+              className={cn(
+                "px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors",
+                viewMode === "cards"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              aria-label="Cards view"
+              title="Cards view"
+            >
+              <LayoutGrid className="size-3.5" />
+              <span>Cards</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("table")}
+              className={cn(
+                "px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors",
+                viewMode === "table"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              aria-label="Table view"
+              title="Table view"
+            >
+              <List className="size-3.5" />
+              <span>Table</span>
+            </button>
+          </div>
         </div>
 
-        {/* Template Cards Grid */}
+        {/* Template Content (Cards or Table) */}
         {filtered.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-12 text-center space-y-3">
             <Layers className="size-8 text-muted-foreground mx-auto" />
@@ -274,14 +331,14 @@ export function TemplatesPage() {
               <Button
                 size="sm"
                 onClick={handleStartNewTemplate}
-                className="text-xs font-semibold gap-1.5"
+                className="text-xs font-semibold gap-1.5 bg-[#003D96] hover:bg-[#002D70] text-white"
               >
                 <Plus className="size-3.5" />
                 Create template
               </Button>
             )}
           </div>
-        ) : (
+        ) : viewMode === "cards" ? (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {filtered.map((t) => {
               const routeSteps = t.routeSteps;
@@ -290,78 +347,81 @@ export function TemplatesPage() {
               return (
                 <div
                   key={t.id}
-                  className="rounded-lg border border-border bg-card p-5 shadow-2xs space-y-4 hover:border-border/80 transition-colors flex flex-col justify-between"
+                  className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4 hover:border-border/80 transition-all flex flex-col justify-between"
                 >
                   <div className="space-y-3.5">
-                    {/* Title & Status */}
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h2 className="text-base font-semibold text-foreground">{t.label}</h2>
+                    {/* Header with 44px container glyph icon */}
+                    <div className="flex items-start gap-3.5">
+                      <div className="size-11 rounded-xl bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
+                        {getCategoryIcon(t.category, t.id)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap justify-between">
+                          <h2 className="text-base font-semibold text-foreground truncate">{t.label}</h2>
                           <span
-                            className={`rounded border px-2 py-0.5 text-xs font-semibold ${
+                            className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${
                               isDraft
-                                ? "bg-warning-soft border-warning-border text-warning"
-                                : "bg-success-soft border-success-border text-success"
+                                ? "bg-amber-50 border-amber-200 text-amber-700"
+                                : "bg-emerald-50 border-emerald-200 text-emerald-700"
                             }`}
                           >
-                            {t.versionStatus}
+                            v{t.version} · {t.versionStatus}
                           </span>
                         </div>
-                        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                           {t.description}
                         </p>
                       </div>
                     </div>
 
-                    {/* Approval Route (Spec: Single-line clean breadcrumb, avoid wrapping chunky pills) */}
-                    <div className="rounded-md border border-border/60 bg-muted/40 p-3 space-y-1.5">
+                    {/* Approval Route */}
+                    <div className="rounded-lg border border-border/60 bg-muted/30 p-3 space-y-1.5">
                       <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
                         <span>Approval route · {routeSteps.length} steps</span>
-                        <span className="text-xs text-muted-foreground font-normal">
-                          sequential
+                        <span className="text-[11px] text-muted-foreground font-normal">
+                          Sequential
                         </span>
                       </div>
-                      <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-[13px] text-foreground">
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs text-foreground">
                         <span className="font-medium text-muted-foreground">Requester</span>
                         {routeSteps.map((step) => (
                           <span key={step.id} className="inline-flex items-center gap-1.5">
                             <span className="text-muted-foreground text-xs select-none">→</span>
-                            <span className="font-semibold text-foreground">{step.name}</span>
+                            <span className="font-medium text-foreground">{step.name}</span>
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    {/* Policy & Governance (Spec: Policy 14px, stronger than owner 13px) */}
-                    <div className="space-y-1.5 text-[13px] text-muted-foreground bg-muted/30 p-3 rounded border border-border/50">
+                    {/* Policy & Governance */}
+                    <div className="space-y-1.5 text-xs text-muted-foreground bg-muted/20 p-2.5 rounded-lg border border-border/40">
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Policy:</span>
-                        <span className="font-medium text-sm text-foreground">
+                        <span className="font-medium text-foreground">
                           {t.rules.requireQuotation
                             ? `Quotation required above USD ${t.rules.quotationThreshold}`
                             : "Standard documentation"}
                           {t.rules.maxAmount
-                            ? ` · Maximum amount USD ${t.rules.maxAmount.toLocaleString()}`
+                            ? ` · Max USD ${t.rules.maxAmount.toLocaleString()}`
                             : ""}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Version:</span>
-                        <span className="font-mono text-foreground text-[13px]">
-                          Version {t.version} · Updated {t.updatedDate}
+                        <span className="text-muted-foreground">Governed deliverable:</span>
+                        <span className="font-medium text-foreground truncate max-w-[220px]">
+                          {t.completionOutcome}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Action Footer (Owner 13px, Open template button 14px) */}
-                  <div className="flex items-center justify-between text-[13px] text-muted-foreground border-t border-border/60 pt-3 mt-2">
+                  {/* Action Footer */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border/60 pt-3 mt-1">
                     <div className="space-y-0.5">
-                      <div className="text-[13px] text-foreground font-medium">
+                      <div className="text-xs text-foreground font-medium">
                         Owner: {t.ownerName}
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-[11px] text-muted-foreground">
                         Used {t.usageCount} times · Last used {t.lastUsed}
                       </div>
                     </div>
@@ -371,7 +431,7 @@ export function TemplatesPage() {
                         <Button
                           size="sm"
                           onClick={() => setEditingTemplate(t)}
-                          className="font-semibold gap-1 h-9 sm:h-8"
+                          className="font-semibold gap-1 h-8 text-xs bg-[#003D96] hover:bg-[#002D70] text-white"
                         >
                           <Edit2 className="size-3.5" />
                           Edit draft
@@ -381,7 +441,7 @@ export function TemplatesPage() {
                           size="sm"
                           variant="outline"
                           onClick={() => setSelectedTemplate(t)}
-                          className="font-semibold h-9 sm:h-8"
+                          className="font-semibold h-8 text-xs hover:bg-[#F2F7FF] hover:text-[#003D96]"
                         >
                           Open template
                         </Button>
@@ -391,6 +451,99 @@ export function TemplatesPage() {
                 </div>
               );
             })}
+          </div>
+        ) : (
+          /* Table View */
+          <div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
+            <Table>
+              <TableHeader className="bg-muted/40">
+                <TableRow>
+                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider pl-4">Template</TableHead>
+                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Version & Status</TableHead>
+                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Approval Route</TableHead>
+                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Policy</TableHead>
+                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Usage</TableHead>
+                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider text-right pr-4">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.map((t) => {
+                  const isDraft = t.versionStatus === "Draft";
+                  return (
+                    <TableRow key={t.id} className="hover:bg-muted/30 transition-colors">
+                      <TableCell className="pl-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="size-9 rounded-lg bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
+                            {getCategoryIcon(t.category, t.id)}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-sm text-foreground">{t.label}</div>
+                            <div className="text-xs text-muted-foreground line-clamp-1 max-w-[240px]">{t.description}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3">
+                        <span
+                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold ${
+                            isDraft
+                              ? "bg-amber-50 border-amber-200 text-amber-700"
+                              : "bg-emerald-50 border-emerald-200 text-emerald-700"
+                          }`}
+                        >
+                          v{t.version} · {t.versionStatus}
+                        </span>
+                      </TableCell>
+                      <TableCell className="py-3">
+                        <div className="text-xs font-medium text-foreground flex items-center gap-1.5 flex-wrap">
+                          <span>{t.routeSteps.length} steps</span>
+                          <span className="text-muted-foreground text-[11px]">(Sequential)</span>
+                        </div>
+                        <div className="text-[11px] text-muted-foreground truncate max-w-[200px]">
+                          {t.routeSteps.map((s) => s.name).join(" → ")}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3">
+                        <div className="text-xs text-foreground font-medium">
+                          {t.rules.requireQuotation
+                            ? `Quotation > $${t.rules.quotationThreshold}`
+                            : "Standard"}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {t.rules.maxAmount ? `Max: $${t.rules.maxAmount.toLocaleString()}` : "No ceiling"}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-3">
+                        <div className="text-xs text-foreground font-medium">{t.usageCount} uses</div>
+                        <div className="text-[11px] text-muted-foreground">Last: {t.lastUsed}</div>
+                      </TableCell>
+                      <TableCell className="text-right pr-4 py-3">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {isDraft ? (
+                            <Button
+                              size="sm"
+                              onClick={() => setEditingTemplate(t)}
+                              className="h-8 text-xs font-semibold gap-1 bg-[#003D96] hover:bg-[#002D70] text-white"
+                            >
+                              <Edit2 className="size-3" />
+                              Edit
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setSelectedTemplate(t)}
+                              className="h-8 text-xs font-semibold hover:bg-[#F2F7FF] hover:text-[#003D96]"
+                            >
+                              Open
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

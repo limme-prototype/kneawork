@@ -23,6 +23,7 @@ import { DecisionDialog } from "@/components/kneawork/decision-dialog";
 import { PageHeader } from "@/components/kneawork/page-header";
 import { StatusBadge, UrgencyBadge, formatDueStatus } from "@/components/kneawork/status-badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -312,126 +313,198 @@ function RequestDetailPage() {
               </div>
             )}
 
-            {/* Request Summary Box */}
-            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
-              <h2 className="text-base font-semibold text-foreground">Request summary</h2>
-              <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 text-sm">
-                <div>
-                  <dt className="text-[13px] text-muted-foreground font-medium">
-                    Total value / amount
-                  </dt>
-                  <dd className="mt-1 text-2xl font-bold text-foreground">{request.valueLabel}</dd>
-                </div>
-                <div>
-                  <dt className="text-[13px] text-muted-foreground font-medium">Needed by date</dt>
-                  <dd className="mt-1 text-sm font-medium text-foreground">
-                    {step ? step.dueLabel : "Standard timeline"}
-                  </dd>
-                </div>
-                <div className="sm:col-span-2 border-t border-border pt-4">
-                  <dt className="text-[13px] text-muted-foreground font-medium">
-                    Business justification & reason
-                  </dt>
-                  <dd className="mt-1.5 text-sm text-foreground leading-relaxed bg-muted/30 p-3.5 rounded-md border border-border">
-                    <article className="prose prose-sm prose-kneawork max-w-none text-sm">
-                      <p>{request.reason}</p>
-                    </article>
-                  </dd>
-                </div>
-              </dl>
-            </div>
+            {/* 4 Navigation Tabs (Prompt 06: Overview & Answers, Approval Path, Attachments, Activity Trail) */}
+            <Tabs defaultValue="overview" className="w-full space-y-4">
+              <TabsList className="w-full justify-start h-10 p-1 bg-muted/60 border border-border rounded-lg overflow-x-auto scrollbar-none">
+                <TabsTrigger value="overview" className="text-xs font-semibold px-3 py-1.5">
+                  Overview & Answers
+                </TabsTrigger>
+                <TabsTrigger value="timeline" className="text-xs font-semibold px-3 py-1.5">
+                  Approval Path
+                </TabsTrigger>
+                <TabsTrigger value="attachments" className="text-xs font-semibold px-3 py-1.5">
+                  Attachments ({request.attachments.length})
+                </TabsTrigger>
+                <TabsTrigger value="activity" className="text-xs font-semibold px-3 py-1.5">
+                  Activity Trail ({request.audit.length})
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Attachments Section */}
-            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-semibold text-foreground">
-                  Attachments & evidence ({request.attachments.length})
-                </h2>
-              </div>
-              {request.attachments.length > 0 ? (
-                <div className="mt-3 divide-y divide-border">
-                  {request.attachments.map((att) => (
-                    <div key={att.id} className="flex items-center justify-between py-3 gap-2">
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <Paperclip className="size-4 text-muted-foreground shrink-0" />
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-foreground truncate">
-                            {att.filename}
+              {/* TAB 1: Overview & Answers */}
+              <TabsContent value="overview" className="space-y-4 focus-visible:outline-none">
+                {/* Request Summary Box */}
+                <div className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+                  <h2 className="text-base font-bold text-foreground">Request Summary</h2>
+                  <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 text-sm">
+                    <div>
+                      <dt className="text-xs text-muted-foreground font-medium">
+                        Total Value / Amount
+                      </dt>
+                      <dd className="mt-1 text-2xl sm:text-3xl font-extrabold text-foreground font-mono">
+                        {request.valueLabel}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-muted-foreground font-medium">Needed by Date</dt>
+                      <dd className="mt-1 text-sm font-semibold text-foreground">
+                        {step ? step.dueLabel : "Standard timeline"}
+                      </dd>
+                    </div>
+                    <div className="sm:col-span-2 border-t border-border pt-4">
+                      <dt className="text-xs text-muted-foreground font-medium mb-1.5">
+                        Business Justification & Reason
+                      </dt>
+                      <dd className="text-sm text-foreground leading-relaxed bg-muted/30 p-4 rounded-lg border border-border">
+                        <p>{request.reason}</p>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+
+                {/* Primary Attachment Card Preview in Tab 1 */}
+                {request.attachments.length > 0 && (
+                  <div className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold text-foreground">Primary Supporting Document</h3>
+                      <span className="text-[11px] text-muted-foreground">Audit logged</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <FileText className="size-4.5 text-primary shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-foreground truncate">
+                            {request.attachments[0]?.filename}
                           </p>
-                          <p className="text-xs text-muted-foreground">{att.size}</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {request.attachments[0]?.size} · Official Document
+                          </p>
                         </div>
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10 shrink-0"
+                        className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10 h-7"
                       >
                         <Download className="size-3.5 mr-1" />
                         Download
                       </Button>
                     </div>
-                  ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* TAB 2: Approval Timeline Stepper */}
+              <TabsContent value="timeline" className="focus-visible:outline-none">
+                <div className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs">
+                  <div className="flex items-center justify-between mb-5">
+                    <div>
+                      <h2 className="text-base font-bold text-foreground">
+                        Approval Progress & Sequential Chain
+                      </h2>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Enterprise routing governance rule applied
+                      </p>
+                    </div>
+                  </div>
+                  <ApprovalTimeline request={request} currentUserId={currentUserId} />
                 </div>
-              ) : (
-                <p className="mt-2 text-sm text-muted-foreground">No attachments provided.</p>
-              )}
-            </div>
+              </TabsContent>
 
-            {/* Approval Progress Timeline */}
-            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs">
-              <h2 className="text-base font-semibold text-foreground mb-4">
-                Approval progress & decisions
-              </h2>
-              <ApprovalTimeline request={request} currentUserId={currentUserId} />
-            </div>
-
-            {/* Comments & Conversation */}
-            <div className="rounded-lg border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
-              <h2 className="text-base font-semibold text-foreground">Comments & discussion</h2>
-
-              <div className="space-y-3">
-                {request.audit
-                  .filter((a) => a.comment)
-                  .map((item) => {
-                    const author = personById(item.actorId);
-                    return (
-                      <div
-                        key={item.id}
-                        className="rounded-md border border-border bg-muted/30 p-3.5 text-sm"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-foreground">
-                            {author.name}{" "}
-                            <span className="font-normal text-muted-foreground text-[13px]">
-                              ({author.role})
-                            </span>
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {item.timestampLabel}
-                          </span>
+              {/* TAB 3: Attachments */}
+              <TabsContent value="attachments" className="focus-visible:outline-none">
+                <div className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-base font-bold text-foreground">
+                      Attachments & Evidence ({request.attachments.length})
+                    </h2>
+                  </div>
+                  {request.attachments.length > 0 ? (
+                    <div className="mt-3 divide-y divide-border rounded-lg border border-border overflow-hidden">
+                      {request.attachments.map((att) => (
+                        <div
+                          key={att.id}
+                          className="flex items-center justify-between p-3.5 bg-card hover:bg-muted/20 transition-colors gap-2"
+                        >
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+                              <Paperclip className="size-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-semibold text-foreground truncate">
+                                {att.filename}
+                              </p>
+                              <p className="text-xs text-muted-foreground">{att.size}</p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary/10 shrink-0"
+                          >
+                            <Download className="size-3.5 mr-1" />
+                            Download
+                          </Button>
                         </div>
-                        <article className="prose prose-sm prose-kneawork max-w-none text-sm mt-1.5">
-                          <p className="text-foreground leading-relaxed">{item.comment}</p>
-                        </article>
-                      </div>
-                    );
-                  })}
-              </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-sm text-muted-foreground">No attachments provided.</p>
+                  )}
+                </div>
+              </TabsContent>
 
-              <form onSubmit={handleAddComment} className="flex gap-2 pt-2">
-                <Input
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add an operational note or remark..."
-                  className="rounded-md"
-                />
-                <Button type="submit" size="sm" disabled={!newComment.trim()}>
-                  <Send className="size-3.5 mr-1" />
-                  Post
-                </Button>
-              </form>
-            </div>
+              {/* TAB 4: Activity Trail & Comments */}
+              <TabsContent value="activity" className="focus-visible:outline-none space-y-4">
+                <div className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+                  <h2 className="text-base font-bold text-foreground">Activity Log & Comments</h2>
+
+                  <div className="space-y-3">
+                    {request.audit.map((item) => {
+                      const author = personById(item.actorId);
+                      return (
+                        <div
+                          key={item.id}
+                          className="rounded-lg border border-border bg-muted/20 p-3.5 text-xs sm:text-sm"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-foreground">
+                              {author.name}{" "}
+                              <span className="font-normal text-muted-foreground text-xs">
+                                ({author.role})
+                              </span>
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {item.timestampLabel}
+                            </span>
+                          </div>
+                          <p className="text-xs font-medium text-primary mt-1">{item.action}</p>
+                          {item.comment && (
+                            <p className="text-foreground leading-relaxed mt-2 p-2.5 rounded bg-card border border-border/80 text-xs sm:text-[13px]">
+                              {item.comment}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <form onSubmit={handleAddComment} className="flex gap-2 pt-2">
+                    <Input
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Add an operational remark or audit note..."
+                      className="rounded-lg text-xs"
+                    />
+                    <Button type="submit" size="sm" disabled={!newComment.trim()} className="text-xs shrink-0">
+                      <Send className="size-3.5 mr-1" />
+                      Comment
+                    </Button>
+                  </form>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* RIGHT ASIDE: Status Panel, Metadata & Activity History (Sentinel Style) */}
@@ -630,7 +703,7 @@ function RequestDetailPage() {
           <div className="rounded-lg bg-[#0F1E2B] text-white p-4 space-y-3 font-sans text-xs border border-white/10 shadow-md">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-[#56B3F5]">KneaWork Bot</span>
+                <span className="font-semibold text-[#56B3F5]">Anumat Bot</span>
                 <span className="rounded bg-[#56B3F5]/20 px-1 py-0.2 text-[9px] font-semibold text-[#56B3F5]">
                   BOT
                 </span>
@@ -669,7 +742,7 @@ function RequestDetailPage() {
                 className="w-full bg-[#229ED9] hover:bg-[#229ED9]/90 text-white font-semibold text-xs h-8.5 gap-1.5 shadow-xs"
               >
                 <ExternalLink className="size-3.5" />
-                Review request in KneaWork
+                Review request in Anumat
               </Button>
               {request.attachments.length > 0 && (
                 <Button

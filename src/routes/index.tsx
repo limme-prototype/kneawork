@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
+  Check,
+  CheckCircle2,
   Clock,
   FileText,
   Inbox,
@@ -30,7 +32,7 @@ const TYPE_ICONS = {
   contract: FileText,
 };
 
-export function HomePage() {
+function HomePage() {
   const { requests, currentUserId } = useKneaState();
   const me = personById(currentUserId);
   const myActions = needsActionFrom(requests, currentUserId);
@@ -77,46 +79,49 @@ export function HomePage() {
           }
         />
 
+        {/* Urgent Attention Hero Banner (if user has pending decisions) */}
+        {myActions.length > 0 ? (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-attention-border bg-accent p-5 shadow-2xs">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card border-2 border-primary text-primary font-bold text-lg shadow-2xs">
+                {myActions.length}
+              </span>
+              <div className="min-w-0">
+                <h2 className="text-base font-bold text-foreground">
+                  {myActions.length} {myActions.length === 1 ? "request is" : "requests are"} waiting for your approval
+                </h2>
+                <p className="text-xs sm:text-[13px] text-muted-foreground mt-0.5 flex items-center gap-1.5 truncate">
+                  <Clock className="size-3.5 text-warning shrink-0" />
+                  <span>Oldest: {myActions[0].title} ({myActions[0].code}) — Pending your decision</span>
+                </p>
+              </div>
+            </div>
+            <Button asChild size="default" className="rounded-full bg-primary text-primary-foreground hover:bg-primary-hover px-5 font-semibold text-xs sm:text-sm shrink-0">
+              <Link to="/action">
+                Review Actions ({myActions.length}) <ArrowRight className="size-4 ml-1" />
+              </Link>
+            </Button>
+          </div>
+        ) : null}
+
         {/* Actionable KPI Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="rounded-lg border border-attention-border bg-attention-soft/50 p-4 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground">Needs your action</span>
-              <Inbox className="size-4 text-attention" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">{myActions.length}</span>
-              <span className="text-xs text-muted-foreground">pending decision</span>
-            </div>
-            {myActions.length > 0 && (
-              <div className="mt-3">
-                <Link
-                  to="/action"
-                  className="text-xs font-bold text-attention hover:underline inline-flex items-center gap-1"
-                >
-                  Review queue <ArrowRight className="size-3" />
-                </Link>
-              </div>
-            )}
-          </div>
-
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Waiting for others
-              </span>
-              <Clock className="size-4 text-muted-foreground" />
+              <span className="text-xs font-semibold text-muted-foreground">Pending Approvals</span>
+              <Clock className="size-4 text-warning" />
             </div>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-foreground">{waitingForOthers.length}</span>
-              <span className="text-xs text-muted-foreground">in active review</span>
+              <span className="text-2xl font-bold text-foreground">{requests.filter(r => r.status === "in_review" || r.status === "pending").length}</span>
+              <span className="text-xs text-warning font-medium">in active review</span>
             </div>
             <div className="mt-3">
               <Link
                 to="/requests"
+                search={{ status: "in_review" }}
                 className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
               >
-                Track requests <ArrowRight className="size-3" />
+                Track queue <ArrowRight className="size-3" />
               </Link>
             </div>
           </div>
@@ -124,17 +129,42 @@ export function HomePage() {
           <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground">
-                Completed in workspace
+                Approved This Month
               </span>
-              <FileText className="size-4 text-muted-foreground" />
+              <Check className="size-4 text-success" />
             </div>
             <div className="mt-2 flex items-baseline gap-2">
               <span className="text-2xl font-bold text-foreground">{completedCount}</span>
-              <span className="text-xs text-muted-foreground">approved submissions</span>
+              <span className="text-xs text-success font-medium">completed submissions</span>
             </div>
             <div className="mt-3">
               <Link
                 to="/requests"
+                search={{ status: "approved" }}
+                className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+              >
+                View completed <ArrowRight className="size-3" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground">
+                Rejected / Returned
+              </span>
+              <FileText className="size-4 text-muted-foreground" />
+            </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground">
+                {requests.filter(r => r.status === "rejected" || r.status === "changes_requested").length}
+              </span>
+              <span className="text-xs text-muted-foreground">archived/returned</span>
+            </div>
+            <div className="mt-3">
+              <Link
+                to="/requests"
+                search={{ status: "rejected" }}
                 className="text-xs font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
               >
                 View archive <ArrowRight className="size-3" />

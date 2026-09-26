@@ -121,18 +121,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      {/* 1. Header: Workspace Identity matching the exact original design */}
+      {/* 1. Header: Workspace Identity (Anumat) */}
       <SidebarHeader className="border-b border-border p-0">
         <div className="flex h-14 items-center px-4 justify-between group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold text-sm shadow-2xs">
-              K
+              A
             </div>
             <div className="min-w-0 group-data-[collapsible=icon]:hidden">
               <span className="font-bold text-foreground text-sm tracking-tight block truncate">
-                KneaWork
+                Anumat
               </span>
-              <span className="text-[11px] text-muted-foreground block truncate">Operations</span>
+              <span className="text-[11px] text-muted-foreground block truncate">Mekong Design Co.</span>
             </div>
           </div>
         </div>
@@ -172,8 +172,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             Settings
           </p>
           <SidebarMenu className="space-y-1">
-            {isAdmin && navItem("Workspace Settings", "/settings", Settings)}
-            {navItem("My Profile", "/profile", Shield)}
+            {navItem("Settings & Profile", "/settings", Settings)}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -248,24 +247,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild className="cursor-pointer text-xs">
-                  <Link to="/profile" onClick={handleLinkClick} className="flex items-center gap-2">
-                    <Shield className="size-3.5 text-muted-foreground" />
-                    <span>My Profile</span>
+                  <Link
+                    to="/settings"
+                    onClick={handleLinkClick}
+                    className="flex items-center gap-2"
+                  >
+                    <Settings className="size-3.5 text-muted-foreground" />
+                    <span>Settings & Profile</span>
                   </Link>
                 </DropdownMenuItem>
-
-                {isAdmin && (
-                  <DropdownMenuItem asChild className="cursor-pointer text-xs">
-                    <Link
-                      to="/settings"
-                      onClick={handleLinkClick}
-                      className="flex items-center gap-2"
-                    >
-                      <Settings className="size-3.5 text-muted-foreground" />
-                      <span>Workspace Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

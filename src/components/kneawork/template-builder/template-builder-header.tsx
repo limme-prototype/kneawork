@@ -14,6 +14,7 @@ interface TemplateBuilderHeaderProps {
   onCancel: () => void;
   onSaveDraft?: () => void;
   onContinue?: () => void;
+  onPublish?: () => void;
   isLastStep?: boolean;
   canPublish?: boolean;
 }
@@ -23,6 +24,8 @@ export function TemplateBuilderHeader({
   isSavingDraft,
   onCancel,
   onSaveDraft,
+  onPublish,
+  canPublish,
 }: TemplateBuilderHeaderProps) {
   return (
     <div className="border-b border-border bg-card px-3.5 py-3 sm:px-6 sm:py-4">
@@ -68,6 +71,11 @@ export function TemplateBuilderHeader({
                 {isSavingDraft ? "Saving..." : "Save draft"}
               </DropdownMenuItem>
             )}
+            {onPublish && canPublish && (
+              <DropdownMenuItem onClick={onPublish} className="text-success font-semibold">
+                Publish template
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={onCancel} className="text-danger">
               <X className="size-3.5 mr-2" />
               Cancel & exit
@@ -76,7 +84,7 @@ export function TemplateBuilderHeader({
         </DropdownMenu>
       </div>
 
-      {/* Desktop Header Content (No duplicated Save draft / Continue buttons; primary actions live in the form footer) */}
+      {/* Desktop Header Content (Full studio header with title, draft save, and publish) */}
       <div className="hidden sm:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 flex-wrap">
@@ -95,25 +103,44 @@ export function TemplateBuilderHeader({
             {template.label.trim() ? `Edit ${template.label}` : "Create request template"}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Set up the form, reviewers, and rules your team will use.
+            Configure form fields, sequential approval steps, and corporate spend policies.
           </p>
         </div>
 
-        {/* Global Exit Action (Cancel) only — prevents duplicated decision buttons */}
-        <div className="flex items-center gap-2">
-          {isSavingDraft ? (
-            <span className="text-xs text-muted-foreground animate-pulse mr-1">
-              Saving draft...
-            </span>
-          ) : null}
+        {/* Global Action Group (Cancel, Save draft, and Publish) */}
+        <div className="flex items-center gap-2 shrink-0">
+          {onSaveDraft && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onSaveDraft}
+              disabled={isSavingDraft}
+              className="text-xs font-semibold h-8.5 gap-1.5"
+            >
+              <Save className="size-3.5" />
+              {isSavingDraft ? "Saving..." : "Save draft"}
+            </Button>
+          )}
+
+          {onPublish && (
+            <Button
+              size="sm"
+              onClick={onPublish}
+              disabled={!canPublish}
+              className="bg-primary text-primary-foreground hover:bg-primary-hover text-xs font-bold h-8.5 shadow-2xs"
+            >
+              Publish template
+            </Button>
+          )}
+
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={onCancel}
-            className="text-muted-foreground hover:text-foreground text-xs h-8"
+            className="text-muted-foreground hover:text-foreground text-xs h-8.5"
           >
             <X className="size-3.5 mr-1" />
-            Cancel
+            Exit
           </Button>
         </div>
       </div>

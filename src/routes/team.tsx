@@ -78,7 +78,7 @@ const REPORTS_TO: Record<string, string> = {
   u_director: "Board of Directors",
 };
 
-export function TeamAndRolesPage() {
+function TeamAndRolesPage() {
   const { requests, currentUserId } = useKneaState();
   const [selectedMember, setSelectedMember] = React.useState<Person | null>(null);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);

@@ -102,6 +102,7 @@ export function TemplateBuilder({ initialTemplate, onClose, onPublished }: Templ
         onCancel={onClose}
         onSaveDraft={handleSaveDraft}
         onContinue={handleContinue}
+        onPublish={() => setIsPublishDialogOpen(true)}
         isLastStep={currentStep === 5}
         canPublish={isPublishable}
       />
