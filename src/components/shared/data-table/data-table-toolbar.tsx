@@ -53,15 +53,19 @@ export function DataTableToolbar<TData>({
     <div className={cn("space-y-2.5 py-1", className)}>
       {/* Primary Category / Status Pills Row if configured */}
       {filterPills && (
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 overflow-x-auto pb-0.5">
-          <DataTableFilterPills
-            column={pillColumn}
-            allLabel={filterPills.allLabel}
-            allCount={filterPills.allCount}
-            items={filterPills.items}
-          />
+        <div className="flex items-center gap-2">
+          {/* Pills row — horizontally scrollable, takes remaining space */}
+          <div className="overflow-x-auto scrollbar-none flex-1 min-w-0">
+            <DataTableFilterPills
+              column={pillColumn}
+              allLabel={filterPills.allLabel}
+              allCount={filterPills.allCount}
+              items={filterPills.items}
+            />
+          </div>
+          {/* Trailing slot (e.g. scope switcher) — never wraps, always visible */}
           {filterPills.trailing && (
-            <div className="shrink-0 flex items-center gap-2 self-start sm:self-auto">
+            <div className="shrink-0 flex items-center gap-2">
               {filterPills.trailing}
             </div>
           )}

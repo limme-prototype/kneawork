@@ -289,7 +289,7 @@ export function RequestTable({
       items: [
         {
           value: "in_review",
-          label: "Waiting on approval",
+          label: "In Review",
           count: countsByStatus.in_review,
           activeClassName: "bg-[#003D96] text-white hover:bg-[#002D70] shadow-2xs",
         },
@@ -301,7 +301,7 @@ export function RequestTable({
         },
         {
           value: "changes_requested",
-          label: "Changes requested",
+          label: "Changes",
           count: countsByStatus.changes_requested,
           activeClassName: "bg-amber-600 text-white hover:bg-amber-700 shadow-2xs",
         },
@@ -412,6 +412,7 @@ export function RequestTable({
       onRowClick={onSelectRequest ? (row) => onSelectRequest(row.id) : undefined}
       emptyTitle="No requests found"
       emptyDescription="No requests match the specified search or active filters."
+      initialColumnVisibility={{ type: false }}
     />
   );
 }

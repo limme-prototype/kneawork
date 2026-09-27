@@ -1,14 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  CheckCircle2,
-  Clock,
   Download,
   FileText,
-  Filter,
-  Inbox,
   Plus,
-  RotateCcw,
-  Sparkles,
   Users,
 } from "lucide-react";
 import React, { useMemo, useState } from "react";
@@ -27,7 +21,6 @@ export const Route = createFileRoute("/requests/")({
 
 function RequestsListPage() {
   const { requests, currentUserId } = useKneaState();
-  const me = personById(currentUserId);
 
   const [scope, setScope] = useState<"all" | "mine">("all");
 
@@ -127,57 +120,79 @@ function RequestsListPage() {
         )}
 
         {/* Requests Table with unified filter pills and scope switcher on the same line */}
-        <RequestTable
-          requests={scopedRequests}
-          currentUserId={currentUserId}
-          enableFilters={true}
-          filterPillsTrailing={
-            <div className="inline-flex items-center p-0.5 rounded-full bg-muted/60 border border-border/70 shrink-0">
-              <button
-                type="button"
-                onClick={() => setScope("all")}
-                className={cn(
-                  "h-7 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5",
-                  scope === "all"
-                    ? "bg-[#003D96] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Users className="size-3.5" />
-                <span>Everyone</span>
-                <span
+        <div className="space-y-0">
+          <RequestTable
+            requests={scopedRequests}
+            currentUserId={currentUserId}
+            enableFilters={true}
+            filterPillsTrailing={
+              <div className="inline-flex items-center p-0.5 rounded-full bg-muted/60 border border-border/70 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setScope("all")}
                   className={cn(
-                    "inline-flex items-center justify-center min-w-[18px] h-4 px-1 rounded-full text-[10px] font-mono font-bold",
-                    scope === "all" ? "bg-white/20 text-white" : "bg-muted text-muted-foreground",
+                    "h-7 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5",
+                    scope === "all"
+                      ? "bg-[#003D96] text-white shadow-2xs"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {requests.length}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setScope("mine")}
-                className={cn(
-                  "h-7 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5",
-                  scope === "mine"
-                    ? "bg-[#003D96] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <FileText className="size-3.5" />
-                <span>My Requests</span>
-                <span
+                  <Users className="size-3.5" />
+                  <span className="hidden sm:inline">Everyone</span>
+                  <span className="sm:hidden">All</span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center justify-center min-w-[18px] h-4 px-1 rounded-full text-[10px] font-mono font-bold",
+                      scope === "all" ? "bg-white/20 text-white" : "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {requests.length}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScope("mine")}
                   className={cn(
-                    "inline-flex items-center justify-center min-w-[18px] h-4 px-1 rounded-full text-[10px] font-mono font-bold",
-                    scope === "mine" ? "bg-white/20 text-white" : "bg-muted text-muted-foreground",
+                    "h-7 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5",
+                    scope === "mine"
+                      ? "bg-[#003D96] text-white shadow-2xs"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {requests.filter((r) => r.requesterId === currentUserId).length}
-                </span>
-              </button>
-            </div>
-          }
-        />
+                  <FileText className="size-3.5" />
+                  <span className="hidden sm:inline">My Requests</span>
+                  <span className="sm:hidden">Mine</span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center justify-center min-w-[18px] h-4 px-1 rounded-full text-[10px] font-mono font-bold",
+                      scope === "mine" ? "bg-white/20 text-white" : "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {requests.filter((r) => r.requesterId === currentUserId).length}
+                  </span>
+                </button>
+              </div>
+            }
+          />
+          {/* Excel-style status bar — aria-live so screen readers announce filter changes */}
+          <div
+            className="flex flex-wrap items-center justify-end gap-x-6 gap-y-1 rounded-b-xl border-t border-border bg-muted/40 px-4 py-1.5 text-[11px] font-medium text-muted-foreground tabular-nums"
+            aria-live="polite"
+          >
+            <span>
+              Count:{" "}
+              <strong className="font-semibold text-foreground">{scopedRequests.length}</strong>
+            </span>
+            <span>
+              In Review:{" "}
+              <strong className="font-semibold text-foreground">{inReviewCount}</strong>
+            </span>
+            <span>
+              Completed:{" "}
+              <strong className="font-semibold text-foreground">{approvedCount}</strong>
+            </span>
+          </div>
+        </div>
       </div>
     </AppShell>
   );
