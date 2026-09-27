@@ -1,33 +1,40 @@
 /**
  * ScrollableDialogContent
  *
- * A generic, reusable dialog shell that uses shadcn ScrollArea for the body
- * so the browser never scrolls the entire dialog — only the content area does.
+ * A generic, reusable dialog shell that uses shadcn ScrollArea for the body.
+ * The header and footer stay pinned; only the body scrolls.
  *
- * How scroll works:
- *   1. DialogContent gets max-h-[85vh] (or custom maxHeight) so it has a hard ceiling.
- *   2. Header + footer are shrink-0 (fixed height).
- *   3. ScrollArea gets flex-1 + min-h-0 so it takes remaining space and scrolls within it.
- *      min-h-0 is REQUIRED in a flex column — without it, flex-1 children won't shrink
- *      below their content height and the scroll will never trigger.
+ * WHY CSS GRID instead of flexbox:
+ *   With `flex-1 min-h-0`, the ScrollArea Root gets a flex-computed height,
+ *   but the Radix Viewport's `h-full` resolves to the Root's content height
+ *   (not the flex track height) in some browsers, so scroll never activates.
  *
- * Structure:
- *   <DialogContent>  ← max-h-[85vh], flex col, overflow-hidden
- *     [sticky header]  ← shrink-0, always visible
- *     <ScrollArea>     ← flex-1 min-h-0, scrolls independently
- *       {children}
- *     </ScrollArea>
- *     [sticky footer]  ← shrink-0, always visible (optional)
- *   </DialogContent>
+ *   With CSS Grid `grid-template-rows: auto minmax(0, 1fr) auto`:
+ *   - Row 1 (header): auto          → exactly as tall as its content
+ *   - Row 2 (body):   minmax(0, 1fr) → fills remaining space, but can shrink
+ *                                  to 0 so overflow is clamped by the dialog's
+ *                                  max-height instead of growing the dialog
+ *   - Row 3 (footer): auto          → exactly as tall as its content
+ *   The ScrollArea lives in the middle row, so its computed height = remaining
+ *   space. The Radix Viewport's `h-full` then correctly equals that computed
+ *   height, and scroll activates as soon as content overflows it.
+ *
+ *   The `minmax(0, 1fr)` minimum is load-bearing: a bare `1fr` track uses an
+ *   automatic minimum size, so the track would size to its content and the
+ *   dialog would grow past `maxHeight` instead of scrolling.
+ *
+ *   The row template is set as an inline style, so it must be a real CSS value
+ *   — rows separated by spaces. Underscores are Tailwind arbitrary-value syntax
+ *   only and would make the whole declaration invalid.
  *
  * Usage:
  *   <ScrollableDialogContent
  *     maxWidth="sm:max-w-xl"
- *     maxHeight="85vh"          // optional override, default "85vh"
+ *     maxHeight="85vh"
  *     header={<DialogHeader>…</DialogHeader>}
  *     footer={<DialogFooter>…</DialogFooter>}
  *   >
- *     <div className="p-5 space-y-4">…your content…</div>
+ *     <div className="p-5 space-y-4">…body content…</div>
  *   </ScrollableDialogContent>
  */
 
@@ -38,25 +45,18 @@ import { cn } from "@/lib/utils";
 
 export interface ScrollableDialogContentProps
   extends Omit<React.ComponentPropsWithoutRef<typeof DialogContent>, "children"> {
-  /** Max-width Tailwind class e.g. "sm:max-w-xl". Defaults to "sm:max-w-lg". */
+  /** Tailwind max-width class. e.g. "sm:max-w-xl". Default: "sm:max-w-lg". */
   maxWidth?: string;
   /**
-   * Max height CSS value e.g. "85vh" or "600px".
-   * Applied to the DialogContent as an inline style.
-   * Defaults to "85vh".
+   * CSS value for the dialog's max height. Applied as an inline style.
+   * Default: "85vh".
    */
   maxHeight?: string;
-  /**
-   * Sticky header rendered above the scroll area.
-   * Typically a <DialogHeader> with title, description, and optional tab switcher.
-   */
+  /** Sticky header (title, description, tab switchers, etc.). Always visible. */
   header?: React.ReactNode;
-  /**
-   * Sticky footer rendered below the scroll area.
-   * Typically a <DialogFooter> with action buttons.
-   */
+  /** Sticky footer (action buttons). Always visible. Optional. */
   footer?: React.ReactNode;
-  /** Scrollable body content. Wrap in a <div className="p-5 space-y-…"> as needed. */
+  /** Scrollable body content. */
   children: React.ReactNode;
 }
 
@@ -70,37 +70,55 @@ export function ScrollableDialogContent({
   style,
   ...props
 }: ScrollableDialogContentProps) {
+  // Build the correct grid-rows template based on which slots are provided.
+  // NOTE: rows are separated by a SPACE, not an underscore — "_" is only
+  // Tailwind arbitrary-value syntax and is invalid in a real inline style.
+  // The middle row MUST be minmax(0, 1fr): a bare 1fr track has an automatic
+  // minimum size, so it would still grow to fit its content and never scroll.
+  const gridTemplateRows = [
+    header ? "auto" : null,
+    "minmax(0, 1fr)",
+    footer ? "auto" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <DialogContent
       className={cn(
-        // p-0: we control padding per-section
-        // flex flex-col: stack header / scroll body / footer vertically
-        // overflow-hidden: clip content — scroll happens inside ScrollArea only
-        "p-0 gap-0 flex flex-col overflow-hidden",
+        // p-0 / gap-0: remove default dialog padding — sections own their own padding
+        // overflow-hidden: hard-clip the dialog; scroll happens only inside ScrollArea
+        // grid + dynamic rows: gives the 1fr row a REAL computed pixel height,
+        //   which the Radix ScrollArea Viewport can resolve h-full against
+        "p-0 gap-0 overflow-hidden grid",
         maxWidth,
         className,
       )}
-      style={{ maxHeight, ...style }}
+      style={{
+        maxHeight,
+        gridTemplateRows,
+        ...style,
+      }}
       {...props}
     >
-      {/* ── Sticky header — always visible, never scrolls ── */}
+      {/* ── Sticky header ── */}
       {header && (
-        <div className="shrink-0 border-b border-border">
+        <div className="border-b border-border">
           {header}
         </div>
       )}
 
-      {/* ── Scrollable body via shadcn ScrollArea ──
-          flex-1   → takes all remaining height between header and footer
-          min-h-0  → CRITICAL: allows flex-1 child to shrink below content height
-                     Without this, the child grows to content height and never scrolls */}
-      <ScrollArea className="flex-1 min-h-0">
+      {/* ── Scrollable body ──
+          The grid minmax(0, 1fr) row gives this a definite, capped pixel height.
+          ScrollArea Root: overflow-hidden (already set by shadcn) + min-h-0
+          ScrollArea Viewport: h-full → equals the track height → scroll works */}
+      <ScrollArea className="min-h-0 overflow-hidden">
         {children}
       </ScrollArea>
 
-      {/* ── Sticky footer — always visible, never scrolls ── */}
+      {/* ── Sticky footer ── */}
       {footer && (
-        <div className="shrink-0 border-t border-border">
+        <div className="border-t border-border">
           {footer}
         </div>
       )}
