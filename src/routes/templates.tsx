@@ -34,12 +34,12 @@ import { TemplatePreviewDialog } from "@/components/kneawork/template-builder/te
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollableDialogContent } from "@/components/shared/scrollable-dialog-content";
 import { SearchInput } from "@/components/kneawork/search-input";
 import {
   Table,
@@ -575,29 +575,70 @@ function TemplatesPage() {
       {/* ── Template Detail Modal ── */}
       {selectedTemplate ? (
         <Dialog open onOpenChange={(open) => !open && setSelectedTemplate(null)}>
-          <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto p-0">
-            {/* Gradient header with icon */}
-            <div className="bg-gradient-to-br from-[#F2F7FF] to-[#e8f0fd] border-b border-[#003D96]/15 p-5 rounded-t-lg">
-              <div className="flex items-start gap-4">
-                <div className="size-12 rounded-xl bg-white border border-[#003D96]/20 flex items-center justify-center shrink-0 shadow-sm">
-                  {getCategoryIcon(selectedTemplate.category, selectedTemplate.id, "size-6")}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <DialogHeader className="p-0 gap-0">
-                    <div className="flex items-start justify-between gap-2 flex-wrap">
-                      <DialogTitle className="text-base font-bold text-foreground leading-snug">
-                        {selectedTemplate.label}
-                      </DialogTitle>
-                      <VersionBadge version={selectedTemplate.version} status={selectedTemplate.versionStatus} />
-                    </div>
-                    <DialogDescription className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      {selectedTemplate.description}
-                    </DialogDescription>
-                  </DialogHeader>
+          <ScrollableDialogContent
+            maxWidth="sm:max-w-xl"
+            scrollHeight="calc(85vh - 200px)"
+            header={
+              /* Gradient header with icon — stays pinned */
+              <div className="bg-gradient-to-br from-[#F2F7FF] to-[#e8f0fd] p-5">
+                <div className="flex items-start gap-4">
+                  <div className="size-12 rounded-xl bg-white border border-[#003D96]/20 flex items-center justify-center shrink-0 shadow-sm">
+                    {getCategoryIcon(selectedTemplate.category, selectedTemplate.id, "size-6")}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <DialogHeader className="p-0 gap-0">
+                      <div className="flex items-start justify-between gap-2 flex-wrap">
+                        <DialogTitle className="text-base font-bold text-foreground leading-snug">
+                          {selectedTemplate.label}
+                        </DialogTitle>
+                        <VersionBadge version={selectedTemplate.version} status={selectedTemplate.versionStatus} />
+                      </div>
+                      <DialogDescription className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                        {selectedTemplate.description}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </div>
                 </div>
               </div>
-            </div>
+            }
+            footer={
+              /* Actions footer — stays pinned */
+              <DialogFooter className="gap-2 sm:justify-between p-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs text-muted-foreground"
+                  onClick={handleArchive}
+                >
+                  <Archive className="size-3 mr-1" />
+                  Archive
+                </Button>
 
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setPreviewTemplate(selectedTemplate)}
+                    className="text-xs gap-1"
+                  >
+                    <Eye className="size-3" />
+                    Preview form
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    onClick={handleCreateNewVersion}
+                    className="text-xs font-semibold gap-1 bg-primary text-primary-foreground hover:bg-primary-hover"
+                  >
+                    <Copy className="size-3" />
+                    New version (Draft v
+                    {(parseFloat(selectedTemplate.version) + 0.1).toFixed(1)})
+                  </Button>
+                </div>
+              </DialogFooter>
+            }
+          >
+            {/* Scrollable body */}
             <div className="space-y-5 p-5">
               {/* Completion Outcome */}
               <div className="space-y-1.5">
@@ -707,45 +748,10 @@ function TemplatesPage() {
                 </span>
               </div>
             </div>
-
-            <DialogFooter className="gap-2 sm:justify-between border-t border-border/60 p-4 pt-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs text-muted-foreground"
-                onClick={handleArchive}
-              >
-                <Archive className="size-3 mr-1" />
-                Archive
-              </Button>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setPreviewTemplate(selectedTemplate);
-                  }}
-                  className="text-xs gap-1"
-                >
-                  <Eye className="size-3" />
-                  Preview form
-                </Button>
-
-                <Button
-                  size="sm"
-                  onClick={handleCreateNewVersion}
-                  className="text-xs font-semibold gap-1 bg-primary text-primary-foreground hover:bg-primary-hover"
-                >
-                  <Copy className="size-3" />
-                  New version (Draft v
-                  {(parseFloat(selectedTemplate.version) + 0.1).toFixed(1)})
-                </Button>
-              </div>
-            </DialogFooter>
-          </DialogContent>
+          </ScrollableDialogContent>
         </Dialog>
       ) : null}
+
 
       {/* Live Preview Dialog */}
       {previewTemplate ? (
