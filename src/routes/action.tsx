@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { cn } from "@/lib/utils";
 import { AppShell } from "@/components/kneawork/app-shell";
 import { DecisionDialog } from "@/components/kneawork/decision-dialog";
 import { PageHeader } from "@/components/kneawork/page-header";
