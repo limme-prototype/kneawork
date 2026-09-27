@@ -93,7 +93,7 @@ export function TemplatePreviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <ScrollableDialogContent
         maxWidth="sm:max-w-2xl"
-        scrollHeight="calc(85vh - 220px)"
+        maxHeight="85vh"
         header={
           <DialogHeader className="p-5 pb-4 gap-0">
             {/* Badge row */}

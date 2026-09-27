@@ -577,7 +577,7 @@ function TemplatesPage() {
         <Dialog open onOpenChange={(open) => !open && setSelectedTemplate(null)}>
           <ScrollableDialogContent
             maxWidth="sm:max-w-xl"
-            scrollHeight="calc(85vh - 200px)"
+            maxHeight="85vh"
             header={
               /* Gradient header with icon — stays pinned */
               <div className="bg-gradient-to-br from-[#F2F7FF] to-[#e8f0fd] p-5">
