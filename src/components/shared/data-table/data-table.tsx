@@ -101,6 +101,7 @@ export function DataTable<TData, TValue = unknown>({
   hideToolbar = false,
   hidePagination = false,
   hideViewOptions = false,
+  initialColumnVisibility,
   className,
   onRowClick,
   getRowOpenLabel,
@@ -137,7 +138,9 @@ export function DataTable<TData, TValue = unknown>({
   );
 
   // Visibility state
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(
+    initialColumnVisibility ?? {},
+  );
 
   // Handle external row selection change notifications
   React.useEffect(() => {

@@ -111,6 +111,7 @@ export interface DataTableProps<TData, TValue = unknown> {
   hideToolbar?: boolean | undefined;
   hidePagination?: boolean | undefined;
   hideViewOptions?: boolean | undefined;
+  initialColumnVisibility?: VisibilityState | undefined;
   className?: string | undefined;
   onRowClick?: ((row: TData) => void) | undefined;
   getRowOpenLabel?: ((row: TData) => string) | undefined;

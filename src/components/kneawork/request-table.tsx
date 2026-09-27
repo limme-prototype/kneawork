@@ -105,6 +105,17 @@ export function RequestTable({
         },
       },
       {
+        accessorKey: "type",
+        id: "type",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
+        cell: ({ row }) => (
+          <span className="text-xs font-medium capitalize text-muted-foreground whitespace-nowrap">
+            {row.original.type}
+          </span>
+        ),
+        enableHiding: true,
+      },
+      {
         id: "requester",
         header: ({ column }) => <DataTableColumnHeader column={column} title="Requester" />,
         accessorFn: (row) => personById(row.requesterId).name,
