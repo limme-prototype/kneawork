@@ -27,6 +27,15 @@
  *   — rows separated by spaces. Underscores are Tailwind arbitrary-value syntax
  *   only and would make the whole declaration invalid.
  *
+ * CLOSE BUTTON CLEARANCE:
+ *   `DialogContent` renders its close button as `absolute right-4 top-4`. The
+ *   header slot is tagged `data-slot="scrollable-dialog-header"` and
+ *   styles.css reserves `padding-right` on the caller's header node, so header
+ *   content (title rows, status badges) can never slide under the X — while
+ *   full-bleed header backgrounds still span the full dialog width. If you add
+ *   another scrollable dialog, just pass your header as usual; the reservation
+ *   applies automatically.
+ *
  * Usage:
  *   <ScrollableDialogContent
  *     maxWidth="sm:max-w-xl"
@@ -75,11 +84,7 @@ export function ScrollableDialogContent({
   // Tailwind arbitrary-value syntax and is invalid in a real inline style.
   // The middle row MUST be minmax(0, 1fr): a bare 1fr track has an automatic
   // minimum size, so it would still grow to fit its content and never scroll.
-  const gridTemplateRows = [
-    header ? "auto" : null,
-    "minmax(0, 1fr)",
-    footer ? "auto" : null,
-  ]
+  const gridTemplateRows = [header ? "auto" : null, "minmax(0, 1fr)", footer ? "auto" : null]
     .filter(Boolean)
     .join(" ");
 
@@ -101,9 +106,11 @@ export function ScrollableDialogContent({
       }}
       {...props}
     >
-      {/* ── Sticky header ── */}
+      {/* ── Sticky header ──
+          data-slot lets styles.css reserve right-hand space for the close
+          button on the caller's header node (see styles.css) */}
       {header && (
-        <div className="border-b border-border">
+        <div data-slot="scrollable-dialog-header" className="border-b border-border">
           {header}
         </div>
       )}
@@ -112,13 +119,11 @@ export function ScrollableDialogContent({
           The grid minmax(0, 1fr) row gives this a definite, capped pixel height.
           ScrollArea Root: overflow-hidden (already set by shadcn) + min-h-0
           ScrollArea Viewport: h-full → equals the track height → scroll works */}
-      <ScrollArea className="min-h-0 overflow-hidden">
-        {children}
-      </ScrollArea>
+      <ScrollArea className="min-h-0 overflow-hidden">{children}</ScrollArea>
 
       {/* ── Sticky footer ── */}
       {footer && (
-        <div className="border-t border-border">
+        <div data-slot="scrollable-dialog-footer" className="border-t border-border">
           {footer}
         </div>
       )}

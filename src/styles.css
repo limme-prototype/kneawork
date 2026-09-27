@@ -333,6 +333,15 @@
   line-height: var(--text-caption-line);
 }
 
+/* ScrollableDialogContent — reserve room for the absolutely-positioned close
+   button (`right-4 top-4`, 16px icon) so header content (badges, title rows)
+   can never slide underneath it. The padding is applied to the caller's header
+   node rather than the slot wrapper, so full-bleed header backgrounds
+   (gradients, tinted panels) still span the full dialog width. */
+[data-slot="scrollable-dialog-header"] > :first-child {
+  padding-right: 3.5rem;
+}
+
 /* Khmer Localization Typography Adjustments */
 [data-lang="km"] {
   --line-height-body: 1.7;

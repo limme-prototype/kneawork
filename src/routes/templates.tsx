@@ -73,19 +73,36 @@ function getCategoryIcon(category?: string, id?: string, size = "size-5") {
   return <FileText className={cn(size, "text-[#003D96]")} />;
 }
 
-/** Pill badge for version+status */
-function VersionBadge({ version, status }: { version: string; status: string }) {
+/** Pill badge for version + lifecycle status.
+ *  Uses the semantic warning/success status tokens instead of hard-coded
+ *  amber/emerald classes, so it stays legible in the dark theme.
+ *  `shrink-0` + `whitespace-nowrap` keep it on one line in tight rows. */
+function VersionBadge({
+  version,
+  status,
+  className,
+}: {
+  version: string;
+  status: string;
+  className?: string;
+}) {
   const isDraft = status === "Draft";
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-bold whitespace-nowrap",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full border py-1 pl-2 pr-2.5 text-[11px] font-semibold whitespace-nowrap",
         isDraft
-          ? "bg-amber-50 border-amber-200 text-amber-700"
-          : "bg-emerald-50 border-emerald-200 text-emerald-700",
+          ? "border-warning-border bg-warning-soft text-warning"
+          : "border-success-border bg-success-soft text-success",
+        className,
       )}
     >
-      v{version} · {status}
+      <span
+        className={cn("size-1.5 shrink-0 rounded-full", isDraft ? "bg-warning" : "bg-success")}
+      />
+      <span className="font-mono font-bold tracking-tight">v{version}</span>
+      <span className="opacity-30">·</span>
+      <span>{status}</span>
     </span>
   );
 }
@@ -587,11 +604,20 @@ function TemplatesPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <DialogHeader className="p-0 gap-0">
-                      <div className="flex items-start justify-between gap-2 flex-wrap">
-                        <DialogTitle className="text-base font-bold text-foreground leading-snug">
+                      {/* No flex-wrap: the badge stays pinned top-right on one
+                          line while the title clamps, instead of being shoved
+                          onto its own right-aligned line by a long title.
+                          Right-hand space for the close button is reserved by
+                          ScrollableDialogContent (see styles.css). */}
+                      <div className="flex items-start justify-between gap-3">
+                        <DialogTitle className="min-w-0 flex-1 text-base font-bold text-foreground leading-snug line-clamp-2">
                           {selectedTemplate.label}
                         </DialogTitle>
-                        <VersionBadge version={selectedTemplate.version} status={selectedTemplate.versionStatus} />
+                        <VersionBadge
+                          version={selectedTemplate.version}
+                          status={selectedTemplate.versionStatus}
+                          className="mt-0.5"
+                        />
                       </div>
                       <DialogDescription className="text-xs text-muted-foreground mt-1 leading-relaxed">
                         {selectedTemplate.description}
