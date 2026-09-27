@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { ExtendedTemplate } from "@/lib/kneawork/template-types";
+import { cn } from "@/lib/utils";
 
 interface TemplatePreviewDialogProps {
   open: boolean;
@@ -90,59 +91,66 @@ export function TemplatePreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader className="border-b border-border pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="rounded bg-attention-soft border border-attention-border px-2 py-0.5 text-xs font-semibold text-attention flex items-center gap-1">
-                {activeTab === "form" ? (
-                  <>
-                    <Eye className="size-3.5" />
-                    Live employee preview
-                  </>
-                ) : (
-                  <>
-                    <SlidersHorizontal className="size-3.5" />
-                    Workflow route simulator
-                  </>
-                )}
-              </span>
-              <span className="text-xs text-muted-foreground font-mono">v{template.version}</span>
-            </div>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="border-b border-border p-5 pb-4 gap-0">
+          {/* Badge row */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="rounded-full bg-attention-soft border border-attention-border px-2.5 py-0.5 text-[11px] font-bold text-attention flex items-center gap-1">
+              {activeTab === "form" ? (
+                <>
+                  <Eye className="size-3" />
+                  Employee preview
+                </>
+              ) : (
+                <>
+                  <SlidersHorizontal className="size-3" />
+                  Route simulator
+                </>
+              )}
+            </span>
+            <span className="text-xs text-muted-foreground font-mono">v{template.version}</span>
           </div>
-          <DialogTitle className="text-base sm:text-lg font-bold text-foreground mt-1">
+
+          <DialogTitle className="text-base sm:text-lg font-bold text-foreground leading-snug">
             {template.label || "Untitled Template"}
           </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
+          <DialogDescription className="text-sm text-muted-foreground mt-0.5">
             {template.description || "No description provided"}
           </DialogDescription>
 
-          {/* Mode Switcher Tabs */}
-          <div className="flex items-center gap-2 pt-2">
-            <Button
+          {/* Pill-style tab switcher */}
+          <div className="flex items-center gap-1 mt-3 p-0.5 bg-muted/60 rounded-full border border-border/50 self-start">
+            <button
               type="button"
-              size="sm"
-              variant={activeTab === "form" ? "default" : "outline"}
               onClick={() => setActiveTab("form")}
-              className="text-xs h-7 gap-1"
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
+                activeTab === "form"
+                  ? "bg-[#003D96] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
             >
               <Eye className="size-3" />
-              Employee form preview
-            </Button>
-            <Button
+              Employee form
+            </button>
+            <button
               type="button"
-              size="sm"
-              variant={activeTab === "simulator" ? "default" : "outline"}
               onClick={() => setActiveTab("simulator")}
-              className="text-xs h-7 gap-1"
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all",
+                activeTab === "simulator"
+                  ? "bg-[#003D96] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
             >
               <SlidersHorizontal className="size-3" />
-              Test route simulation
-            </Button>
+              Route simulator
+            </button>
           </div>
         </DialogHeader>
 
-        {activeTab === "form" ? (
+        <div className="p-5">
+          {activeTab === "form" ? (
           /* FORM PREVIEW TAB */
           <div className="space-y-4 py-2">
             {/* Informational Guidance Callout */}
@@ -436,7 +444,9 @@ export function TemplatePreviewDialog({
           </div>
         )}
 
-        <DialogFooter className="border-t border-border pt-3 flex items-center justify-between">
+        </div>
+
+        <DialogFooter className="border-t border-border p-4 pt-3 flex items-center justify-between">
           <span className="text-xs text-muted-foreground hidden sm:inline">
             {activeTab === "form" ? "Employee submission view" : "Admin route simulation engine"}
           </span>

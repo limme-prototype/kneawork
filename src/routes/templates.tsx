@@ -15,7 +15,6 @@ import {
   LayoutGrid,
   List,
   Lock,
-  MoreVertical,
   Plus,
   Receipt,
   ShieldCheck,
@@ -60,14 +59,35 @@ import {
 import type { ExtendedTemplate } from "@/lib/kneawork/template-types";
 import { cn } from "@/lib/utils";
 
-function getCategoryIcon(category?: string, id?: string) {
+function getCategoryIcon(category?: string, id?: string, size = "size-5") {
   const cat = (category || "").toLowerCase();
   const templateId = (id || "").toLowerCase();
-  if (cat.includes("purchase") || templateId.includes("purchase")) return <ShoppingBag className="size-5 text-[#003D96]" />;
-  if (cat.includes("expense") || templateId.includes("expense")) return <Receipt className="size-5 text-[#003D96]" />;
-  if (cat.includes("leave") || templateId.includes("leave")) return <Calendar className="size-5 text-[#003D96]" />;
-  if (cat.includes("contract") || templateId.includes("contract")) return <FileCheck className="size-5 text-[#003D96]" />;
-  return <FileText className="size-5 text-[#003D96]" />;
+  if (cat.includes("purchase") || templateId.includes("purchase"))
+    return <ShoppingBag className={cn(size, "text-[#003D96]")} />;
+  if (cat.includes("expense") || templateId.includes("expense"))
+    return <Receipt className={cn(size, "text-[#003D96]")} />;
+  if (cat.includes("leave") || templateId.includes("leave"))
+    return <Calendar className={cn(size, "text-[#003D96]")} />;
+  if (cat.includes("contract") || templateId.includes("contract"))
+    return <FileCheck className={cn(size, "text-[#003D96]")} />;
+  return <FileText className={cn(size, "text-[#003D96]")} />;
+}
+
+/** Pill badge for version+status */
+function VersionBadge({ version, status }: { version: string; status: string }) {
+  const isDraft = status === "Draft";
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-bold whitespace-nowrap",
+        isDraft
+          ? "bg-amber-50 border-amber-200 text-amber-700"
+          : "bg-emerald-50 border-emerald-200 text-emerald-700",
+      )}
+    >
+      v{version} · {status}
+    </span>
+  );
 }
 
 export const Route = createFileRoute("/templates")({
@@ -193,7 +213,7 @@ function TemplatesPage() {
                 className="gap-1.5 font-semibold border-border text-foreground hover:bg-muted shrink-0 text-xs sm:text-sm"
               >
                 <Bot className="size-4 text-primary" aria-hidden="true" />
-                Generate workflow with AI
+                Generate with AI
               </Button>
 
               <Button
@@ -236,50 +256,27 @@ function TemplatesPage() {
               <span>AI Draft</span>
             </Button>
           </div>
-
-          {/* AI Workflow Secondary Promotional Card */}
-          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-                <Bot className="size-4.5" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-foreground truncate">
-                  Generate workflow with AI
-                </p>
-                <p className="text-[11px] text-muted-foreground truncate">
-                  Creates a draft for human review
-                </p>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsAiDialogOpen(true)}
-              className="h-8 text-xs font-semibold shrink-0 gap-1 border-primary/30 text-primary hover:bg-primary/10"
-            >
-              <WandSparkles className="size-3" />
-              Draft
-            </Button>
-          </div>
         </div>
 
         {/* Category Filters with ScrollableTabs & View Switcher */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-2">
-          <ScrollableTabs
-            tabs={[
-              { id: "all", label: "All templates", count: templates.length },
-              { id: "purchase", label: "Purchase" },
-              { id: "expense", label: "Expense" },
-              { id: "leave", label: "Leave" },
-              { id: "contract", label: "Contract" },
-              { id: "drafts", label: "Drafts" },
-            ]}
-            activeTab={categoryFilter}
-            onTabChange={(id) => setCategoryFilter(id)}
-            ariaLabel="Template categories"
-          />
-          <div className="flex items-center gap-1 self-end sm:self-auto shrink-0 bg-muted/60 p-0.5 rounded-lg border border-border/50">
+        <div className="flex items-center justify-between gap-3 border-b border-border/60 pb-2">
+          <div className="overflow-x-auto scrollbar-none flex-1 min-w-0">
+            <ScrollableTabs
+              tabs={[
+                { id: "all", label: "All", count: templates.length },
+                { id: "purchase", label: "Purchase" },
+                { id: "expense", label: "Expense" },
+                { id: "leave", label: "Leave" },
+                { id: "contract", label: "Contract" },
+                { id: "drafts", label: "Drafts" },
+              ]}
+              activeTab={categoryFilter}
+              onTabChange={(id) => setCategoryFilter(id)}
+              ariaLabel="Template categories"
+            />
+          </div>
+          {/* View mode switcher */}
+          <div className="flex items-center gap-1 shrink-0 bg-muted/60 p-0.5 rounded-lg border border-border/50">
             <button
               type="button"
               onClick={() => setViewMode("cards")}
@@ -287,13 +284,13 @@ function TemplatesPage() {
                 "px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors",
                 viewMode === "cards"
                   ? "bg-card text-foreground shadow-2xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               aria-label="Cards view"
               title="Cards view"
             >
               <LayoutGrid className="size-3.5" />
-              <span>Cards</span>
+              <span className="hidden sm:inline">Cards</span>
             </button>
             <button
               type="button"
@@ -302,27 +299,31 @@ function TemplatesPage() {
                 "px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors",
                 viewMode === "table"
                   ? "bg-card text-foreground shadow-2xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
               aria-label="Table view"
               title="Table view"
             >
               <List className="size-3.5" />
-              <span>Table</span>
+              <span className="hidden sm:inline">Table</span>
             </button>
           </div>
         </div>
 
         {/* Template Content (Cards or Table) */}
         {filtered.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-12 text-center space-y-3">
-            <Layers className="size-8 text-muted-foreground mx-auto" />
-            <h3 className="text-sm font-bold text-foreground">No templates match your filter</h3>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-              {search
-                ? `No templates found matching "${search}". Clear search to view all.`
-                : "Create your first request template to give employees a consistent way to submit work."}
-            </p>
+          <div className="rounded-xl border border-dashed border-border p-12 text-center space-y-4">
+            <div className="size-12 rounded-xl bg-muted flex items-center justify-center mx-auto">
+              <Layers className="size-6 text-muted-foreground" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="text-sm font-bold text-foreground">No templates found</h3>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                {search
+                  ? `No templates matching "${search}". Clear the search to see all templates.`
+                  : "Create your first request template to give employees a consistent way to submit work."}
+              </p>
+            </div>
             {search ? (
               <Button variant="outline" size="sm" onClick={() => setSearch("")} className="text-xs">
                 Clear search
@@ -339,7 +340,8 @@ function TemplatesPage() {
             )}
           </div>
         ) : viewMode === "cards" ? (
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          /* ── CARDS VIEW ── */
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filtered.map((t) => {
               const routeSteps = t.routeSteps;
               const isDraft = t.versionStatus === "Draft";
@@ -347,85 +349,64 @@ function TemplatesPage() {
               return (
                 <div
                   key={t.id}
-                  className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4 hover:border-border/80 transition-all flex flex-col justify-between"
+                  role="article"
+                  className="group rounded-xl border border-border bg-card shadow-2xs hover:shadow-md hover:border-[#003D96]/30 transition-all duration-200 flex flex-col"
                 >
-                  <div className="space-y-3.5">
-                    {/* Header with 44px container glyph icon */}
-                    <div className="flex items-start gap-3.5">
-                      <div className="size-11 rounded-xl bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
-                        {getCategoryIcon(t.category, t.id)}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap justify-between">
-                          <h2 className="text-base font-semibold text-foreground truncate">{t.label}</h2>
-                          <span
-                            className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${
-                              isDraft
-                                ? "bg-amber-50 border-amber-200 text-amber-700"
-                                : "bg-emerald-50 border-emerald-200 text-emerald-700"
-                            }`}
-                          >
-                            v{t.version} · {t.versionStatus}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                          {t.description}
-                        </p>
-                      </div>
+                  {/* Card Header */}
+                  <div className="p-5 flex items-start gap-3.5 border-b border-border/60">
+                    <div className="size-11 rounded-xl bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
+                      {getCategoryIcon(t.category, t.id)}
                     </div>
-
-                    {/* Approval Route */}
-                    <div className="rounded-lg border border-border/60 bg-muted/30 p-3 space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-                        <span>Approval route · {routeSteps.length} steps</span>
-                        <span className="text-[11px] text-muted-foreground font-normal">
-                          Sequential
-                        </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <h2 className="text-sm font-bold text-foreground leading-snug group-hover:text-[#003D96] transition-colors">
+                          {t.label}
+                        </h2>
+                        <VersionBadge version={t.version} status={t.versionStatus} />
                       </div>
-                      <div className="flex flex-wrap items-center gap-1.5 text-xs text-foreground">
-                        <span className="font-medium text-muted-foreground">Requester</span>
-                        {routeSteps.map((step) => (
-                          <span key={step.id} className="inline-flex items-center gap-1.5">
-                            <span className="text-muted-foreground text-xs select-none">→</span>
-                            <span className="font-medium text-foreground">{step.name}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Policy & Governance */}
-                    <div className="space-y-1.5 text-xs text-muted-foreground bg-muted/20 p-2.5 rounded-lg border border-border/40">
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Policy:</span>
-                        <span className="font-medium text-foreground">
-                          {t.rules.requireQuotation
-                            ? `Quotation required above USD ${t.rules.quotationThreshold}`
-                            : "Standard documentation"}
-                          {t.rules.maxAmount
-                            ? ` · Max USD ${t.rules.maxAmount.toLocaleString()}`
-                            : ""}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Governed deliverable:</span>
-                        <span className="font-medium text-foreground truncate max-w-[220px]">
-                          {t.completionOutcome}
-                        </span>
-                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                        {t.description}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Action Footer */}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border/60 pt-3 mt-1">
-                    <div className="space-y-0.5">
-                      <div className="text-xs text-foreground font-medium">
-                        Owner: {t.ownerName}
-                      </div>
-                      <div className="text-[11px] text-muted-foreground">
-                        Used {t.usageCount} times · Last used {t.lastUsed}
-                      </div>
+                  {/* Approval Route — inline arrow chain */}
+                  <div className="px-5 py-3 border-b border-border/60 bg-muted/20">
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                      Approval route · {routeSteps.length} step{routeSteps.length !== 1 ? "s" : ""}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-1 text-xs">
+                      <span className="text-muted-foreground font-medium">Requester</span>
+                      {routeSteps.map((step) => (
+                        <span key={step.id} className="inline-flex items-center gap-1">
+                          <ArrowRight className="size-3 text-muted-foreground/60 shrink-0" />
+                          <span className="font-semibold text-foreground bg-[#F2F7FF] border border-[#003D96]/15 px-1.5 py-0.5 rounded-md whitespace-nowrap">
+                            {step.name}
+                          </span>
+                        </span>
+                      ))}
                     </div>
+                  </div>
 
+                  {/* Meta row: policy pill + owner */}
+                  <div className="px-5 py-3 flex items-center justify-between gap-3 flex-wrap text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck className="size-3.5 text-muted-foreground/70 shrink-0" />
+                      {t.rules.requireQuotation
+                        ? `Quotation > $${t.rules.quotationThreshold}`
+                        : "Standard policy"}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Users className="size-3 text-muted-foreground/70 shrink-0" />
+                      {t.ownerName}
+                    </span>
+                  </div>
+
+                  {/* Card Footer Actions */}
+                  <div className="px-5 pb-4 pt-1 mt-auto flex items-center justify-between gap-3 border-t border-border/60">
+                    <span className="text-[11px] text-muted-foreground">
+                      {t.usageCount} uses · {t.lastUsed}
+                    </span>
                     <div className="flex items-center gap-1.5">
                       {isDraft ? (
                         <Button
@@ -437,14 +418,28 @@ function TemplatesPage() {
                           Edit draft
                         </Button>
                       ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setSelectedTemplate(t)}
-                          className="font-semibold h-8 text-xs hover:bg-[#F2F7FF] hover:text-[#003D96]"
-                        >
-                          Open template
-                        </Button>
+                        <>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setPreviewTemplate(t);
+                            }}
+                            className="h-8 text-xs px-2.5 text-muted-foreground hover:text-foreground"
+                            title="Preview employee form"
+                          >
+                            <Eye className="size-3.5" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSelectedTemplate(t)}
+                            className="font-semibold h-8 text-xs hover:bg-[#F2F7FF] hover:text-[#003D96] hover:border-[#003D96]/30"
+                          >
+                            Open
+                            <ArrowRight className="size-3 ml-1" />
+                          </Button>
+                        </>
                       )}
                     </div>
                   </div>
@@ -453,217 +448,267 @@ function TemplatesPage() {
             })}
           </div>
         ) : (
-          /* Table View */
+          /* ── TABLE VIEW ── */
           <div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
-            <Table>
-              <TableHeader className="bg-muted/40">
-                <TableRow>
-                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider pl-4">Template</TableHead>
-                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Version & Status</TableHead>
-                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Approval Route</TableHead>
-                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Policy</TableHead>
-                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Usage</TableHead>
-                  <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider text-right pr-4">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((t) => {
-                  const isDraft = t.versionStatus === "Draft";
-                  return (
-                    <TableRow key={t.id} className="hover:bg-muted/30 transition-colors">
-                      <TableCell className="pl-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="size-9 rounded-lg bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
-                            {getCategoryIcon(t.category, t.id)}
+            {/* Horizontally scrollable on mobile */}
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader className="bg-muted/40">
+                  <TableRow>
+                    <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider pl-4 whitespace-nowrap">
+                      Template
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                      Status
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden md:table-cell">
+                      Approval Route
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">
+                      Policy
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden sm:table-cell">
+                      Usage
+                    </TableHead>
+                    <TableHead className="font-semibold text-xs text-muted-foreground uppercase tracking-wider text-right pr-4 whitespace-nowrap">
+                      Actions
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((t) => {
+                    const isDraft = t.versionStatus === "Draft";
+                    return (
+                      <TableRow key={t.id} className="hover:bg-muted/30 transition-colors">
+                        <TableCell className="pl-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div className="size-9 rounded-lg bg-[#F2F7FF] border border-[#003D96]/15 flex items-center justify-center shrink-0">
+                              {getCategoryIcon(t.category, t.id, "size-4")}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-semibold text-sm text-foreground truncate max-w-[180px] sm:max-w-[240px]">
+                                {t.label}
+                              </div>
+                              <div className="text-xs text-muted-foreground line-clamp-1 max-w-[180px] sm:max-w-[240px]">
+                                {t.description}
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <div className="font-semibold text-sm text-foreground">{t.label}</div>
-                            <div className="text-xs text-muted-foreground line-clamp-1 max-w-[240px]">{t.description}</div>
+                        </TableCell>
+                        <TableCell className="py-3">
+                          <VersionBadge version={t.version} status={t.versionStatus} />
+                        </TableCell>
+                        <TableCell className="py-3 hidden md:table-cell">
+                          <div className="text-xs font-medium text-foreground">
+                            {t.routeSteps.length} steps
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <span
-                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold ${
-                            isDraft
-                              ? "bg-amber-50 border-amber-200 text-amber-700"
-                              : "bg-emerald-50 border-emerald-200 text-emerald-700"
-                          }`}
-                        >
-                          v{t.version} · {t.versionStatus}
-                        </span>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <div className="text-xs font-medium text-foreground flex items-center gap-1.5 flex-wrap">
-                          <span>{t.routeSteps.length} steps</span>
-                          <span className="text-muted-foreground text-[11px]">(Sequential)</span>
-                        </div>
-                        <div className="text-[11px] text-muted-foreground truncate max-w-[200px]">
-                          {t.routeSteps.map((s) => s.name).join(" → ")}
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <div className="text-xs text-foreground font-medium">
-                          {t.rules.requireQuotation
-                            ? `Quotation > $${t.rules.quotationThreshold}`
-                            : "Standard"}
-                        </div>
-                        <div className="text-[11px] text-muted-foreground">
-                          {t.rules.maxAmount ? `Max: $${t.rules.maxAmount.toLocaleString()}` : "No ceiling"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <div className="text-xs text-foreground font-medium">{t.usageCount} uses</div>
-                        <div className="text-[11px] text-muted-foreground">Last: {t.lastUsed}</div>
-                      </TableCell>
-                      <TableCell className="text-right pr-4 py-3">
-                        <div className="flex items-center justify-end gap-1.5">
-                          {isDraft ? (
-                            <Button
-                              size="sm"
-                              onClick={() => setEditingTemplate(t)}
-                              className="h-8 text-xs font-semibold gap-1 bg-[#003D96] hover:bg-[#002D70] text-white"
-                            >
-                              <Edit2 className="size-3" />
-                              Edit
-                            </Button>
-                          ) : (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setSelectedTemplate(t)}
-                              className="h-8 text-xs font-semibold hover:bg-[#F2F7FF] hover:text-[#003D96]"
-                            >
-                              Open
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                          <div className="text-[11px] text-muted-foreground truncate max-w-[200px]">
+                            {t.routeSteps.map((s) => s.name).join(" → ")}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-3 hidden lg:table-cell">
+                          <div className="text-xs text-foreground font-medium">
+                            {t.rules.requireQuotation
+                              ? `Quotation > $${t.rules.quotationThreshold}`
+                              : "Standard"}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {t.rules.maxAmount ? `Max: $${t.rules.maxAmount.toLocaleString()}` : "No ceiling"}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-3 hidden sm:table-cell">
+                          <div className="text-xs text-foreground font-medium">{t.usageCount} uses</div>
+                          <div className="text-[11px] text-muted-foreground">Last: {t.lastUsed}</div>
+                        </TableCell>
+                        <TableCell className="text-right pr-4 py-3">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {isDraft ? (
+                              <Button
+                                size="sm"
+                                onClick={() => setEditingTemplate(t)}
+                                className="h-8 text-xs font-semibold gap-1 bg-[#003D96] hover:bg-[#002D70] text-white"
+                              >
+                                <Edit2 className="size-3" />
+                                Edit
+                              </Button>
+                            ) : (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => setPreviewTemplate(t)}
+                                  className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                                  title="Preview form"
+                                >
+                                  <Eye className="size-3.5" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setSelectedTemplate(t)}
+                                  className="h-8 text-xs font-semibold hover:bg-[#F2F7FF] hover:text-[#003D96]"
+                                >
+                                  Open
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+            {/* Table status bar */}
+            <div className="flex items-center justify-end gap-6 border-t border-border bg-muted/40 px-4 py-1.5 text-[11px] font-medium text-muted-foreground tabular-nums">
+              <span>
+                Showing:{" "}
+                <strong className="font-semibold text-foreground">{filtered.length}</strong> of{" "}
+                <strong className="font-semibold text-foreground">{templates.length}</strong>
+              </span>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Template Detail Modal (Spec requirement: Detail view with immutability notice and new version creation) */}
+      {/* ── Template Detail Modal ── */}
       {selectedTemplate ? (
         <Dialog open onOpenChange={(open) => !open && setSelectedTemplate(null)}>
-          <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
-            <DialogHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <DialogTitle className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
-                    {selectedTemplate.label}
-                    <span className="rounded bg-success-soft border border-success-border px-2 py-0.5 text-xs font-semibold text-success">
-                      v{selectedTemplate.version} · {selectedTemplate.versionStatus}
-                    </span>
-                  </DialogTitle>
-                  <DialogDescription className="text-sm text-muted-foreground mt-0.5">
-                    Governed workflow specification and approval integrity rules
-                  </DialogDescription>
+          <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto p-0">
+            {/* Gradient header with icon */}
+            <div className="bg-gradient-to-br from-[#F2F7FF] to-[#e8f0fd] border-b border-[#003D96]/15 p-5 rounded-t-lg">
+              <div className="flex items-start gap-4">
+                <div className="size-12 rounded-xl bg-white border border-[#003D96]/20 flex items-center justify-center shrink-0 shadow-sm">
+                  {getCategoryIcon(selectedTemplate.category, selectedTemplate.id, "size-6")}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <DialogHeader className="p-0 gap-0">
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      <DialogTitle className="text-base font-bold text-foreground leading-snug">
+                        {selectedTemplate.label}
+                      </DialogTitle>
+                      <VersionBadge version={selectedTemplate.version} status={selectedTemplate.versionStatus} />
+                    </div>
+                    <DialogDescription className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                      {selectedTemplate.description}
+                    </DialogDescription>
+                  </DialogHeader>
                 </div>
               </div>
-            </DialogHeader>
+            </div>
 
-            <div className="space-y-4 py-2">
-              {/* Description & Completion Outcome */}
-              <div className="space-y-2">
-                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
-                  Purpose & completion outcome
-                </span>
-                <div className="bg-muted/40 p-3 rounded-lg border border-border space-y-2">
-                  <p className="text-sm text-foreground leading-relaxed">
-                    {selectedTemplate.description}
-                  </p>
-                  <div className="border-t border-border/60 pt-2 text-xs sm:text-[13px] text-muted-foreground">
-                    <strong className="text-foreground">Successful completion deliverable:</strong>{" "}
-                    {selectedTemplate.completionOutcome}
-                  </div>
+            <div className="space-y-5 p-5">
+              {/* Completion Outcome */}
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  Governed deliverable
+                </p>
+                <div className="bg-muted/40 rounded-lg border border-border px-3.5 py-2.5 text-sm text-foreground leading-relaxed">
+                  {selectedTemplate.completionOutcome}
                 </div>
               </div>
 
-              {/* Sequential Steps with Named Approvers */}
+              {/* Sequential Approval Route — timeline style */}
               <div className="space-y-2">
-                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
-                  Sequential approval route ({selectedTemplate.routeSteps.length} steps)
-                </span>
-                <div className="divide-y divide-border/60 rounded-md border border-border bg-card">
-                  {selectedTemplate.routeSteps.map((step, idx) => (
-                    <div key={step.id} className="flex items-center justify-between p-3 text-sm">
-                      <div className="flex items-center gap-2.5">
-                        <span className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-bold text-foreground">
-                          {idx + 1}
-                        </span>
-                        <div>
-                          <span className="font-semibold text-foreground">{step.name}</span>
-                          <span className="block text-[13px] text-muted-foreground">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  Sequential approval route · {selectedTemplate.routeSteps.length} steps
+                </p>
+                <div className="relative">
+                  {/* Vertical connector line */}
+                  <div
+                    className="absolute left-[19px] top-8 bottom-4 w-px bg-border"
+                    aria-hidden="true"
+                  />
+                  <div className="space-y-0">
+                    {/* Requester node */}
+                    <div className="flex items-center gap-3 pb-3">
+                      <div className="size-10 rounded-full bg-muted border border-border flex items-center justify-center shrink-0 z-10">
+                        <Users className="size-4 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-semibold text-foreground">Requester</span>
+                        <span className="block text-xs text-muted-foreground">Submits the request</span>
+                      </div>
+                    </div>
+
+                    {selectedTemplate.routeSteps.map((step, idx) => (
+                      <div key={step.id} className="flex items-start gap-3 pb-3">
+                        <div className="size-10 rounded-full bg-[#003D96] flex items-center justify-center shrink-0 z-10">
+                          <span className="text-white text-xs font-bold">{idx + 1}</span>
+                        </div>
+                        <div className="flex-1 min-w-0 pt-1.5">
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <span className="text-sm font-semibold text-foreground">{step.name}</span>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1 shrink-0">
+                              <Clock className="size-3" />
+                              Due in {step.dueDays}d
+                            </span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
                             {step.roleName} · {step.assigneeName ?? "Workspace member"}
                           </span>
                         </div>
                       </div>
-                      <span className="text-xs sm:text-[13px] font-medium text-muted-foreground">
-                        Due in {step.dueDays}d
-                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Evidence & Policy Rules — 2-col grid */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  Evidence & policy rules
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    {
+                      label: "Quotation",
+                      value: selectedTemplate.rules.requireQuotation
+                        ? `Above $${selectedTemplate.rules.quotationThreshold} USD`
+                        : "Optional",
+                    },
+                    {
+                      label: "Max spend",
+                      value: selectedTemplate.rules.maxAmount
+                        ? `$${selectedTemplate.rules.maxAmount.toLocaleString()} USD`
+                        : "None",
+                    },
+                    {
+                      label: "File formats",
+                      value: selectedTemplate.rules.allowedFileTypes.join(", "),
+                    },
+                    {
+                      label: "Missing evidence",
+                      value:
+                        selectedTemplate.rules.onMissingEvidence === "prevent"
+                          ? "Prevent submission"
+                          : "Allow later",
+                    },
+                  ].map(({ label, value }) => (
+                    <div
+                      key={label}
+                      className="rounded-lg bg-muted/30 border border-border/60 px-3 py-2.5"
+                    >
+                      <p className="text-[10px] text-muted-foreground font-medium mb-0.5">{label}</p>
+                      <p className="text-xs font-semibold text-foreground leading-snug">{value}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Evidence Rules */}
-              <div className="space-y-1.5 bg-muted/20 p-3.5 rounded-lg border border-border/60">
-                <span className="font-semibold text-foreground text-xs uppercase tracking-wider block">
-                  Evidence & policy rules
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-[13px] text-muted-foreground pt-1">
-                  <div>
-                    Quotation:{" "}
-                    <strong className="text-foreground">
-                      {selectedTemplate.rules.requireQuotation
-                        ? `Above $${selectedTemplate.rules.quotationThreshold} USD`
-                        : "Optional"}
-                    </strong>
-                  </div>
-                  <div>
-                    Max spend:{" "}
-                    <strong className="text-foreground">
-                      {selectedTemplate.rules.maxAmount
-                        ? `$${selectedTemplate.rules.maxAmount.toLocaleString()} USD`
-                        : "None"}
-                    </strong>
-                  </div>
-                  <div>
-                    Allowed formats:{" "}
-                    <strong className="text-foreground font-mono">
-                      {selectedTemplate.rules.allowedFileTypes.join(", ")}
-                    </strong>
-                  </div>
-                  <div>
-                    Missing evidence:{" "}
-                    <strong className="text-foreground capitalize">
-                      {selectedTemplate.rules.onMissingEvidence === "prevent"
-                        ? "Prevent submission"
-                        : "Allow changes later"}
-                    </strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* Version Immutability Notice (Spec requirement) */}
-              <div className="rounded-md border border-border bg-muted/40 p-3 text-xs sm:text-[13px] text-muted-foreground flex items-start gap-2">
+              {/* Version Immutability Notice */}
+              <div className="rounded-lg border border-border bg-muted/30 p-3.5 text-xs text-muted-foreground flex items-start gap-2.5">
                 <Lock className="size-4 text-muted-foreground mt-0.5 shrink-0" />
-                <span>
-                  <strong>Version immutability:</strong> Published workflow versions cannot be
-                  modified directly. Editing this workflow creates a new draft version. Requests
-                  already submitted under v{selectedTemplate.version} remain strictly anchored to
-                  their original schema for audit validity.
+                <span className="leading-relaxed">
+                  <strong className="text-foreground">Version immutability:</strong> Published workflow
+                  versions cannot be modified directly. Editing creates a new draft version. Requests
+                  submitted under v{selectedTemplate.version} remain anchored to their original schema.
                 </span>
               </div>
             </div>
 
-            <DialogFooter className="gap-2 sm:justify-between border-t border-border/60 pt-3">
+            <DialogFooter className="gap-2 sm:justify-between border-t border-border/60 p-4 pt-3">
               <Button
                 variant="outline"
                 size="sm"
@@ -681,10 +726,10 @@ function TemplatesPage() {
                   onClick={() => {
                     setPreviewTemplate(selectedTemplate);
                   }}
-                  className="text-xs"
+                  className="text-xs gap-1"
                 >
-                  <Eye className="size-3 mr-1" />
-                  Preview request
+                  <Eye className="size-3" />
+                  Preview form
                 </Button>
 
                 <Button
@@ -693,7 +738,7 @@ function TemplatesPage() {
                   className="text-xs font-semibold gap-1 bg-primary text-primary-foreground hover:bg-primary-hover"
                 >
                   <Copy className="size-3" />
-                  Create new version (Draft v
+                  New version (Draft v
                   {(parseFloat(selectedTemplate.version) + 0.1).toFixed(1)})
                 </Button>
               </div>
