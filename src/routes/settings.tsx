@@ -21,10 +21,10 @@ import {
   Shield,
   ShieldCheck,
   Sliders,
-  Sparkles,
   Trash2,
   UserRound,
   Users,
+  Workflow,
 } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -720,7 +720,7 @@ function WorkspaceSettingsPage() {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs sm:text-sm">
                         <span className="font-semibold text-foreground flex items-center gap-1.5">
-                          <Sparkles className="size-4 text-purple-600" />
+                          <Workflow className="size-4 text-[#003D96]" />
                           AI Workflow Builds (Monthly)
                         </span>
                         <span className="font-mono text-muted-foreground">
